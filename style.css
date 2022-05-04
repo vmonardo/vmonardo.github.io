@@ -26,7 +26,8 @@ a{
 /* section 1 */
 .section-1{
     padding-top: 20vh;
-    text-align: right;
+    padding-left: 50px;
+    text-align: left;
 }
 
 .section-1 p{
