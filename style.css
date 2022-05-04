@@ -15,17 +15,14 @@ body{
 
 }
 
-h2,.white{
-    color: #fff;
-}
-
 a{
-    color: #36454F;
+    color: #000000;
     text-decoration: none;
 }
+
 /* section 1 */
 .section-1{
-    padding-top: 20vh;
+    padding-top: 10vh;
     padding-right: 100px;
     text-align: right;
 }
