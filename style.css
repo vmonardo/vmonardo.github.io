@@ -37,6 +37,14 @@ h2{
     text-align: right;
 }
 
+@media (max-width: 1000px) {
+      .section-1 {
+            padding-top: 10vh;
+            padding-right: 100px;
+            text-align: left;
+       }
+}
+
 .section-1 p{
     font-size: 1.1rem;
     padding-bottom: 10px;
