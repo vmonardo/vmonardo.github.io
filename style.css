@@ -33,14 +33,14 @@ h2{
 /* section 1 */
 .section-1{
     padding-top: 10vh;
-    padding-right: 100px;
+    width: 70%;
     text-align: right;
 }
 
 @media (max-width: 1000px) {
       .section-1 {
             padding-top: 10vh;
-            padding-right: 100px;
+            width: 70%;
             text-align: left;
        }
 }
