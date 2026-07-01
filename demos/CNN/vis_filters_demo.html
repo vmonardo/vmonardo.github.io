@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Convolution Filter Playground</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      :root { --accent: #2563eb; }
+      .container {
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 12px;
+        height: 100vh;
+      }
+      .viz {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 8px;
+        padding: 12px;
+      }
+      .canvas-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .canvas-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px;
+      }
+      .canvas-card h3 {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+        color: #333;
+      }
+      canvas {
+        width: 100%;
+        height: auto;
+        border: 1px solid #e6e6e6;
+        image-rendering: pixelated;
+      }
+      .panel {
+        border-left: 1px solid var(--border);
+        padding: 12px;
+        background: var(--panel);
+      }
+      .panel h2 {
+        margin: 0 0 8px 0;
+        font-size: 16px;
+      }
+      .howto {
+        font-size: 12px;
+        color: #444;
+        margin: 8px 0 12px 0;
+        line-height: 1.35;
+      }
+      .control {
+        margin-bottom: 10px;
+      }
+      .control label {
+        font-size: 12px;
+        color: #333;
+        display: block;
+        margin-bottom: 4px;
+      }
+      .control select, .control input {
+        width: 100%;
+        padding: 6px 8px;
+        font-size: 13px;
+      }
+      .kernel-edit {
+        display: grid;
+        gap: 4px;
+        justify-content: start;
+        margin-top: 8px;
+      }
+      .kernel-edit input {
+        width: 52px;
+        padding: 4px 2px;
+        font-size: 12px;
+        text-align: center;
+      }
+      .kernel {
+        margin-top: 10px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 8px;
+      }
+      .kernel-title {
+        font-size: 12px;
+        margin: 0 0 6px 0;
+        color: #333;
+      }
+      .kernel-grid {
+        display: grid;
+        gap: 4px;
+        justify-content: start;
+      }
+      .kernel-cell {
+        width: 42px;
+        text-align: center;
+        padding: 4px 0;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 12px;
+        background: #f8f8f8;
+      }
+      .stats {
+        margin-top: 10px;
+        font-size: 12px;
+        color: #333;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 8px;
+        line-height: 1.4;
+      }
+      .hover-box {
+        margin-top: 10px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 8px;
+        font-size: 12px;
+        color: #333;
+      }
+      .mini-grid {
+        display: grid;
+        gap: 2px;
+        margin-top: 6px;
+      }
+      .mini-cell {
+        width: 28px;
+        text-align: center;
+        padding: 2px 0;
+        border: 1px solid #e6e6e6;
+        border-radius: 3px;
+        font-size: 11px;
+        background: #fafafa;
+      }
+      .note {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 8px;
+      }
+      .footer {
+        margin-top: 12px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .footer a {
+        color: #3a6ea5;
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+<section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>What is the input representation, and what is the output here?</li>
+<li>How do the kernel weights determine which pattern is highlighted in the output?</li>
+<li>Why does a 5×5 input with a 3×3 kernel and valid padding produce a 3×3 output?</li>
+<li>What do 'valid' and 'same' padding mean geometrically?</li>
+<li>How would changing the kernel entries directly change the output map?</li>
+<li>How would a learned kernel differ from these hand‑picked ones?</li>
+    </ul>
+  </div>
+</section>
+
+    <div class="container">
+      <div class="viz">
+        <div class="canvas-row">
+          <div class="canvas-card">
+            <h3>Input</h3>
+            <div class="note">Canvas input size: 96×96 pixels.</div>
+            <canvas id="inputCanvas" width="96" height="96"></canvas>
+          </div>
+          <div class="canvas-card">
+            <h3>Output (normalized)</h3>
+            <canvas id="outputCanvas" width="96" height="96"></canvas>
+          </div>
+          <div class="canvas-card">
+            <h3>Output (raw map)</h3>
+            <canvas id="rawCanvas" width="96" height="96"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Convolution Playground</h2>
+        <div class="howto">
+          Pick an image and filter, then hover the output to see the receptive field
+          highlighted in the input. The right panel shows the numeric patch and sum.
+          You can also edit the kernel weights directly.
+        </div>
+        <div class="control">
+          <label for="imageSelect">Image</label>
+          <select id="imageSelect"></select>
+        </div>
+        <div class="control">
+          <label for="uploadInput">Upload image (JPG/PNG)</label>
+          <input id="uploadInput" type="file" accept="image/*">
+        </div>
+        <div class="control">
+          <label for="filterSelect">Filter</label>
+          <select id="filterSelect"></select>
+        </div>
+        <div class="control">
+          <label for="strideSelect">Stride</label>
+          <select id="strideSelect">
+            <option value="1">1</option>
+            <option value="2">2</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="paddingSelect">Padding</label>
+          <select id="paddingSelect">
+            <option value="valid">valid (no border added)</option>
+            <option value="same">same (zero border added)</option>
+          </select>
+        </div>
+        <div class="kernel">
+          <div class="kernel-title">Kernel weights</div>
+          <div class="kernel-grid" id="kernelGrid"></div>
+          <div class="kernel-title">Edit kernel</div>
+          <div class="kernel-edit" id="kernelEdit"></div>
+        </div>
+        <div class="stats" id="statsBox">Output stats will appear here.</div>
+        <div class="hover-box" id="hoverBox">Hover the output to inspect a single position.</div>
+        <div class="note">Output is normalized to [0,1] for display; raw values shown separately.</div>
+        <div class="footer">Inspired by <a href="https://generic-github-user.github.io/Image-Convolution-Playground/src/" target="_blank" rel="noopener">Image Convolution Playground</a>.</div>
+      </div>
+    </div>
+    <script>
+      const inputCanvas = document.getElementById("inputCanvas");
+      const outputCanvas = document.getElementById("outputCanvas");
+      const rawCanvas = document.getElementById("rawCanvas");
+      const imageSelect = document.getElementById("imageSelect");
+      const filterSelect = document.getElementById("filterSelect");
+      const strideSelect = document.getElementById("strideSelect");
+      const paddingSelect = document.getElementById("paddingSelect");
+      const uploadInput = document.getElementById("uploadInput");
+      const kernelGrid = document.getElementById("kernelGrid");
+      const kernelEdit = document.getElementById("kernelEdit");
+      const statsBox = document.getElementById("statsBox");
+      const hoverBox = document.getElementById("hoverBox");
+
+      const SIZE = 96;
+
+      const filters = {
+        "Sobel X (3x3)": {
+          kernel: [
+            [-1, 0, 1],
+            [-2, 0, 2],
+            [-1, 0, 1],
+          ],
+        },
+        "Sobel Y (3x3)": {
+          kernel: [
+            [-1, -2, -1],
+            [0, 0, 0],
+            [1, 2, 1],
+          ],
+        },
+        "Checkerboard (3x3)": {
+          kernel: [
+            [1, -1, 1],
+            [-1, 1, -1],
+            [1, -1, 1],
+          ],
+        },
+        "Edge Detect (3x3)": {
+          kernel: [
+            [-1, -1, -1],
+            [-1, 8, -1],
+            [-1, -1, -1],
+          ],
+        },
+        "Emboss (3x3)": {
+          kernel: [
+            [-2, -1, 0],
+            [-1, 1, 1],
+            [0, 1, 2],
+          ],
+          bias: 0.5,
+        },
+        "Identity (3x3)": {
+          kernel: [
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0],
+          ],
+        },
+        "Box Blur (3x3)": {
+          kernel: [
+            [1, 1, 1],
+            [1, 1, 1],
+            [1, 1, 1],
+          ],
+          scale: 1 / 9,
+        },
+        "Sharpen (3x3)": {
+          kernel: [
+            [0, -1, 0],
+            [-1, 5, -1],
+            [0, -1, 0],
+          ],
+        },
+        "Gaussian Blur (5x5)": {
+          kernel: [
+            [1, 4, 7, 4, 1],
+            [4, 16, 26, 16, 4],
+            [7, 26, 41, 26, 7],
+            [4, 16, 26, 16, 4],
+            [1, 4, 7, 4, 1],
+          ],
+          scale: 1 / 273,
+        },
+      };
+      let customKernel = null;
+
+      function generateImage(type) {
+        const img = [];
+        for (let y = 0; y < SIZE; y++) {
+          const row = [];
+          for (let x = 0; x < SIZE; x++) {
+            let v = 0;
+            if (type === "Gradient") {
+              v = x / (SIZE - 1);
+            } else if (type === "Checkerboard") {
+              const block = 12;
+              const cx = Math.floor(x / block);
+              const cy = Math.floor(y / block);
+              v = (cx + cy) % 2 === 0 ? 0.15 : 0.95;
+            } else if (type === "Circle") {
+              const dx = x - SIZE / 2;
+              const dy = y - SIZE / 2;
+              const r = Math.sqrt(dx * dx + dy * dy);
+              v = r < SIZE * 0.28 ? 0.9 : 0.1;
+            } else if (type === "Edges") {
+              v = 0.1;
+              if (x > 20 && x < 75 && y > 20 && y < 75) v = 0.8;
+              if (x > 35 && x < 60 && y > 35 && y < 60) v = 0.2;
+            } else {
+              v = 0.5;
+            }
+            row.push(v);
+          }
+          img.push(row);
+        }
+        return img;
+      }
+
+      const images = {
+        "Gradient": () => generateImage("Gradient"),
+        "Checkerboard": () => generateImage("Checkerboard"),
+        "Circle": () => generateImage("Circle"),
+        "Edges": () => generateImage("Edges"),
+      };
+      let uploadedImage = null;
+
+      function renderToCanvas(canvas, data, normalize) {
+        const ctx = canvas.getContext("2d");
+        const imageData = ctx.createImageData(SIZE, SIZE);
+        let min = Infinity;
+        let max = -Infinity;
+        for (let y = 0; y < data.length; y++) {
+          for (let x = 0; x < data[0].length; x++) {
+            const v = data[y][x];
+            if (v < min) min = v;
+            if (v > max) max = v;
+          }
+        }
+        const span = max - min || 1;
+        for (let y = 0; y < SIZE; y++) {
+          for (let x = 0; x < SIZE; x++) {
+            const idx = (y * SIZE + x) * 4;
+            let v = data[y][x];
+            if (normalize) v = (v - min) / span;
+            const c = Math.max(0, Math.min(255, Math.round(v * 255)));
+            imageData.data[idx] = c;
+            imageData.data[idx + 1] = c;
+            imageData.data[idx + 2] = c;
+            imageData.data[idx + 3] = 255;
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        return {min, max};
+      }
+
+      function convolve(img, kernel, stride, padding, scale = 1, bias = 0) {
+        const kH = kernel.length;
+        const kW = kernel[0].length;
+        const pad = padding === "same" ? Math.floor(kH / 2) : 0;
+        const imgH = img.length;
+        const imgW = img[0].length;
+        const outH = padding === "same"
+          ? Math.ceil(imgH / stride)
+          : Math.floor((imgH - kH) / stride) + 1;
+        const outW = padding === "same"
+          ? Math.ceil(imgW / stride)
+          : Math.floor((imgW - kW) / stride) + 1;
+
+        const out = Array.from({length: outH}, () => Array(outW).fill(0));
+        let min = Infinity;
+        let max = -Infinity;
+        for (let oy = 0; oy < outH; oy++) {
+          for (let ox = 0; ox < outW; ox++) {
+            let sum = 0;
+            const baseY = oy * stride - pad;
+            const baseX = ox * stride - pad;
+            for (let ky = 0; ky < kH; ky++) {
+              for (let kx = 0; kx < kW; kx++) {
+                const iy = baseY + ky;
+                const ix = baseX + kx;
+                if (iy < 0 || ix < 0 || iy >= imgH || ix >= imgW) continue;
+                sum += img[iy][ix] * kernel[ky][kx];
+              }
+            }
+            sum = sum * scale + bias;
+            out[oy][ox] = sum;
+            if (sum < min) min = sum;
+            if (sum > max) max = sum;
+          }
+        }
+        return {out, min, max, pad, outH, outW};
+      }
+
+      function resizeToSquare(data, size) {
+        const out = Array.from({length: size}, () => Array(size).fill(0));
+        const h = data.length;
+        const w = data[0].length;
+        for (let y = 0; y < size; y++) {
+          for (let x = 0; x < size; x++) {
+            const sy = Math.min(h - 1, Math.floor(y / size * h));
+            const sx = Math.min(w - 1, Math.floor(x / size * w));
+            out[y][x] = data[sy][sx];
+          }
+        }
+        return out;
+      }
+
+      function setKernelGrid(kernel, scale, bias) {
+        kernelGrid.innerHTML = "";
+        const kH = kernel.length;
+        const kW = kernel[0].length;
+        kernelGrid.style.gridTemplateColumns = `repeat(${kW}, 42px)`;
+        for (let y = 0; y < kH; y++) {
+          for (let x = 0; x < kW; x++) {
+            const cell = document.createElement("div");
+            cell.className = "kernel-cell";
+            cell.textContent = (kernel[y][x] * scale).toFixed(2);
+            kernelGrid.appendChild(cell);
+          }
+        }
+        if (bias !== 0) {
+          const biasCell = document.createElement("div");
+          biasCell.className = "kernel-cell";
+          biasCell.style.gridColumn = `span ${kW}`;
+          biasCell.textContent = `bias ${bias.toFixed(2)}`;
+          kernelGrid.appendChild(biasCell);
+        }
+      }
+
+      function setKernelEditor(kernel) {
+        kernelEdit.innerHTML = "";
+        const kH = kernel.length;
+        const kW = kernel[0].length;
+        kernelEdit.style.gridTemplateColumns = `repeat(${kW}, 52px)`;
+        for (let y = 0; y < kH; y++) {
+          for (let x = 0; x < kW; x++) {
+            const input = document.createElement("input");
+            input.type = "number";
+            input.step = "0.1";
+            input.value = kernel[y][x];
+            input.addEventListener("input", () => {
+              if (!customKernel) return;
+              customKernel[y][x] = parseFloat(input.value || "0");
+              update();
+            });
+            kernelEdit.appendChild(input);
+          }
+        }
+      }
+
+      function update() {
+        const imageName = imageSelect.value;
+        const filterName = filterSelect.value;
+        const stride = parseInt(strideSelect.value, 10);
+        const padding = paddingSelect.value;
+
+        let img = null;
+        if (imageName === "Uploaded image") {
+          img = uploadedImage;
+        } else {
+          img = images[imageName]();
+        }
+        if (!img) return;
+        renderToCanvas(inputCanvas, img, false);
+
+        const filter = filters[filterName];
+        const scale = filter.scale || 1;
+        const bias = filter.bias || 0;
+        if (!customKernel || customKernel.length !== filter.kernel.length || customKernel[0].length !== filter.kernel[0].length) {
+          customKernel = JSON.parse(JSON.stringify(filter.kernel));
+        }
+        const {out, min, max, pad, outH, outW} = convolve(img, customKernel, stride, padding, scale, bias);
+
+        const displayOut = resizeToSquare(out, SIZE);
+        const stats = renderToCanvas(outputCanvas, displayOut, true);
+        renderToCanvas(rawCanvas, displayOut, false);
+
+        setKernelGrid(customKernel, scale, bias);
+        setKernelEditor(customKernel);
+
+        statsBox.textContent = `Input: ${img[0].length}×${img.length} | Kernel: ${customKernel[0].length}×${customKernel.length} | Padding: ${padding} | Stride: ${stride} | Output: ${outW}×${outH} | Raw output range: [${min.toFixed(3)}, ${max.toFixed(3)}]`;
+
+        window.currentState = {img, out, min, max, pad, stride, kernel: customKernel, scale, bias, outH, outW};
+      }
+
+      function drawInputHighlight(x, y, kH, kW, pad, stride) {
+        const ctx = inputCanvas.getContext("2d");
+        const img = window.currentState.img;
+        renderToCanvas(inputCanvas, img, false);
+        const baseY = y * stride - pad;
+        const baseX = x * stride - pad;
+        ctx.strokeStyle = "#ff7f0e";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(baseX + 0.5, baseY + 0.5, kW, kH);
+      }
+
+      function updateHoverInfo(outX, outY) {
+        const state = window.currentState;
+        if (!state) return;
+        const {img, out, min, max, pad, stride, kernel, scale, bias, outH, outW} = state;
+        if (outX < 0 || outY < 0 || outX >= outW || outY >= outH) return;
+
+        const kH = kernel.length;
+        const kW = kernel[0].length;
+        const baseY = outY * stride - pad;
+        const baseX = outX * stride - pad;
+        let sum = 0;
+        const patch = [];
+        for (let ky = 0; ky < kH; ky++) {
+          const row = [];
+          for (let kx = 0; kx < kW; kx++) {
+            const iy = baseY + ky;
+            const ix = baseX + kx;
+            const v = (iy < 0 || ix < 0 || iy >= img.length || ix >= img[0].length) ? 0 : img[iy][ix];
+            row.push(v);
+            sum += v * kernel[ky][kx];
+          }
+          patch.push(row);
+        }
+        sum = sum * scale + bias;
+        const norm = (sum - min) / ((max - min) || 1);
+
+        drawInputHighlight(outX, outY, kH, kW, pad, stride);
+
+        hoverBox.innerHTML = "";
+        const header = document.createElement("div");
+        header.textContent = `Output at (${outX}, ${outY}) | raw=${sum.toFixed(3)} | normalized=${norm.toFixed(3)}`;
+        hoverBox.appendChild(header);
+
+        const grid = document.createElement("div");
+        grid.className = "mini-grid";
+        grid.style.gridTemplateColumns = `repeat(${kW}, 28px)`;
+        for (let y = 0; y < kH; y++) {
+          for (let x = 0; x < kW; x++) {
+            const cell = document.createElement("div");
+            cell.className = "mini-cell";
+            cell.textContent = patch[y][x].toFixed(2);
+            grid.appendChild(cell);
+          }
+        }
+        hoverBox.appendChild(grid);
+      }
+
+      outputCanvas.addEventListener("mousemove", (e) => {
+        const rect = outputCanvas.getBoundingClientRect();
+        const scaleX = outputCanvas.width / rect.width;
+        const scaleY = outputCanvas.height / rect.height;
+        const x = Math.floor((e.clientX - rect.left) * scaleX);
+        const y = Math.floor((e.clientY - rect.top) * scaleY);
+        const state = window.currentState;
+        if (!state) return;
+        const outX = Math.min(state.outW - 1, Math.max(0, Math.floor(x / SIZE * state.outW)));
+        const outY = Math.min(state.outH - 1, Math.max(0, Math.floor(y / SIZE * state.outH)));
+        updateHoverInfo(outX, outY);
+      });
+
+      outputCanvas.addEventListener("mouseleave", () => {
+        if (!window.currentState) return;
+        renderToCanvas(inputCanvas, window.currentState.img, false);
+        hoverBox.textContent = "Hover the output to inspect a single position.";
+      });
+
+      function init() {
+        for (const name of Object.keys(images)) {
+          const opt = document.createElement("option");
+          opt.value = name;
+          opt.textContent = name;
+          imageSelect.appendChild(opt);
+        }
+        for (const name of Object.keys(filters)) {
+          const opt = document.createElement("option");
+          opt.value = name;
+          opt.textContent = name;
+          filterSelect.appendChild(opt);
+        }
+        imageSelect.value = "Gradient";
+        filterSelect.value = "Sobel X (3x3)";
+        paddingSelect.value = "valid";
+        update();
+      }
+
+      imageSelect.addEventListener("change", update);
+      filterSelect.addEventListener("change", update);
+      strideSelect.addEventListener("change", update);
+      paddingSelect.addEventListener("change", update);
+      uploadInput.addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          const imgEl = new Image();
+          imgEl.onload = () => {
+            const tmp = document.createElement("canvas");
+            tmp.width = SIZE;
+            tmp.height = SIZE;
+            const ctx = tmp.getContext("2d");
+            ctx.drawImage(imgEl, 0, 0, SIZE, SIZE);
+            const data = ctx.getImageData(0, 0, SIZE, SIZE).data;
+            const arr = [];
+            for (let y = 0; y < SIZE; y++) {
+              const row = [];
+              for (let x = 0; x < SIZE; x++) {
+                const idx = (y * SIZE + x) * 4;
+                const r = data[idx];
+                const g = data[idx + 1];
+                const b = data[idx + 2];
+                const gray = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                row.push(gray);
+              }
+              arr.push(row);
+            }
+            uploadedImage = arr;
+            let hasOption = false;
+            for (const opt of imageSelect.options) {
+              if (opt.value === "Uploaded image") hasOption = true;
+            }
+            if (!hasOption) {
+              const opt = document.createElement("option");
+              opt.value = "Uploaded image";
+              opt.textContent = "Uploaded image";
+              imageSelect.appendChild(opt);
+            }
+            imageSelect.value = "Uploaded image";
+            update();
+          };
+          imgEl.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      init();
+    </script>
+  </body>
+</html>

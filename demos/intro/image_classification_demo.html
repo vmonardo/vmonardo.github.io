@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Image Classification Demo</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 12px;
+        min-height: 100vh;
+        padding: 16px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+      }
+      .image-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 6px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th, td {
+        text-align: left;
+        padding: 6px 4px;
+        border-bottom: 1px solid #eef2f7;
+      }
+      th {
+        font-weight: 600;
+      }
+      .meta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+<section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>What are the input features and labels for ImageNet models?</li>
+<li>Why is input normalization necessary for pretrained networks?</li>
+<li>How should we interpret top‑k probabilities?</li>
+<li>What happens when the input distribution differs from training data?</li>
+    </ul>
+  </div>
+</section>
+
+    <div class="container">
+      <div class="image-wrap">
+        <img alt="Input image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAFACAIAAABFqlNcAAAEgElEQVR4nO3VIQEAIADAMKB/TjQNIAbiW4K7z33uAKBn/Q4A4A8DAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgCgDAIgyAIAoAwCIMgCAKAMAiDIAgNH0AOHCBVVwdnzTAAAAAElFTkSuQmCC">
+      </div>
+      <div class="card">
+        <h2>Top Predictions</h2>
+        <table>
+          <thead>
+            <tr><th>#</th><th>Label</th><th>Probability</th></tr>
+          </thead>
+          <tbody>
+            <tr><td colspan='3'>Prediction unavailable.</td></tr>
+          </tbody>
+        </table>
+        <div class="meta">
+          Model: ResNet-50<br>
+          Device: skipped<br>
+          Source: placeholder
+        </div>
+        <div class='meta'>Model execution skipped. Run without --skip-model to compute predictions. Image download failed; using placeholder. (HTTPSConnectionPool(host='upload.wikimedia.org', port=443): Max retries exceeded with url: /wikipedia/commons/6/6b/American_Beaver.jpg (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x10d53dbe0>: Failed to resolve 'upload.wikimedia.org' ([Errno 8] nodename nor servname provided, or not known)")))</div>
+      </div>
+    </div>
+  </body>
+</html>

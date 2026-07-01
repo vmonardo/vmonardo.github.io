@@ -1,0 +1,1073 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Discounted Return Lab</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .demo-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 14px;
+}
+
+.demo-stage,
+.demo-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.demo-stage {
+  overflow: hidden;
+}
+
+.demo-panel {
+  padding: 14px;
+}
+
+.demo-panel h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.demo-howto {
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.demo-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1020px) {
+  .demo-shell {
+    grid-template-columns: 1fr;
+  }
+}
+      .demo-controls {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-control-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.demo-control,
+.demo-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-control-label,
+.demo-field label {
+  display: block;
+  font-size: 13px;
+}
+
+.demo-slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.demo-slider-value {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.demo-control input,
+.demo-control select,
+.demo-control textarea,
+.demo-field input,
+.demo-field select,
+.demo-field textarea {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-button-row {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-button-columns, 4), minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demo-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-card {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-callout {
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.demo-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.demo-card-body {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.demo-lines,
+.demo-list {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.demo-list-item {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.demo-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
+.demo-plot-grid {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-plot-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-plot-frame {
+  width: 100%;
+  height: 100%;
+  min-height: var(--demo-plot-min-height, 280px);
+}
+
+.demo-stage-pad {
+  padding: 12px;
+}
+
+.demo-single-plot {
+  min-height: var(--demo-single-plot-height, 620px);
+}
+
+.demo-pre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #334155;
+}
+
+.demo-visual-stack {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-surface-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-surface-head {
+  padding: 12px 14px 0;
+}
+
+.demo-surface-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.demo-surface-copy {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-surface-body {
+  padding: 14px;
+}
+
+.demo-gridworld {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-grid-cell {
+  min-height: 120px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 6px;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.demo-grid-cell:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+}
+
+.demo-grid-cell.selected {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.demo-grid-cell.wall {
+  background: #1f2937;
+  color: #fff;
+  cursor: default;
+}
+
+.demo-grid-cell.terminal.good {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.demo-grid-cell.terminal.bad {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.demo-grid-coord {
+  font-size: 11px;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.demo-grid-cell.wall .demo-grid-coord {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.demo-grid-value {
+  font-size: 24px;
+  font-weight: 700;
+  align-self: center;
+}
+
+.demo-grid-policy {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.demo-grid-meta {
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.demo-grid-cell.wall .demo-grid-meta {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.demo-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.demo-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.84);
+  color: #1f2937;
+}
+
+.demo-route-chip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-legend-item {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid var(--border);
+}
+
+.demo-action-summary {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.demo-action-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 72px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.demo-action-label {
+  font-weight: 700;
+  color: #0f172a;
+  text-align: center;
+}
+
+.demo-bar-track {
+  height: 12px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.demo-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.demo-bar-value {
+  font-size: 12px;
+  color: #475569;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .demo-button-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demo-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .demo-gridworld {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+      .discounted-return-stage {
+  --demo-plot-min-height: 240px;
+}
+
+.discounted-return-plots {
+  grid-template-rows: 240px 300px 240px;
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+    </style>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <div class="demo-shell">
+  <section class="demo-stage demo-stage-pad discounted-return-stage">
+
+    <div class="demo-plot-grid discounted-return-plots">
+      <section class="demo-plot-card"><div id="rewardPlot" class="demo-plot-frame"></div></section>
+      <section class="demo-plot-card"><div id="contributionPlot" class="demo-plot-frame"></div></section>
+      <section class="demo-plot-card"><div id="gammaPlot" class="demo-plot-frame"></div></section>
+    </div>
+  </section>
+  <aside class="demo-panel">
+    <h1>Discounted Return Lab</h1>
+    <div class="demo-howto">The chapter defines utility as a discounted sum of future rewards. Use the controls to change the reward sequence and gamma, then compare the raw rewards, the weighted contributions, and the resulting utility curve over gamma.</div>
+    <div class="demo-controls" style="--demo-control-columns: 2;">
+      <div class="demo-control demo-field span-2">
+        <label class="demo-control-label" for="scenarioSelect">Reward sequence</label>
+        <select id="scenarioSelect">
+          <option value="delayed_goal" selected="selected">Sparse delayed goal</option>
+          <option value="upfront_cost">Upfront cost, later payoff</option>
+          <option value="dense_progress">Dense progress rewards</option>
+          <option value="tempting_loop">Tempting short-term rewards</option>
+          <option value="noisy_mission">Noisy mission rewards</option>
+        </select>
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="horizonRange"><span>Horizon</span><span id="horizonValue" class="demo-slider-value"></span></label>
+        <input id="horizonRange" type="range" value="10" min="6" max="18" step="1">
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="gammaRange"><span>Discount factor gamma</span><span id="gammaValue" class="demo-slider-value"></span></label>
+        <input id="gammaRange" type="range" value="0.92" min="0.0" max="0.99" step="0.01">
+      </div>
+    </div>
+    <div class="demo-button-row" style="--demo-button-columns: 2;">
+      <button id="resampleBtn" type="button">Resample rewards</button>
+      <button id="highGammaBtn" type="button">Jump to gamma = 0.98</button>
+    </div>
+    <div class="demo-card">
+      <h3>Interpretation</h3>
+      <div >
+    <div id="noteLines" class="demo-lines"></div>
+    <div class="demo-pill-row">
+      <div class="demo-pill">gamma near 0 = short-sighted</div>
+      <div class="demo-pill">gamma near 1 = future-aware</div>
+      <div class="demo-pill">discounting guarantees finite utility</div>
+    </div>
+    </div>
+    </div>
+    <div class="demo-card">
+      <h3>Current Utility Summary</h3>
+      <div id="statLines" class="demo-lines"></div>
+    </div>
+  </aside>
+</div>
+    <section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>Why can two trajectories with the same undiscounted sum have different utilities once gamma is below 1?</li>
+<li>Which reward patterns become much less attractive when the learner is short-sighted?</li>
+<li>What does the chapter gain mathematically by insisting on gamma < 1?</li>
+<li>How would your interpretation of gamma change if rewards were arriving every millisecond instead of every few seconds?</li>
+<li>Which scenario here feels most similar to reinforcement learning with delayed sparse rewards?</li>
+    </ul>
+  </div>
+</section>
+    <script>
+      window.DEMO_PAYLOAD = {};
+    </script>
+    <script>
+      (() => {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  function resolve(target) {
+    if (typeof target === "string") {
+      return document.getElementById(target);
+    }
+    return target;
+  }
+
+  function setAttrs(node, attrs = {}) {
+    Object.entries(attrs).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
+        node.removeAttribute(key);
+        return;
+      }
+      node.setAttribute(key, String(value));
+    });
+    return node;
+  }
+
+  function setText(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.textContent = value;
+    }
+    return node;
+  }
+
+  function setHTML(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.innerHTML = value;
+    }
+    return node;
+  }
+
+  function create(tagName, attrs = {}, textContent = null) {
+    const node = document.createElementNS(SVG_NS, tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function append(parent, tagName, attrs = {}, textContent = null) {
+    const node = create(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function createHtml(tagName, attrs = {}, textContent = null) {
+    const node = document.createElement(tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function appendHtml(parent, tagName, attrs = {}, textContent = null) {
+    const node = createHtml(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function clear(target) {
+    const node = resolve(target);
+    while (node && node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+    return node;
+  }
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function query(selector, root = document) {
+    const node = resolve(root);
+    return node ? node.querySelector(selector) : null;
+  }
+
+  function queryAll(selector, root = document) {
+    const node = resolve(root);
+    return node ? [...node.querySelectorAll(selector)] : [];
+  }
+
+  function formatNumber(value, digits = 4) {
+    return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
+  }
+
+  function formatFixed(value, digits = 2) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(digits) : "?";
+  }
+
+  function readNumber(input, fallback = 0) {
+    const node = resolve(input);
+    if (!node) {
+      return fallback;
+    }
+    const value = Number(node.value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function clamp(value, minValue, maxValue) {
+    return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function renderItems(target, items, options = {}) {
+    const {
+      className = "demo-line",
+      tagName = "div",
+      html = false,
+    } = options;
+    const node = clear(target);
+    if (!node) {
+      return null;
+    }
+    items.forEach((item) => {
+      const row = createHtml(tagName, className ? { class: className } : {});
+      if (html) {
+        row.innerHTML = item;
+      } else {
+        row.textContent = item;
+      }
+      node.appendChild(row);
+    });
+    return node;
+  }
+
+  function renderLines(target, lines, className = "demo-line", html = false) {
+    return renderItems(target, lines, { className, html });
+  }
+
+  function renderList(target, items, className = "demo-list-item", html = false) {
+    return renderItems(target, items, { className, html });
+  }
+
+  function bindRangeDisplay(rangeInput, valueNode, formatter = (value) => value) {
+    const input = resolve(rangeInput);
+    const output = resolve(valueNode);
+    if (!input || !output) {
+      return () => {};
+    }
+    const update = () => {
+      output.textContent = formatter(input.value, input);
+    };
+    input.addEventListener("input", update);
+    update();
+    return update;
+  }
+
+  function bindRangeDisplays(bindings) {
+    return bindings.map((binding) =>
+      bindRangeDisplay(binding.range, binding.output, binding.formatter)
+    );
+  }
+
+  const runtime = {
+    SVG_NS,
+    append,
+    appendHtml,
+    byId,
+    bindRangeDisplay,
+    bindRangeDisplays,
+    clamp,
+    clear,
+    create,
+    createHtml,
+    formatFixed,
+    formatNumber,
+    query,
+    queryAll,
+    readNumber,
+    renderItems,
+    renderLines,
+    renderList,
+    resolve,
+    setAttrs,
+    setHTML,
+    setText,
+  };
+
+  window.SvgDemoRuntime = runtime;
+  window.DemoRuntime = runtime;
+})();
+
+    </script>
+    <script>
+      const Demo = window.DemoRuntime;
+
+const rewardPlot = Demo.byId("rewardPlot");
+const contributionPlot = Demo.byId("contributionPlot");
+const gammaPlot = Demo.byId("gammaPlot");
+const scenarioSelect = Demo.byId("scenarioSelect");
+const horizonRange = Demo.byId("horizonRange");
+const gammaRange = Demo.byId("gammaRange");
+const resampleBtn = Demo.byId("resampleBtn");
+const highGammaBtn = Demo.byId("highGammaBtn");
+
+const state = {
+  seed: 0,
+};
+
+function formatSigned(value) {
+  return `${value >= 0 ? "+" : ""}${value.toFixed(3)}`;
+}
+
+function mulberry32(seed) {
+  let t = seed >>> 0;
+  return () => {
+    t += 0x6d2b79f5;
+    let x = Math.imul(t ^ (t >>> 15), 1 | t);
+    x ^= x + Math.imul(x ^ (x >>> 7), 61 | x);
+    return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function scenarioMeta(key) {
+  const meta = {
+    delayed_goal: {
+      title: "Sparse delayed goal",
+      text: "Most reward arrives late. Lower gamma makes the distant payoff matter much less.",
+    },
+    upfront_cost: {
+      title: "Upfront cost, later payoff",
+      text: "This is the shape of many planning problems: pay a cost now to unlock larger future reward.",
+    },
+    dense_progress: {
+      title: "Dense progress rewards",
+      text: "Dense reward spreads utility across many steps, so the learner gets frequent feedback.",
+    },
+    tempting_loop: {
+      title: "Tempting short-term rewards",
+      text: "Immediate positive rewards can dominate the utility when gamma is too small, even if a later penalty arrives.",
+    },
+    noisy_mission: {
+      title: "Noisy mission rewards",
+      text: "Individual rewards wiggle, but the discount still determines how strongly distant outcomes affect utility.",
+    },
+  };
+  return meta[key];
+}
+
+function buildRewards(key, horizon, seed) {
+  const rewards = [];
+  if (key === "delayed_goal") {
+    for (let t = 0; t < horizon; t += 1) {
+      rewards.push(t === horizon - 1 ? 9.5 : -0.06);
+    }
+    return rewards;
+  }
+  if (key === "upfront_cost") {
+    for (let t = 0; t < horizon; t += 1) {
+      if (t === 0) rewards.push(-2.6);
+      else if (t === 1) rewards.push(-1.2);
+      else if (t === horizon - 2) rewards.push(2.5);
+      else if (t === horizon - 1) rewards.push(8.0);
+      else rewards.push(0.1);
+    }
+    return rewards;
+  }
+  if (key === "dense_progress") {
+    for (let t = 0; t < horizon; t += 1) {
+      const base = 0.65 + 0.07 * t;
+      rewards.push(t === horizon - 1 ? base + 1.2 : base);
+    }
+    return rewards;
+  }
+  if (key === "tempting_loop") {
+    for (let t = 0; t < horizon; t += 1) {
+      if (t < 3) rewards.push(1.3);
+      else if (t === 3) rewards.push(-4.7);
+      else if (t === horizon - 1) rewards.push(5.8);
+      else rewards.push(-0.15);
+    }
+    return rewards;
+  }
+  const rand = mulberry32(seed + horizon * 97);
+  for (let t = 0; t < horizon; t += 1) {
+    const trend = t === horizon - 1 ? 6.5 : -0.15 + 0.22 * t;
+    const noise = (rand() - 0.5) * 1.6;
+    rewards.push(Number((trend + noise).toFixed(2)));
+  }
+  return rewards;
+}
+
+function computeDiscounted(rewards, gamma) {
+  return rewards.map((reward, t) => reward * gamma ** t);
+}
+
+function cumulativeSum(values) {
+  const output = [];
+  let total = 0;
+  for (const value of values) {
+    total += value;
+    output.push(total);
+  }
+  return output;
+}
+
+function renderNotes(meta, gamma, discounted) {
+  const horizon = Number(horizonRange.value);
+  const earlyShare = discounted.slice(0, Math.min(3, discounted.length)).reduce((a, b) => a + b, 0);
+  const totalUtility = discounted.reduce((a, b) => a + b, 0);
+  const share = Math.abs(totalUtility) < 1e-8 ? 0 : earlyShare / totalUtility;
+  const lines = [
+    `${meta.title}: ${meta.text}`,
+    `With gamma = ${gamma.toFixed(2)}, the effective planning horizon is about ${(1 / Math.max(1e-6, 1 - gamma)).toFixed(1)} steps.`,
+    `The first three rewards account for ${(100 * share).toFixed(1)}% of the current utility.`,
+  ];
+  if (horizon <= 8) {
+    lines.push("Short horizons make terminal rewards easier to reach, so discounting matters less dramatically.");
+  }
+  Demo.renderLines("noteLines", lines);
+}
+
+function renderStats(rewards, discounted, gammaSweep, gamma) {
+  const utility = discounted.reduce((a, b) => a + b, 0);
+  const undiscounted = rewards.reduce((a, b) => a + b, 0);
+  const cumulative = cumulativeSum(discounted);
+  const bestIndex = rewards
+    .map((value, idx) => ({ value: Math.abs(discounted[idx]), idx }))
+    .sort((a, b) => b.value - a.value)[0].idx;
+  const maxUtility = Math.max(...gammaSweep.utilities);
+  const maxGamma = gammaSweep.gammas[gammaSweep.utilities.indexOf(maxUtility)];
+  Demo.renderLines("statLines", [
+    `Undiscounted sum: ${formatSigned(undiscounted)}`,
+    `Discounted utility: ${formatSigned(utility)}`,
+    `Largest discounted contribution occurs at t = ${bestIndex}`,
+    `Final cumulative utility after t = ${rewards.length - 1}: ${formatSigned(cumulative[cumulative.length - 1])}`,
+    `Best utility on the gamma sweep is ${formatSigned(maxUtility)} at gamma = ${maxGamma.toFixed(2)}`,
+    `Current gamma = ${gamma.toFixed(2)} is ${utility >= undiscounted ? "amplifying early gains" : "down-weighting distant rewards"}.`,
+  ]);
+}
+
+function renderPlots(rewards, discounted, gammaSweep, gamma) {
+  const xs = rewards.map((_, idx) => idx);
+  const rewardColors = rewards.map((value) => (value >= 0 ? "#10b981" : "#f97316"));
+  const discountedColors = discounted.map((value) => (value >= 0 ? "#2563eb" : "#ef4444"));
+  const cumulative = cumulativeSum(discounted);
+
+  Plotly.react(
+    rewardPlot,
+    [
+      {
+        type: "bar",
+        x: xs,
+        y: rewards,
+        marker: { color: rewardColors, line: { color: "#e5e7eb", width: 0.8 } },
+        hovertemplate: "t=%{x}<br>reward=%{y:.3f}<extra></extra>",
+        name: "Reward",
+      },
+    ],
+    {
+      title: "1. Raw rewards over time",
+      margin: { l: 56, r: 18, t: 46, b: 46 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "time step t", dtick: 1 },
+      yaxis: { title: "R_t", zerolinecolor: "#c7d2e0" },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+
+  Plotly.react(
+    contributionPlot,
+    [
+      {
+        type: "bar",
+        x: xs,
+        y: discounted,
+        marker: { color: discountedColors, line: { color: "#e5e7eb", width: 0.8 } },
+        name: "Discounted contribution",
+        hovertemplate: "t=%{x}<br>gamma^t R_t=%{y:.3f}<extra></extra>",
+      },
+      {
+        type: "scatter",
+        mode: "lines+markers",
+        x: xs,
+        y: cumulative,
+        line: { color: "#111827", width: 3 },
+        marker: { size: 7, color: "#111827" },
+        yaxis: "y2",
+        name: "Cumulative utility",
+        hovertemplate: "t=%{x}<br>U up to t=%{y:.3f}<extra></extra>",
+      },
+    ],
+    {
+      title: "2. Discounted contributions and running utility",
+      margin: { l: 56, r: 56, t: 46, b: 46 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "time step t", dtick: 1 },
+      yaxis: { title: "gamma^t R_t", zerolinecolor: "#c7d2e0" },
+      yaxis2: { title: "cumulative utility", overlaying: "y", side: "right" },
+      legend: { orientation: "h", x: 0, y: 1.12 },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+
+  Plotly.react(
+    gammaPlot,
+    [
+      {
+        type: "scatter",
+        mode: "lines",
+        x: gammaSweep.gammas,
+        y: gammaSweep.utilities,
+        line: { color: "#7c3aed", width: 3 },
+        name: "Utility as gamma changes",
+      },
+      {
+        type: "scatter",
+        mode: "markers",
+        x: [gamma],
+        y: [discounted.reduce((a, b) => a + b, 0)],
+        marker: { color: "#ef4444", size: 11, line: { color: "#7f1d1d", width: 1 } },
+        name: "Current gamma",
+        hovertemplate: "gamma=%{x:.2f}<br>utility=%{y:.3f}<extra></extra>",
+      },
+    ],
+    {
+      title: "3. Utility as gamma varies",
+      margin: { l: 56, r: 18, t: 46, b: 46 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "gamma", range: [0, 1] },
+      yaxis: { title: "utility", zerolinecolor: "#c7d2e0" },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+}
+
+function buildGammaSweep(rewards) {
+  const gammas = [];
+  const utilities = [];
+  for (let gamma = 0; gamma <= 0.99 + 1e-9; gamma += 0.01) {
+    const rounded = Number(gamma.toFixed(2));
+    gammas.push(rounded);
+    utilities.push(computeDiscounted(rewards, rounded).reduce((a, b) => a + b, 0));
+  }
+  return { gammas, utilities };
+}
+
+function render() {
+  const scenarioKey = scenarioSelect.value;
+  const horizon = Number(horizonRange.value);
+  const gamma = Number(gammaRange.value);
+  const rewards = buildRewards(scenarioKey, horizon, state.seed);
+  const discounted = computeDiscounted(rewards, gamma);
+  const gammaSweep = buildGammaSweep(rewards);
+  const meta = scenarioMeta(scenarioKey);
+
+  renderPlots(rewards, discounted, gammaSweep, gamma);
+  renderNotes(meta, gamma, discounted);
+  renderStats(rewards, discounted, gammaSweep, gamma);
+}
+
+function init() {
+  Demo.bindRangeDisplays([
+    { range: "horizonRange", output: "horizonValue", formatter: (value) => `${value} steps` },
+    { range: "gammaRange", output: "gammaValue", formatter: (value) => Number(value).toFixed(2) },
+  ]);
+  scenarioSelect.addEventListener("change", render);
+  horizonRange.addEventListener("input", render);
+  gammaRange.addEventListener("input", render);
+  resampleBtn.addEventListener("click", () => {
+    state.seed += 1;
+    render();
+  });
+  highGammaBtn.addEventListener("click", () => {
+    gammaRange.value = "0.98";
+    gammaRange.dispatchEvent(new Event("input"));
+  });
+  render();
+}
+
+init();
+
+    </script>
+  </body>
+</html>

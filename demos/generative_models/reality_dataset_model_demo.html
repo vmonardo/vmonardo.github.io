@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reality vs Dataset vs Model</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .demo-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 14px;
+}
+
+.demo-stage,
+.demo-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.demo-stage {
+  overflow: hidden;
+}
+
+.demo-panel {
+  padding: 14px;
+}
+
+.demo-panel h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.demo-howto {
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.demo-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1020px) {
+  .demo-shell {
+    grid-template-columns: 1fr;
+  }
+}
+      .demo-controls {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-control-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.demo-control,
+.demo-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-control-label,
+.demo-field label {
+  display: block;
+  font-size: 13px;
+}
+
+.demo-slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.demo-slider-value {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.demo-control input,
+.demo-control select,
+.demo-control textarea,
+.demo-field input,
+.demo-field select,
+.demo-field textarea {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-button-row {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-button-columns, 4), minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demo-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-card {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-callout {
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.demo-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.demo-card-body {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.demo-lines,
+.demo-list {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.demo-list-item {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.demo-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
+.demo-plot-grid {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-plot-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-plot-frame {
+  width: 100%;
+  height: 100%;
+  min-height: var(--demo-plot-min-height, 280px);
+}
+
+@media (max-width: 640px) {
+  .demo-button-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demo-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+      .reality-stage {
+  --demo-plot-min-height: 220px;
+}
+
+.reality-plots {
+  grid-template-rows: repeat(3, minmax(220px, 1fr));
+  min-height: 760px;
+}
+
+    </style>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <div class="demo-shell">
+  <section class="demo-stage reality-stage">
+
+    <div class="demo-plot-grid reality-plots">
+      <div class="demo-plot-card"><div id="realityPlot" class="demo-plot-frame"></div></div>
+      <div class="demo-plot-card"><div id="empiricalPlot" class="demo-plot-frame"></div></div>
+      <div class="demo-plot-card"><div id="modelPlot" class="demo-plot-frame"></div></div>
+    </div>
+  </section>
+  <aside class="demo-panel">
+    <h1>Reality vs Dataset vs Model</h1>
+    <div class="demo-howto">The top plot is the hidden data-generating distribution. The middle plot is the finite training dataset you happened to observe. The bottom plot is the learned model distribution fit from that training data.</div>
+    <div class="demo-controls" style="--demo-control-columns: 2;">
+      <div class="demo-control demo-field">
+        <label class="demo-control-label" for="realitySelect">Reality distribution</label>
+        <select id="realitySelect">
+          <option value="bimodal" selected="selected">Bimodal mixture</option>
+          <option value="skewed">Skewed mixture</option>
+          <option value="single">Single Gaussian</option>
+        </select>
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label" for="modelSelect">Model family</label>
+        <select id="modelSelect">
+          <option value="gaussian" selected="selected">Single Gaussian model</option>
+          <option value="kde">Kernel density estimate</option>
+        </select>
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="sampleSizeRange"><span>Training sample size</span><span id="sampleSizeValue" class="demo-slider-value"></span></label>
+        <input id="sampleSizeRange" type="range" value="40" min="8" max="320" step="4">
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="bandwidthRange"><span>KDE bandwidth</span><span id="bandwidthValue" class="demo-slider-value"></span></label>
+        <input id="bandwidthRange" type="range" value="0.35" min="0.08" max="1.2" step="0.02">
+      </div>
+    </div>
+    <div class="demo-button-row" style="--demo-button-columns: 2;">
+      <button id="resampleBtn" type="button">Resample dataset</button>
+      <button id="moreDataBtn" type="button">Add more data</button>
+    </div>
+    <div class="demo-card">
+      <h3>Three Different Objects</h3>
+      <div >
+    <div id="definitionLines" class="demo-lines"></div>
+    <div class="demo-pill-row">
+      <div class="demo-pill">Reality = where data really comes from</div>
+      <div class="demo-pill">Empirical = your finite dataset</div>
+      <div class="demo-pill">Model = what the learner fits</div>
+    </div>
+    </div>
+    </div>
+    <div class="demo-card">
+      <h3>Current Fit Summary</h3>
+      <div id="statLines" class="demo-lines"></div>
+    </div>
+  </aside>
+</div>
+    <section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>Which plot is showing reality, which is showing the empirical distribution from training data, and which is showing the learned model distribution?</li>
+<li>How does increasing the training sample size change the empirical histogram?</li>
+<li>When does a single Gaussian model fail to match the data-generating distribution?</li>
+<li>How is the learned model distribution different from the raw training data itself?</li>
+<li>Why can the empirical distribution look noisy even when the underlying reality is smooth?</li>
+    </ul>
+  </div>
+</section>
+    <script>
+      window.DEMO_PAYLOAD = {};
+    </script>
+    <script>
+      (() => {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  function resolve(target) {
+    if (typeof target === "string") {
+      return document.getElementById(target);
+    }
+    return target;
+  }
+
+  function setAttrs(node, attrs = {}) {
+    Object.entries(attrs).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
+        node.removeAttribute(key);
+        return;
+      }
+      node.setAttribute(key, String(value));
+    });
+    return node;
+  }
+
+  function setText(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.textContent = value;
+    }
+    return node;
+  }
+
+  function setHTML(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.innerHTML = value;
+    }
+    return node;
+  }
+
+  function create(tagName, attrs = {}, textContent = null) {
+    const node = document.createElementNS(SVG_NS, tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function append(parent, tagName, attrs = {}, textContent = null) {
+    const node = create(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function createHtml(tagName, attrs = {}, textContent = null) {
+    const node = document.createElement(tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function appendHtml(parent, tagName, attrs = {}, textContent = null) {
+    const node = createHtml(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function clear(target) {
+    const node = resolve(target);
+    while (node && node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+    return node;
+  }
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function query(selector, root = document) {
+    const node = resolve(root);
+    return node ? node.querySelector(selector) : null;
+  }
+
+  function queryAll(selector, root = document) {
+    const node = resolve(root);
+    return node ? [...node.querySelectorAll(selector)] : [];
+  }
+
+  function formatNumber(value, digits = 4) {
+    return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
+  }
+
+  function formatFixed(value, digits = 2) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(digits) : "?";
+  }
+
+  function readNumber(input, fallback = 0) {
+    const node = resolve(input);
+    if (!node) {
+      return fallback;
+    }
+    const value = Number(node.value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function clamp(value, minValue, maxValue) {
+    return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function renderItems(target, items, options = {}) {
+    const {
+      className = "demo-line",
+      tagName = "div",
+      html = false,
+    } = options;
+    const node = clear(target);
+    if (!node) {
+      return null;
+    }
+    items.forEach((item) => {
+      const row = createHtml(tagName, className ? { class: className } : {});
+      if (html) {
+        row.innerHTML = item;
+      } else {
+        row.textContent = item;
+      }
+      node.appendChild(row);
+    });
+    return node;
+  }
+
+  function renderLines(target, lines, className = "demo-line", html = false) {
+    return renderItems(target, lines, { className, html });
+  }
+
+  function renderList(target, items, className = "demo-list-item", html = false) {
+    return renderItems(target, items, { className, html });
+  }
+
+  function bindRangeDisplay(rangeInput, valueNode, formatter = (value) => value) {
+    const input = resolve(rangeInput);
+    const output = resolve(valueNode);
+    if (!input || !output) {
+      return () => {};
+    }
+    const update = () => {
+      output.textContent = formatter(input.value, input);
+    };
+    input.addEventListener("input", update);
+    update();
+    return update;
+  }
+
+  function bindRangeDisplays(bindings) {
+    return bindings.map((binding) =>
+      bindRangeDisplay(binding.range, binding.output, binding.formatter)
+    );
+  }
+
+  const runtime = {
+    SVG_NS,
+    append,
+    appendHtml,
+    byId,
+    bindRangeDisplay,
+    bindRangeDisplays,
+    clamp,
+    clear,
+    create,
+    createHtml,
+    formatFixed,
+    formatNumber,
+    query,
+    queryAll,
+    readNumber,
+    renderItems,
+    renderLines,
+    renderList,
+    resolve,
+    setAttrs,
+    setHTML,
+    setText,
+  };
+
+  window.SvgDemoRuntime = runtime;
+  window.DemoRuntime = runtime;
+})();
+
+    </script>
+    <script>
+      const Demo = window.DemoRuntime;
+const realityPlot = Demo.byId("realityPlot");
+const empiricalPlot = Demo.byId("empiricalPlot");
+const modelPlot = Demo.byId("modelPlot");
+const realitySelect = Demo.byId("realitySelect");
+const modelSelect = Demo.byId("modelSelect");
+const sampleSizeRange = Demo.byId("sampleSizeRange");
+const bandwidthRange = Demo.byId("bandwidthRange");
+const resampleBtn = Demo.byId("resampleBtn");
+const moreDataBtn = Demo.byId("moreDataBtn");
+
+const state = {
+  realityKey: "bimodal",
+  modelKey: "gaussian",
+  trainData: [],
+  testData: [],
+};
+
+function randn() {
+  let u = 0;
+  let v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+
+function normalPdf(x, mu, sigma) {
+  const z = (x - mu) / sigma;
+  return Math.exp(-0.5 * z * z) / (sigma * Math.sqrt(2 * Math.PI));
+}
+
+const realities = {
+  bimodal: {
+    name: "Bimodal mixture",
+    sample: () => (Math.random() < 0.55 ? -1.7 + 0.55 * randn() : 1.8 + 0.80 * randn()),
+    pdf: (x) => 0.55 * normalPdf(x, -1.7, 0.55) + 0.45 * normalPdf(x, 1.8, 0.80),
+    story: "Reality has two modes. A single Gaussian model will usually blur them together.",
+  },
+  skewed: {
+    name: "Skewed mixture",
+    sample: () => {
+      const r = Math.random();
+      if (r < 0.62) return -0.7 + 0.45 * randn();
+      if (r < 0.87) return 0.9 + 0.70 * randn();
+      return 2.7 + 0.35 * randn();
+    },
+    pdf: (x) =>
+      0.62 * normalPdf(x, -0.7, 0.45) +
+      0.25 * normalPdf(x, 0.9, 0.70) +
+      0.13 * normalPdf(x, 2.7, 0.35),
+    story: "Reality is asymmetric. The empirical data can look jagged, but the true source is still smooth.",
+  },
+  single: {
+    name: "Single Gaussian",
+    sample: () => 0.4 + 1.05 * randn(),
+    pdf: (x) => normalPdf(x, 0.4, 1.05),
+    story: "This case is intentionally simple, so a single Gaussian model is well matched to reality.",
+  },
+};
+
+function mean(values) {
+  return values.reduce((a, b) => a + b, 0) / values.length;
+}
+
+function std(values, mu) {
+  const variance = values.reduce((acc, value) => acc + (value - mu) ** 2, 0) / values.length;
+  return Math.sqrt(variance);
+}
+
+function fitGaussian(data) {
+  const mu = mean(data);
+  const sigma = Math.max(std(data, mu), 0.12);
+  return {
+    name: "Single Gaussian",
+    pdf: (x) => normalPdf(x, mu, sigma),
+    summary: `mu = ${mu.toFixed(3)}, sigma = ${sigma.toFixed(3)}`,
+  };
+}
+
+function fitKde(data, bandwidth) {
+  const bw = Math.max(bandwidth, 0.05);
+  return {
+    name: "Kernel density estimate",
+    pdf: (x) => data.reduce((acc, value) => acc + normalPdf(x, value, bw), 0) / data.length,
+    summary: `bandwidth = ${bw.toFixed(3)}`,
+  };
+}
+
+function generateDataset() {
+  const reality = realities[state.realityKey];
+  const n = Number(sampleSizeRange.value);
+  state.trainData = Array.from({ length: n }, () => reality.sample());
+  state.testData = Array.from({ length: 500 }, () => reality.sample());
+}
+
+function getModel() {
+  if (state.modelKey === "gaussian") {
+    return fitGaussian(state.trainData);
+  }
+  return fitKde(state.trainData, Number(bandwidthRange.value));
+}
+
+function renderDefinitions() {
+  const reality = realities[state.realityKey];
+  Demo.renderLines("definitionLines", [
+    "Data-generating distribution (reality): the smooth source that actually produces the data.",
+    "Empirical distribution: the finite training sample you happened to observe this time.",
+    "Model distribution: the parametric or nonparametric rule the learner fits from the training sample.",
+    reality.story,
+  ]);
+}
+
+function renderPlotsAndStats() {
+  const reality = realities[state.realityKey];
+  const model = getModel();
+  const gridX = [];
+  const realityY = [];
+  const modelY = [];
+  for (let x = -5.5; x <= 5.5 + 1e-9; x += 0.05) {
+    gridX.push(x);
+    realityY.push(reality.pdf(x));
+    modelY.push(model.pdf(x));
+  }
+
+  Plotly.react(
+    realityPlot,
+    [
+      {
+        type: "scatter",
+        mode: "lines",
+        x: gridX,
+        y: realityY,
+        line: { width: 3, color: "#2563eb" },
+        name: "True density",
+      },
+    ],
+    {
+      title: "1. Data-generating distribution (reality)",
+      margin: { l: 55, r: 20, t: 48, b: 42 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "value", range: [-5.5, 5.5] },
+      yaxis: { title: "density" },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+
+  Plotly.react(
+    empiricalPlot,
+    [
+      {
+        type: "histogram",
+        x: state.trainData,
+        histnorm: "probability density",
+        marker: { color: "rgba(16,185,129,0.8)", line: { width: 1, color: "#065f46" } },
+        xbins: { start: -5.5, end: 5.5, size: 0.35 },
+        name: "Training data histogram",
+      },
+      {
+        type: "scatter",
+        mode: "markers",
+        x: state.trainData,
+        y: state.trainData.map(() => -0.01),
+        marker: { size: 6, color: "#111827", opacity: 0.45 },
+        name: "Observed training samples",
+        hovertemplate: "sample=%{x:.3f}<extra></extra>",
+      },
+    ],
+    {
+      title: "2. Empirical distribution from the observed training data",
+      margin: { l: 55, r: 20, t: 48, b: 42 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "value", range: [-5.5, 5.5] },
+      yaxis: { title: "empirical density", range: [-0.03, 1.0] },
+      legend: { orientation: "h", x: 0, y: 1.12 },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+
+  Plotly.react(
+    modelPlot,
+    [
+      {
+        type: "scatter",
+        mode: "lines",
+        x: gridX,
+        y: realityY,
+        line: { width: 2, dash: "dash", color: "#94a3b8" },
+        name: "Reality (for comparison)",
+      },
+      {
+        type: "scatter",
+        mode: "lines",
+        x: gridX,
+        y: modelY,
+        line: { width: 3, color: "#f97316" },
+        name: "Learned model distribution",
+      },
+    ],
+    {
+      title: "3. Model distribution learned from the training data",
+      margin: { l: 55, r: 20, t: 48, b: 42 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "value", range: [-5.5, 5.5] },
+      yaxis: { title: "density" },
+      legend: { orientation: "h", x: 0, y: 1.12 },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+
+  const densityGap =
+    realityY.reduce((acc, yVal, idx) => acc + Math.abs(yVal - modelY[idx]), 0) / realityY.length;
+  const heldOutLogDensity =
+    state.testData.reduce((acc, value) => acc + Math.log(Math.max(model.pdf(value), 1e-8)), 0) /
+    state.testData.length;
+  const mu = mean(state.trainData);
+  const sigma = std(state.trainData, mu);
+
+  Demo.renderLines("statLines", [
+    `Reality: ${reality.name}`,
+    `Model family: ${model.name}`,
+    `Training sample size: ${state.trainData.length}`,
+    `Training sample mean and std: ${mu.toFixed(3)}, ${sigma.toFixed(3)}`,
+    `Model summary: ${model.summary}`,
+    `Average density gap from reality on the grid: ${densityGap.toFixed(4)}`,
+    `Held-out average log density: ${heldOutLogDensity.toFixed(4)}`,
+  ]);
+}
+
+function render() {
+  Demo.setText("sampleSizeValue", sampleSizeRange.value);
+  Demo.setText("bandwidthValue", Number(bandwidthRange.value).toFixed(2));
+  bandwidthRange.disabled = state.modelKey !== "kde";
+  renderDefinitions();
+  renderPlotsAndStats();
+}
+
+function init() {
+  realitySelect.addEventListener("change", () => {
+    state.realityKey = realitySelect.value;
+    generateDataset();
+    render();
+  });
+  modelSelect.addEventListener("change", () => {
+    state.modelKey = modelSelect.value;
+    render();
+  });
+  sampleSizeRange.addEventListener("input", () => {
+    generateDataset();
+    render();
+  });
+  bandwidthRange.addEventListener("input", render);
+  resampleBtn.addEventListener("click", () => {
+    generateDataset();
+    render();
+  });
+  moreDataBtn.addEventListener("click", () => {
+    const current = Number(sampleSizeRange.value);
+    sampleSizeRange.value = String(Math.min(320, current + 40));
+    generateDataset();
+    render();
+  });
+  generateDataset();
+  render();
+}
+
+init();
+
+    </script>
+  </body>
+</html>

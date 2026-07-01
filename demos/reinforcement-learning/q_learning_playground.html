@@ -1,0 +1,1318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Q-Learning Playground</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .demo-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 14px;
+}
+
+.demo-stage,
+.demo-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.demo-stage {
+  overflow: hidden;
+}
+
+.demo-panel {
+  padding: 14px;
+}
+
+.demo-panel h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.demo-howto {
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.demo-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1020px) {
+  .demo-shell {
+    grid-template-columns: 1fr;
+  }
+}
+      .demo-controls {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-control-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.demo-control,
+.demo-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-control-label,
+.demo-field label {
+  display: block;
+  font-size: 13px;
+}
+
+.demo-slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.demo-slider-value {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.demo-control input,
+.demo-control select,
+.demo-control textarea,
+.demo-field input,
+.demo-field select,
+.demo-field textarea {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-button-row {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-button-columns, 4), minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demo-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-card {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-callout {
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.demo-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.demo-card-body {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.demo-lines,
+.demo-list {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.demo-list-item {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.demo-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
+.demo-plot-grid {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-plot-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-plot-frame {
+  width: 100%;
+  height: 100%;
+  min-height: var(--demo-plot-min-height, 280px);
+}
+
+.demo-stage-pad {
+  padding: 12px;
+}
+
+.demo-single-plot {
+  min-height: var(--demo-single-plot-height, 620px);
+}
+
+.demo-pre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #334155;
+}
+
+.demo-visual-stack {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-surface-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-surface-head {
+  padding: 12px 14px 0;
+}
+
+.demo-surface-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.demo-surface-copy {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-surface-body {
+  padding: 14px;
+}
+
+.demo-gridworld {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-grid-cell {
+  min-height: 120px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 6px;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.demo-grid-cell:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+}
+
+.demo-grid-cell.selected {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.demo-grid-cell.wall {
+  background: #1f2937;
+  color: #fff;
+  cursor: default;
+}
+
+.demo-grid-cell.terminal.good {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.demo-grid-cell.terminal.bad {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.demo-grid-coord {
+  font-size: 11px;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.demo-grid-cell.wall .demo-grid-coord {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.demo-grid-value {
+  font-size: 24px;
+  font-weight: 700;
+  align-self: center;
+}
+
+.demo-grid-policy {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.demo-grid-meta {
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.demo-grid-cell.wall .demo-grid-meta {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.demo-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.demo-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.84);
+  color: #1f2937;
+}
+
+.demo-route-chip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-legend-item {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid var(--border);
+}
+
+.demo-action-summary {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.demo-action-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 72px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.demo-action-label {
+  font-weight: 700;
+  color: #0f172a;
+  text-align: center;
+}
+
+.demo-bar-track {
+  height: 12px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.demo-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.demo-bar-value {
+  font-size: 12px;
+  color: #475569;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .demo-button-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demo-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .demo-gridworld {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+      .q-stage {
+  --demo-plot-min-height: 230px;
+}
+
+.q-gridworld-visuals {
+  grid-template-rows: minmax(420px, 1fr) 250px 250px;
+}
+
+.q-plot-body {
+  padding: 0 12px 12px;
+}
+
+    </style>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <div class="demo-shell">
+  <section class="demo-stage q-stage">
+
+    <div class="demo-visual-stack q-gridworld-visuals">
+      <section class="demo-surface-card">
+        <div class="demo-surface-head">
+          <h2>Learned Greedy Policy From Sampled Experience</h2>
+          <p class="demo-surface-copy">
+            Click any non-terminal state to inspect its learned Q-values. The displayed
+            value in each cell is max_a Q(s, a), and the arrow shows the current greedy action.
+          </p>
+        </div>
+        <div class="demo-surface-body">
+          <div id="gridworld" class="demo-gridworld"></div>
+        </div>
+      </section>
+
+      <section class="demo-surface-card">
+        <div class="demo-surface-head">
+          <h2>Episode Returns</h2>
+          <p class="demo-surface-copy">
+            The light line shows raw episode return. The dark line is a 10-episode moving average.
+          </p>
+        </div>
+        <div class="q-plot-body"><div id="returnPlot" class="demo-plot-frame"></div></div>
+      </section>
+
+      <section class="demo-surface-card">
+        <div class="demo-surface-head">
+          <h2>Selected State Q-Values</h2>
+          <p class="demo-surface-copy">
+            These values are learned from TD updates rather than exact Bellman sweeps. The highest
+            bar defines the greedy action currently shown in the grid.
+          </p>
+        </div>
+        <div class="q-plot-body"><div id="qPlot" class="demo-plot-frame"></div></div>
+      </section>
+    </div>
+  </section>
+  <aside class="demo-panel">
+    <h1>Q-Learning Playground</h1>
+    <div class="demo-howto">The agent no longer knows the full transition model. Instead it interacts with the stochastic gridworld, observes one transition at a time, and updates Q(s, a) with the TD target reward + gamma max_a' Q(s', a').<div class="demo-callout">This is the sampled-experience counterpart to exact planning. The grid shows max_a Q(s, a), not exact V(s) from a known model.</div></div>
+    <div class="demo-controls" style="--demo-control-columns: 2;">
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="alphaRange"><span>Learning rate alpha</span><span id="alphaValue" class="demo-slider-value"></span></label>
+        <input id="alphaRange" type="range" value="0.35" min="0.05" max="0.9" step="0.01">
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="gammaRange"><span>Discount factor gamma</span><span id="gammaValue" class="demo-slider-value"></span></label>
+        <input id="gammaRange" type="range" value="0.92" min="0.5" max="0.99" step="0.01">
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="epsilonRange"><span>Exploration rate epsilon</span><span id="epsilonValue" class="demo-slider-value"></span></label>
+        <input id="epsilonRange" type="range" value="0.22" min="0.0" max="0.6" step="0.01">
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="epsilonDecayRange"><span>Epsilon decay per episode</span><span id="epsilonDecayValue" class="demo-slider-value"></span></label>
+        <input id="epsilonDecayRange" type="range" value="0.985" min="0.9" max="1.0" step="0.001">
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="livingRewardRange"><span>Living reward</span><span id="livingRewardValue" class="demo-slider-value"></span></label>
+        <input id="livingRewardRange" type="range" value="-0.04" min="-0.2" max="0.02" step="0.01">
+      </div>
+    </div>
+    <div class="demo-button-row" style="--demo-button-columns: 4;">
+      <button id="stepBtn" type="button">1 step</button>
+      <button id="episodeBtn" type="button">1 episode</button>
+      <button id="batchBtn" type="button">25 episodes</button>
+      <button id="resetBtn" type="button">Reset</button>
+    </div>
+    <div class="demo-card">
+      <h3>Latest TD Update</h3>
+      <div id="updateLines" class="demo-lines"></div>
+    </div>
+    <div class="demo-card">
+      <h3>Learning Summary</h3>
+      <div id="statLines" class="demo-lines"></div>
+    </div>
+  </aside>
+</div>
+    <section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>Why can the agent improve its behavior even though it never observes the full transition table or reward function directly?</li>
+<li>What happens if epsilon is too small too early, before the Q-values are reliable?</li>
+<li>Why is the TD target reward + gamma max_a' Q(s', a') called a bootstrapped target?</li>
+<li>How does the learned greedy policy compare with the policy from exact value iteration on the same gridworld?</li>
+<li>Why might a fixed learning rate alpha behave differently from a decaying running average over repeated visits?</li>
+    </ul>
+  </div>
+</section>
+    <script>
+      window.DEMO_PAYLOAD = {};
+    </script>
+    <script>
+      (() => {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  function resolve(target) {
+    if (typeof target === "string") {
+      return document.getElementById(target);
+    }
+    return target;
+  }
+
+  function setAttrs(node, attrs = {}) {
+    Object.entries(attrs).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
+        node.removeAttribute(key);
+        return;
+      }
+      node.setAttribute(key, String(value));
+    });
+    return node;
+  }
+
+  function setText(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.textContent = value;
+    }
+    return node;
+  }
+
+  function setHTML(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.innerHTML = value;
+    }
+    return node;
+  }
+
+  function create(tagName, attrs = {}, textContent = null) {
+    const node = document.createElementNS(SVG_NS, tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function append(parent, tagName, attrs = {}, textContent = null) {
+    const node = create(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function createHtml(tagName, attrs = {}, textContent = null) {
+    const node = document.createElement(tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function appendHtml(parent, tagName, attrs = {}, textContent = null) {
+    const node = createHtml(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function clear(target) {
+    const node = resolve(target);
+    while (node && node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+    return node;
+  }
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function query(selector, root = document) {
+    const node = resolve(root);
+    return node ? node.querySelector(selector) : null;
+  }
+
+  function queryAll(selector, root = document) {
+    const node = resolve(root);
+    return node ? [...node.querySelectorAll(selector)] : [];
+  }
+
+  function formatNumber(value, digits = 4) {
+    return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
+  }
+
+  function formatFixed(value, digits = 2) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(digits) : "?";
+  }
+
+  function readNumber(input, fallback = 0) {
+    const node = resolve(input);
+    if (!node) {
+      return fallback;
+    }
+    const value = Number(node.value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function clamp(value, minValue, maxValue) {
+    return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function renderItems(target, items, options = {}) {
+    const {
+      className = "demo-line",
+      tagName = "div",
+      html = false,
+    } = options;
+    const node = clear(target);
+    if (!node) {
+      return null;
+    }
+    items.forEach((item) => {
+      const row = createHtml(tagName, className ? { class: className } : {});
+      if (html) {
+        row.innerHTML = item;
+      } else {
+        row.textContent = item;
+      }
+      node.appendChild(row);
+    });
+    return node;
+  }
+
+  function renderLines(target, lines, className = "demo-line", html = false) {
+    return renderItems(target, lines, { className, html });
+  }
+
+  function renderList(target, items, className = "demo-list-item", html = false) {
+    return renderItems(target, items, { className, html });
+  }
+
+  function bindRangeDisplay(rangeInput, valueNode, formatter = (value) => value) {
+    const input = resolve(rangeInput);
+    const output = resolve(valueNode);
+    if (!input || !output) {
+      return () => {};
+    }
+    const update = () => {
+      output.textContent = formatter(input.value, input);
+    };
+    input.addEventListener("input", update);
+    update();
+    return update;
+  }
+
+  function bindRangeDisplays(bindings) {
+    return bindings.map((binding) =>
+      bindRangeDisplay(binding.range, binding.output, binding.formatter)
+    );
+  }
+
+  const runtime = {
+    SVG_NS,
+    append,
+    appendHtml,
+    byId,
+    bindRangeDisplay,
+    bindRangeDisplays,
+    clamp,
+    clear,
+    create,
+    createHtml,
+    formatFixed,
+    formatNumber,
+    query,
+    queryAll,
+    readNumber,
+    renderItems,
+    renderLines,
+    renderList,
+    resolve,
+    setAttrs,
+    setHTML,
+    setText,
+  };
+
+  window.SvgDemoRuntime = runtime;
+  window.DemoRuntime = runtime;
+})();
+
+    </script>
+    <script>
+      const Demo = window.DemoRuntime;
+const gridworld = Demo.byId("gridworld");
+const returnPlot = Demo.byId("returnPlot");
+const qPlot = Demo.byId("qPlot");
+const alphaRange = Demo.byId("alphaRange");
+const gammaRange = Demo.byId("gammaRange");
+const epsilonRange = Demo.byId("epsilonRange");
+const epsilonDecayRange = Demo.byId("epsilonDecayRange");
+const livingRewardRange = Demo.byId("livingRewardRange");
+const stepBtn = Demo.byId("stepBtn");
+const episodeBtn = Demo.byId("episodeBtn");
+const batchBtn = Demo.byId("batchBtn");
+const resetBtn = Demo.byId("resetBtn");
+
+const ROWS = 3;
+const COLS = 4;
+const START_KEY = "0,2";
+const WALL_KEY = "1,1";
+const GOOD_KEY = "3,0";
+const BAD_KEY = "3,1";
+const TERMINAL_REWARDS = {
+  [GOOD_KEY]: 1.0,
+  [BAD_KEY]: -1.0,
+};
+const ACTIONS = [
+  { key: "U", dx: 0, dy: -1, label: "Up", symbol: "&uarr;", color: "#2563eb" },
+  { key: "R", dx: 1, dy: 0, label: "Right", symbol: "&rarr;", color: "#10b981" },
+  { key: "D", dx: 0, dy: 1, label: "Down", symbol: "&darr;", color: "#f97316" },
+  { key: "L", dx: -1, dy: 0, label: "Left", symbol: "&larr;", color: "#8b5cf6" },
+];
+const ACTION_BY_KEY = Object.fromEntries(ACTIONS.map((action) => [action.key, action]));
+const ORTHOGONAL = {
+  U: ["L", "R"],
+  R: ["U", "D"],
+  D: ["L", "R"],
+  L: ["U", "D"],
+};
+const SLIP = 0.10;
+const MAX_EPISODE_STEPS = 30;
+
+const uiState = {
+  selectedKey: START_KEY,
+  q: {},
+  visitCounts: {},
+  currentState: START_KEY,
+  currentEpisodeReturn: 0,
+  currentEpisodeSteps: 0,
+  episodeReturns: [],
+  episodeSuccesses: [],
+  terminalHistory: [],
+  totalSteps: 0,
+  episodesCompleted: 0,
+  epsilonCurrent: Number(epsilonRange.value),
+  lastUpdate: null,
+};
+
+function keyFrom(x, y) {
+  return `${x},${y}`;
+}
+
+function pointFrom(key) {
+  const [x, y] = key.split(",").map(Number);
+  return { x, y };
+}
+
+function isWall(key) {
+  return key === WALL_KEY;
+}
+
+function isTerminal(key) {
+  return Object.prototype.hasOwnProperty.call(TERMINAL_REWARDS, key);
+}
+
+function inBounds(x, y) {
+  return x >= 0 && x < COLS && y >= 0 && y < ROWS;
+}
+
+function allKeys() {
+  const keys = [];
+  for (let y = 0; y < ROWS; y += 1) {
+    for (let x = 0; x < COLS; x += 1) {
+      const key = keyFrom(x, y);
+      if (!isWall(key)) keys.push(key);
+    }
+  }
+  return keys;
+}
+
+function nonTerminalKeys() {
+  return allKeys().filter((key) => !isTerminal(key));
+}
+
+function move(key, actionKey) {
+  if (isTerminal(key)) return key;
+  const { x, y } = pointFrom(key);
+  const action = ACTION_BY_KEY[actionKey];
+  const nextX = x + action.dx;
+  const nextY = y + action.dy;
+  if (!inBounds(nextX, nextY)) return key;
+  const nextKey = keyFrom(nextX, nextY);
+  if (isWall(nextKey)) return key;
+  return nextKey;
+}
+
+function sampleTransition(key, actionKey, livingReward) {
+  if (isTerminal(key)) {
+    return { next: key, reward: 0, done: true, actualAction: actionKey };
+  }
+  const r = Math.random();
+  const actionChoices = [
+    { key: actionKey, prob: 1 - 2 * SLIP },
+    { key: ORTHOGONAL[actionKey][0], prob: SLIP },
+    { key: ORTHOGONAL[actionKey][1], prob: SLIP },
+  ];
+  let cumulative = 0;
+  let actualAction = actionKey;
+  for (const item of actionChoices) {
+    cumulative += item.prob;
+    if (r <= cumulative + 1e-12) {
+      actualAction = item.key;
+      break;
+    }
+  }
+  const next = move(key, actualAction);
+  const reward = isTerminal(next) ? TERMINAL_REWARDS[next] : livingReward;
+  return { next, reward, done: isTerminal(next), actualAction };
+}
+
+function createInitialQ() {
+  const q = {};
+  for (const key of nonTerminalKeys()) {
+    q[key] = Object.fromEntries(ACTIONS.map((action) => [action.key, 0]));
+  }
+  return q;
+}
+
+function createInitialCounts() {
+  return Object.fromEntries(nonTerminalKeys().map((key) => [key, 0]));
+}
+
+function formatSigned(value) {
+  return `${value >= 0 ? "+" : ""}${value.toFixed(3)}`;
+}
+
+function maxQ(key) {
+  return Math.max(...ACTIONS.map((action) => uiState.q[key][action.key]));
+}
+
+function greedyAction(key) {
+  let bestAction = ACTIONS[0].key;
+  let bestValue = uiState.q[key][bestAction];
+  for (const action of ACTIONS.slice(1)) {
+    const value = uiState.q[key][action.key];
+    if (value > bestValue + 1e-10) {
+      bestAction = action.key;
+      bestValue = value;
+    }
+  }
+  return bestAction;
+}
+
+function sampleGreedyAction(key) {
+  const values = ACTIONS.map((action) => uiState.q[key][action.key]);
+  const best = Math.max(...values);
+  const bestActions = ACTIONS.filter((action) => Math.abs(uiState.q[key][action.key] - best) < 1e-10);
+  return bestActions[Math.floor(Math.random() * bestActions.length)].key;
+}
+
+function chooseAction(key) {
+  if (Math.random() < uiState.epsilonCurrent) {
+    return ACTIONS[Math.floor(Math.random() * ACTIONS.length)].key;
+  }
+  return sampleGreedyAction(key);
+}
+
+function movingAverage(values, windowSize) {
+  const output = [];
+  for (let i = 0; i < values.length; i += 1) {
+    const start = Math.max(0, i - windowSize + 1);
+    const slice = values.slice(start, i + 1);
+    output.push(slice.reduce((a, b) => a + b, 0) / slice.length);
+  }
+  return output;
+}
+
+function resetLearning() {
+  uiState.q = createInitialQ();
+  uiState.visitCounts = createInitialCounts();
+  uiState.currentState = START_KEY;
+  uiState.currentEpisodeReturn = 0;
+  uiState.currentEpisodeSteps = 0;
+  uiState.episodeReturns = [];
+  uiState.episodeSuccesses = [];
+  uiState.terminalHistory = [];
+  uiState.totalSteps = 0;
+  uiState.episodesCompleted = 0;
+  uiState.epsilonCurrent = Number(epsilonRange.value);
+  uiState.lastUpdate = null;
+}
+
+function finishEpisode(terminalKey) {
+  uiState.episodeReturns.push(uiState.currentEpisodeReturn);
+  uiState.episodeSuccesses.push(terminalKey === GOOD_KEY ? 1 : 0);
+  uiState.terminalHistory.push(terminalKey || "timeout");
+  uiState.episodesCompleted += 1;
+  uiState.currentState = START_KEY;
+  uiState.currentEpisodeReturn = 0;
+  uiState.currentEpisodeSteps = 0;
+  uiState.epsilonCurrent = Math.max(0.02, uiState.epsilonCurrent * Number(epsilonDecayRange.value));
+}
+
+function learningStep() {
+  if (isTerminal(uiState.currentState)) {
+    finishEpisode(uiState.currentState);
+  }
+
+  const stateKey = uiState.currentState;
+  const actionKey = chooseAction(stateKey);
+  const transition = sampleTransition(stateKey, actionKey, Number(livingRewardRange.value));
+  const oldQ = uiState.q[stateKey][actionKey];
+  const nextMax = transition.done ? 0 : maxQ(transition.next);
+  const target = transition.reward + Number(gammaRange.value) * nextMax;
+  const tdError = target - oldQ;
+  const updatedQ = oldQ + Number(alphaRange.value) * tdError;
+  uiState.q[stateKey][actionKey] = updatedQ;
+  uiState.visitCounts[stateKey] += 1;
+  uiState.totalSteps += 1;
+  uiState.currentEpisodeReturn += transition.reward;
+  uiState.currentEpisodeSteps += 1;
+  uiState.lastUpdate = {
+    stateKey,
+    actionKey,
+    executedAction: transition.actualAction,
+    next: transition.next,
+    reward: transition.reward,
+    oldQ,
+    nextMax,
+    target,
+    tdError,
+    updatedQ,
+    done: transition.done,
+  };
+
+  if (transition.done || uiState.currentEpisodeSteps >= MAX_EPISODE_STEPS) {
+    finishEpisode(transition.done ? transition.next : null);
+  } else {
+    uiState.currentState = transition.next;
+  }
+}
+
+function runEpisode() {
+  let guard = 0;
+  const episodesBefore = uiState.episodesCompleted;
+  while (uiState.episodesCompleted === episodesBefore && guard < 200) {
+    learningStep();
+    guard += 1;
+  }
+}
+
+function runEpisodes(n) {
+  for (let i = 0; i < n; i += 1) {
+    runEpisode();
+  }
+}
+
+function mixColor(start, end, t) {
+  const clamped = Math.max(0, Math.min(1, t));
+  const channels = start.map((value, idx) => Math.round(value + (end[idx] - value) * clamped));
+  return `rgb(${channels[0]}, ${channels[1]}, ${channels[2]})`;
+}
+
+function colorForValue(value, minValue, maxValue) {
+  if (value >= 0) {
+    const scale = maxValue <= 1e-9 ? 0 : value / maxValue;
+    return mixColor([255, 255, 255], [206, 250, 221], scale);
+  }
+  const scale = minValue >= -1e-9 ? 0 : value / minValue;
+  return mixColor([255, 255, 255], [254, 215, 215], scale);
+}
+
+function renderGrid() {
+  const values = nonTerminalKeys().map((key) => maxQ(key));
+  const minValue = Math.min(...values, 0);
+  const maxValue = Math.max(...values, 0);
+  gridworld.innerHTML = "";
+
+  for (let y = 0; y < ROWS; y += 1) {
+    for (let x = 0; x < COLS; x += 1) {
+      const key = keyFrom(x, y);
+      const cell = document.createElement("div");
+      cell.className = "demo-grid-cell";
+
+      if (isWall(key)) {
+        cell.classList.add("wall");
+        cell.innerHTML = `
+          <div class="demo-grid-coord">x=${x}, y=${y}</div>
+          <div class="demo-grid-value">Wall</div>
+          <div class="demo-grid-meta">Blocked square</div>
+        `;
+        gridworld.appendChild(cell);
+        continue;
+      }
+
+      if (isTerminal(key)) {
+        cell.classList.add("terminal", TERMINAL_REWARDS[key] > 0 ? "good" : "bad");
+        cell.innerHTML = `
+          <div class="demo-grid-coord">x=${x}, y=${y}</div>
+          <div class="demo-grid-value">${TERMINAL_REWARDS[key] > 0 ? "+1" : "-1"}</div>
+          <div class="demo-badge-row">
+            <div class="demo-badge">Terminal</div>
+          </div>
+          <div class="demo-grid-meta">Reward on entry. Episodes terminate here.</div>
+        `;
+        gridworld.appendChild(cell);
+        continue;
+      }
+
+      const value = maxQ(key);
+      const actionKey = greedyAction(key);
+      const badges = [];
+      if (key === START_KEY) badges.push("Start");
+      if (key === uiState.selectedKey) badges.push("Selected");
+      if (key === uiState.currentState && uiState.currentEpisodeSteps > 0) badges.push("Agent");
+      cell.style.background = colorForValue(value, minValue, maxValue);
+      if (key === uiState.selectedKey) cell.classList.add("selected");
+      cell.innerHTML = `
+        <div class="demo-grid-coord">x=${x}, y=${y}</div>
+        <div class="demo-grid-value">${value.toFixed(3)}</div>
+        <div class="demo-grid-policy">${ACTION_BY_KEY[actionKey].symbol}</div>
+        <div class="demo-badge-row">
+          ${badges.map((badge) => `<div class="demo-badge">${badge}</div>`).join("")}
+        </div>
+        <div class="demo-grid-meta">Visits: ${uiState.visitCounts[key]} | Greedy action: ${ACTION_BY_KEY[actionKey].label}</div>
+      `;
+      cell.addEventListener("click", () => {
+        uiState.selectedKey = key;
+        render();
+      });
+      gridworld.appendChild(cell);
+    }
+  }
+}
+
+function renderReturnPlot() {
+  const xs = uiState.episodeReturns.map((_, idx) => idx + 1);
+  const avg = movingAverage(uiState.episodeReturns, 10);
+  Plotly.react(
+    returnPlot,
+    [
+      {
+        type: "scatter",
+        mode: "lines+markers",
+        x: xs,
+        y: uiState.episodeReturns,
+        line: { color: "rgba(148,163,184,0.8)", width: 2 },
+        marker: { size: 5, color: "rgba(148,163,184,0.8)" },
+        name: "Episode return",
+        hovertemplate: "episode=%{x}<br>return=%{y:.3f}<extra></extra>",
+      },
+      {
+        type: "scatter",
+        mode: "lines",
+        x: xs,
+        y: avg,
+        line: { color: "#2563eb", width: 3 },
+        name: "10-episode moving average",
+        hovertemplate: "episode=%{x}<br>avg return=%{y:.3f}<extra></extra>",
+      },
+    ],
+    {
+      margin: { l: 52, r: 18, t: 20, b: 42 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "episode" },
+      yaxis: { title: "return", zerolinecolor: "#c7d2e0" },
+      annotations: uiState.episodeReturns.length
+        ? []
+        : [
+            {
+              x: 0.5,
+              y: 0.5,
+              xref: "paper",
+              yref: "paper",
+              text: "Run an episode to populate the learning curve.",
+              showarrow: false,
+              font: { size: 13, color: "#64748b" },
+            },
+          ],
+    },
+    { responsive: true, displayModeBar: false }
+  );
+}
+
+function renderQPlot() {
+  const key = uiState.selectedKey;
+  const qValues = uiState.q[key];
+  const bestAction = greedyAction(key);
+  const point = pointFrom(key);
+  Plotly.react(
+    qPlot,
+    [
+      {
+        type: "bar",
+        x: ACTIONS.map((action) => action.label),
+        y: ACTIONS.map((action) => qValues[action.key]),
+        marker: {
+          color: ACTIONS.map((action) => (action.key === bestAction ? action.color : "#94a3b8")),
+        },
+        hovertemplate: "%{x}<br>Q=%{y:.4f}<extra></extra>",
+      },
+    ],
+    {
+      title: `State x=${point.x}, y=${point.y}`,
+      margin: { l: 52, r: 18, t: 42, b: 42 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "action" },
+      yaxis: { title: "Q(s, a)", zerolinecolor: "#c7d2e0" },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+}
+
+function renderUpdateBox() {
+  if (!uiState.lastUpdate) {
+    Demo.renderLines("updateLines", ["No update yet. Run one step or one episode."]);
+    return;
+  }
+  const info = uiState.lastUpdate;
+  Demo.renderLines("updateLines", [
+    `Sampled transition: (${info.stateKey}, ${info.actionKey}) -> ${info.next} with reward ${formatSigned(info.reward)}.`,
+    `Executed action after environment slip: ${ACTION_BY_KEY[info.executedAction].label}.`,
+    `Old Q(s, a) = ${formatSigned(info.oldQ)}, next max Q(s', a') = ${formatSigned(info.nextMax)}.`,
+    `TD target = r + gamma max Q(s', a') = ${formatSigned(info.target)}.`,
+    `TD error = target - old Q = ${formatSigned(info.tdError)}.`,
+    `Updated Q(s, a) = ${formatSigned(info.updatedQ)}${info.done ? " and the episode terminated." : "."}`,
+  ]);
+}
+
+function renderStats() {
+  const recentReturns = uiState.episodeReturns.slice(-10);
+  const recentAverage = recentReturns.length
+    ? recentReturns.reduce((a, b) => a + b, 0) / recentReturns.length
+    : 0;
+  const recentSuccesses = uiState.episodeSuccesses.slice(-20);
+  const recentSuccessRate = recentSuccesses.length
+    ? recentSuccesses.reduce((a, b) => a + b, 0) / recentSuccesses.length
+    : 0;
+  const selectedBest = greedyAction(uiState.selectedKey);
+  Demo.renderLines("statLines", [
+    `Episodes completed: ${uiState.episodesCompleted}`,
+    `Total sampled transitions: ${uiState.totalSteps}`,
+    `Current epsilon: ${uiState.epsilonCurrent.toFixed(3)} after decay`,
+    `Recent average return (last 10): ${formatSigned(recentAverage)}`,
+    `Recent success rate (last 20): ${(100 * recentSuccessRate).toFixed(1)}%`,
+    `Selected state's greedy action: ${ACTION_BY_KEY[selectedBest].label}`,
+    `Environment: living reward ${formatSigned(Number(livingRewardRange.value))}, orthogonal slip ${SLIP.toFixed(2)}`,
+    `Current in-progress episode return: ${formatSigned(uiState.currentEpisodeReturn)} over ${uiState.currentEpisodeSteps} steps`,
+  ]);
+}
+
+function render() {
+  renderGrid();
+  renderReturnPlot();
+  renderQPlot();
+  renderUpdateBox();
+  renderStats();
+}
+
+function init() {
+  Demo.bindRangeDisplays([
+    { range: "alphaRange", output: "alphaValue", formatter: (value) => Number(value).toFixed(2) },
+    { range: "gammaRange", output: "gammaValue", formatter: (value) => Number(value).toFixed(2) },
+    { range: "epsilonRange", output: "epsilonValue", formatter: (value) => Number(value).toFixed(2) },
+    { range: "epsilonDecayRange", output: "epsilonDecayValue", formatter: (value) => Number(value).toFixed(3) },
+    { range: "livingRewardRange", output: "livingRewardValue", formatter: (value) => formatSigned(Number(value)) },
+  ]);
+
+  alphaRange.addEventListener("input", render);
+  gammaRange.addEventListener("input", render);
+  epsilonRange.addEventListener("input", () => {
+    uiState.epsilonCurrent = Number(epsilonRange.value);
+    render();
+  });
+  epsilonDecayRange.addEventListener("input", render);
+  livingRewardRange.addEventListener("input", render);
+  stepBtn.addEventListener("click", () => {
+    learningStep();
+    render();
+  });
+  episodeBtn.addEventListener("click", () => {
+    runEpisode();
+    render();
+  });
+  batchBtn.addEventListener("click", () => {
+    runEpisodes(25);
+    render();
+  });
+  resetBtn.addEventListener("click", () => {
+    resetLearning();
+    render();
+  });
+
+  resetLearning();
+  render();
+}
+
+init();
+
+    </script>
+  </body>
+</html>

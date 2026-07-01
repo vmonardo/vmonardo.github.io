@@ -1,0 +1,1264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bellman Backup Stepper</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .demo-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 14px;
+}
+
+.demo-stage,
+.demo-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.demo-stage {
+  overflow: hidden;
+}
+
+.demo-panel {
+  padding: 14px;
+}
+
+.demo-panel h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.demo-howto {
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.demo-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1020px) {
+  .demo-shell {
+    grid-template-columns: 1fr;
+  }
+}
+      .demo-controls {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-control-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.demo-control,
+.demo-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-control-label,
+.demo-field label {
+  display: block;
+  font-size: 13px;
+}
+
+.demo-slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.demo-slider-value {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.demo-control input,
+.demo-control select,
+.demo-control textarea,
+.demo-field input,
+.demo-field select,
+.demo-field textarea {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-button-row {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-button-columns, 4), minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demo-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-card {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-callout {
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.demo-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.demo-card-body {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.demo-lines,
+.demo-list {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.demo-list-item {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.demo-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
+.demo-plot-grid {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-plot-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-plot-frame {
+  width: 100%;
+  height: 100%;
+  min-height: var(--demo-plot-min-height, 280px);
+}
+
+.demo-stage-pad {
+  padding: 12px;
+}
+
+.demo-single-plot {
+  min-height: var(--demo-single-plot-height, 620px);
+}
+
+.demo-pre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #334155;
+}
+
+.demo-visual-stack {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-surface-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-surface-head {
+  padding: 12px 14px 0;
+}
+
+.demo-surface-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.demo-surface-copy {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-surface-body {
+  padding: 14px;
+}
+
+.demo-gridworld {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-grid-cell {
+  min-height: 120px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 6px;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.demo-grid-cell:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+}
+
+.demo-grid-cell.selected {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.demo-grid-cell.wall {
+  background: #1f2937;
+  color: #fff;
+  cursor: default;
+}
+
+.demo-grid-cell.terminal.good {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.demo-grid-cell.terminal.bad {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.demo-grid-coord {
+  font-size: 11px;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.demo-grid-cell.wall .demo-grid-coord {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.demo-grid-value {
+  font-size: 24px;
+  font-weight: 700;
+  align-self: center;
+}
+
+.demo-grid-policy {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.demo-grid-meta {
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.demo-grid-cell.wall .demo-grid-meta {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.demo-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.demo-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.84);
+  color: #1f2937;
+}
+
+.demo-route-chip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-legend-item {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid var(--border);
+}
+
+.demo-action-summary {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.demo-action-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 72px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.demo-action-label {
+  font-weight: 700;
+  color: #0f172a;
+  text-align: center;
+}
+
+.demo-bar-track {
+  height: 12px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.demo-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.demo-bar-value {
+  font-size: 12px;
+  color: #475569;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .demo-button-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demo-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .demo-gridworld {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+      .vi-stage {
+  --demo-plot-min-height: 250px;
+}
+
+.vi-visuals {
+  grid-template-rows: minmax(420px, 1fr) 270px;
+}
+
+.vi-plot-body {
+  padding: 0 12px 12px;
+}
+
+    </style>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <div class="demo-shell">
+  <section class="demo-stage vi-stage">
+
+    <div class="demo-visual-stack vi-visuals">
+      <section class="demo-surface-card">
+        <div class="demo-surface-head">
+          <h2>State Values After Each Sweep</h2>
+          <p class="demo-surface-copy">
+            Click any non-terminal state. The displayed numbers are the current value estimates V_i(s),
+            and the arrows are greedy with respect to the current sweep.
+          </p>
+        </div>
+        <div class="demo-surface-body">
+          <div id="gridworld" class="demo-gridworld"></div>
+        </div>
+      </section>
+
+      <div class="demo-grid-2">
+        <section class="demo-surface-card">
+          <div class="demo-surface-head">
+            <h2>Selected State Action Backups</h2>
+            <p class="demo-surface-copy">
+              These bars are the action-values obtained from one Bellman backup using the
+              current sweep's values.
+            </p>
+          </div>
+          <div class="vi-plot-body"><div id="actionPlot" class="demo-plot-frame"></div></div>
+        </section>
+
+        <section class="demo-surface-card">
+          <div class="demo-surface-head">
+            <h2>Convergence History</h2>
+            <p class="demo-surface-copy">
+              The blue line tracks the selected state's value. The gray bars show the max sweep change,
+              a quick indicator of convergence.
+            </p>
+          </div>
+          <div class="vi-plot-body"><div id="historyPlot" class="demo-plot-frame"></div></div>
+        </section>
+      </div>
+    </div>
+  </section>
+  <aside class="demo-panel">
+    <h1>Bellman Backup Stepper</h1>
+    <div class="demo-howto">Move sweep by sweep through value iteration on the stochastic gridworld. The grid shows the current value table V_i(s), the action plot shows one-step Bellman backups for the selected state, and the history plot shows how that state and the global max change evolve.</div>
+    <div class="demo-controls" style="--demo-control-columns: 2;">
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="iterationRange"><span>Displayed iteration</span><span id="iterationValue" class="demo-slider-value"></span></label>
+        <input id="iterationRange" type="range" value="0" min="0" max="24" step="1">
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="livingRewardRange"><span>Living reward</span><span id="livingRewardValue" class="demo-slider-value"></span></label>
+        <input id="livingRewardRange" type="range" value="-0.04" min="-0.2" max="0.05" step="0.01">
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="gammaRange"><span>Discount factor gamma</span><span id="gammaValue" class="demo-slider-value"></span></label>
+        <input id="gammaRange" type="range" value="0.92" min="0.5" max="0.99" step="0.01">
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="slipRange"><span>Orthogonal slip probability</span><span id="slipValue" class="demo-slider-value"></span></label>
+        <input id="slipRange" type="range" value="0.1" min="0.0" max="0.25" step="0.01">
+      </div>
+    </div>
+    <div class="demo-button-row" style="--demo-button-columns: 4;">
+      <button id="prevBtn" type="button">Previous</button>
+      <button id="nextBtn" type="button">Next</button>
+      <button id="jumpBtn" type="button">Jump +5</button>
+      <button id="resetBtn" type="button">Reset</button>
+    </div>
+    <div class="demo-card">
+      <h3>Selected State Interpretation</h3>
+      <div id="noteLines" class="demo-lines"></div>
+    </div>
+    <div class="demo-card">
+      <h3>Sweep Summary</h3>
+      <div id="statLines" class="demo-lines"></div>
+    </div>
+  </aside>
+</div>
+    <section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>Why do states near the terminal rewards change first during value iteration?</li>
+<li>What exactly does one Bellman backup add to the policy computation that the previous sweep did not know yet?</li>
+<li>Why can the selected state's best action change across iterations before converging?</li>
+<li>How does the max sweep change help us decide when to stop iterating?</li>
+<li>What is the conceptual difference between value iteration on a known MDP and Q-learning from sampled experience?</li>
+    </ul>
+  </div>
+</section>
+    <script>
+      window.DEMO_PAYLOAD = {};
+    </script>
+    <script>
+      (() => {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  function resolve(target) {
+    if (typeof target === "string") {
+      return document.getElementById(target);
+    }
+    return target;
+  }
+
+  function setAttrs(node, attrs = {}) {
+    Object.entries(attrs).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
+        node.removeAttribute(key);
+        return;
+      }
+      node.setAttribute(key, String(value));
+    });
+    return node;
+  }
+
+  function setText(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.textContent = value;
+    }
+    return node;
+  }
+
+  function setHTML(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.innerHTML = value;
+    }
+    return node;
+  }
+
+  function create(tagName, attrs = {}, textContent = null) {
+    const node = document.createElementNS(SVG_NS, tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function append(parent, tagName, attrs = {}, textContent = null) {
+    const node = create(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function createHtml(tagName, attrs = {}, textContent = null) {
+    const node = document.createElement(tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function appendHtml(parent, tagName, attrs = {}, textContent = null) {
+    const node = createHtml(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function clear(target) {
+    const node = resolve(target);
+    while (node && node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+    return node;
+  }
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function query(selector, root = document) {
+    const node = resolve(root);
+    return node ? node.querySelector(selector) : null;
+  }
+
+  function queryAll(selector, root = document) {
+    const node = resolve(root);
+    return node ? [...node.querySelectorAll(selector)] : [];
+  }
+
+  function formatNumber(value, digits = 4) {
+    return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
+  }
+
+  function formatFixed(value, digits = 2) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(digits) : "?";
+  }
+
+  function readNumber(input, fallback = 0) {
+    const node = resolve(input);
+    if (!node) {
+      return fallback;
+    }
+    const value = Number(node.value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function clamp(value, minValue, maxValue) {
+    return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function renderItems(target, items, options = {}) {
+    const {
+      className = "demo-line",
+      tagName = "div",
+      html = false,
+    } = options;
+    const node = clear(target);
+    if (!node) {
+      return null;
+    }
+    items.forEach((item) => {
+      const row = createHtml(tagName, className ? { class: className } : {});
+      if (html) {
+        row.innerHTML = item;
+      } else {
+        row.textContent = item;
+      }
+      node.appendChild(row);
+    });
+    return node;
+  }
+
+  function renderLines(target, lines, className = "demo-line", html = false) {
+    return renderItems(target, lines, { className, html });
+  }
+
+  function renderList(target, items, className = "demo-list-item", html = false) {
+    return renderItems(target, items, { className, html });
+  }
+
+  function bindRangeDisplay(rangeInput, valueNode, formatter = (value) => value) {
+    const input = resolve(rangeInput);
+    const output = resolve(valueNode);
+    if (!input || !output) {
+      return () => {};
+    }
+    const update = () => {
+      output.textContent = formatter(input.value, input);
+    };
+    input.addEventListener("input", update);
+    update();
+    return update;
+  }
+
+  function bindRangeDisplays(bindings) {
+    return bindings.map((binding) =>
+      bindRangeDisplay(binding.range, binding.output, binding.formatter)
+    );
+  }
+
+  const runtime = {
+    SVG_NS,
+    append,
+    appendHtml,
+    byId,
+    bindRangeDisplay,
+    bindRangeDisplays,
+    clamp,
+    clear,
+    create,
+    createHtml,
+    formatFixed,
+    formatNumber,
+    query,
+    queryAll,
+    readNumber,
+    renderItems,
+    renderLines,
+    renderList,
+    resolve,
+    setAttrs,
+    setHTML,
+    setText,
+  };
+
+  window.SvgDemoRuntime = runtime;
+  window.DemoRuntime = runtime;
+})();
+
+    </script>
+    <script>
+      const Demo = window.DemoRuntime;
+const gridworld = Demo.byId("gridworld");
+const actionPlot = Demo.byId("actionPlot");
+const historyPlot = Demo.byId("historyPlot");
+const iterationRange = Demo.byId("iterationRange");
+const livingRewardRange = Demo.byId("livingRewardRange");
+const gammaRange = Demo.byId("gammaRange");
+const slipRange = Demo.byId("slipRange");
+const prevBtn = Demo.byId("prevBtn");
+const nextBtn = Demo.byId("nextBtn");
+const jumpBtn = Demo.byId("jumpBtn");
+const resetBtn = Demo.byId("resetBtn");
+
+const ROWS = 3;
+const COLS = 4;
+const START_KEY = "0,2";
+const WALL_KEY = "1,1";
+const GOOD_KEY = "3,0";
+const BAD_KEY = "3,1";
+const MAX_ITERS = 24;
+const TERMINAL_REWARDS = {
+  [GOOD_KEY]: 1.0,
+  [BAD_KEY]: -1.0,
+};
+const ACTIONS = [
+  { key: "U", dx: 0, dy: -1, label: "Up", symbol: "&uarr;", color: "#2563eb" },
+  { key: "R", dx: 1, dy: 0, label: "Right", symbol: "&rarr;", color: "#10b981" },
+  { key: "D", dx: 0, dy: 1, label: "Down", symbol: "&darr;", color: "#f97316" },
+  { key: "L", dx: -1, dy: 0, label: "Left", symbol: "&larr;", color: "#8b5cf6" },
+];
+const ACTION_BY_KEY = Object.fromEntries(ACTIONS.map((action) => [action.key, action]));
+const ORTHOGONAL = {
+  U: ["L", "R"],
+  R: ["U", "D"],
+  D: ["L", "R"],
+  L: ["U", "D"],
+};
+
+const uiState = {
+  selectedKey: START_KEY,
+  history: [],
+};
+
+function keyFrom(x, y) {
+  return `${x},${y}`;
+}
+
+function pointFrom(key) {
+  const [x, y] = key.split(",").map(Number);
+  return { x, y };
+}
+
+function isWall(key) {
+  return key === WALL_KEY;
+}
+
+function isTerminal(key) {
+  return Object.prototype.hasOwnProperty.call(TERMINAL_REWARDS, key);
+}
+
+function inBounds(x, y) {
+  return x >= 0 && x < COLS && y >= 0 && y < ROWS;
+}
+
+function allKeys() {
+  const keys = [];
+  for (let y = 0; y < ROWS; y += 1) {
+    for (let x = 0; x < COLS; x += 1) {
+      const key = keyFrom(x, y);
+      if (!isWall(key)) keys.push(key);
+    }
+  }
+  return keys;
+}
+
+function move(key, actionKey) {
+  if (isTerminal(key)) return key;
+  const { x, y } = pointFrom(key);
+  const action = ACTION_BY_KEY[actionKey];
+  const nextX = x + action.dx;
+  const nextY = y + action.dy;
+  if (!inBounds(nextX, nextY)) return key;
+  const nextKey = keyFrom(nextX, nextY);
+  if (isWall(nextKey)) return key;
+  return nextKey;
+}
+
+function transitionOutcomes(key, actionKey, slip, livingReward) {
+  if (isTerminal(key)) {
+    return [{ next: key, prob: 1, reward: 0 }];
+  }
+  const intendedProb = Math.max(0, 1 - 2 * slip);
+  const raw = [
+    { actionKey, prob: intendedProb },
+    { actionKey: ORTHOGONAL[actionKey][0], prob: slip },
+    { actionKey: ORTHOGONAL[actionKey][1], prob: slip },
+  ];
+  const byNext = {};
+  for (const item of raw) {
+    const next = move(key, item.actionKey);
+    if (!byNext[next]) {
+      byNext[next] = { next, prob: 0, reward: isTerminal(next) ? TERMINAL_REWARDS[next] : livingReward };
+    }
+    byNext[next].prob += item.prob;
+  }
+  return Object.values(byNext);
+}
+
+function argmaxAction(actionValues) {
+  let bestAction = ACTIONS[0].key;
+  let bestValue = actionValues[bestAction];
+  for (const action of ACTIONS.slice(1)) {
+    const value = actionValues[action.key];
+    if (value > bestValue + 1e-10) {
+      bestAction = action.key;
+      bestValue = value;
+    }
+  }
+  return { bestAction, bestValue };
+}
+
+function bellmanSweep(values, gamma, livingReward, slip) {
+  const keys = allKeys();
+  const nextValues = { ...values };
+  const qByState = {};
+  const policy = {};
+  let delta = 0;
+
+  for (const key of keys) {
+    if (isTerminal(key)) {
+      qByState[key] = {};
+      policy[key] = null;
+      nextValues[key] = 0;
+      continue;
+    }
+
+    const actionValues = {};
+    for (const action of ACTIONS) {
+      let total = 0;
+      for (const outcome of transitionOutcomes(key, action.key, slip, livingReward)) {
+        const future = isTerminal(outcome.next) ? 0 : values[outcome.next];
+        total += outcome.prob * (outcome.reward + gamma * future);
+      }
+      actionValues[action.key] = total;
+    }
+
+    const { bestAction, bestValue } = argmaxAction(actionValues);
+    nextValues[key] = bestValue;
+    qByState[key] = actionValues;
+    policy[key] = bestAction;
+    delta = Math.max(delta, Math.abs(bestValue - values[key]));
+  }
+
+  return { nextValues, qByState, policy, delta };
+}
+
+function computeHistory(gamma, livingReward, slip) {
+  const keys = allKeys();
+  let values = Object.fromEntries(keys.map((key) => [key, 0]));
+  const history = [];
+  for (let iter = 0; iter <= MAX_ITERS; iter += 1) {
+    const backup = bellmanSweep(values, gamma, livingReward, slip);
+    history.push({
+      iteration: iter,
+      values: { ...values },
+      qByState: backup.qByState,
+      policy: backup.policy,
+      nextValues: backup.nextValues,
+      delta: backup.delta,
+    });
+    values = backup.nextValues;
+  }
+  return history;
+}
+
+function mixColor(start, end, t) {
+  const clamped = Math.max(0, Math.min(1, t));
+  const channels = start.map((value, idx) => Math.round(value + (end[idx] - value) * clamped));
+  return `rgb(${channels[0]}, ${channels[1]}, ${channels[2]})`;
+}
+
+function colorForValue(value, minValue, maxValue) {
+  if (value >= 0) {
+    const scale = maxValue <= 1e-9 ? 0 : value / maxValue;
+    return mixColor([255, 255, 255], [206, 250, 221], scale);
+  }
+  const scale = minValue >= -1e-9 ? 0 : value / minValue;
+  return mixColor([255, 255, 255], [254, 215, 215], scale);
+}
+
+function formatSigned(value) {
+  return `${value >= 0 ? "+" : ""}${value.toFixed(3)}`;
+}
+
+function rebuildHistory() {
+  const gamma = Number(gammaRange.value);
+  const livingReward = Number(livingRewardRange.value);
+  const slip = Number(slipRange.value);
+  uiState.history = computeHistory(gamma, livingReward, slip);
+  iterationRange.max = String(uiState.history.length - 1);
+  const current = Math.min(Number(iterationRange.value), uiState.history.length - 1);
+  iterationRange.value = String(current);
+}
+
+function renderGrid(snapshot) {
+  const nonTerminalValues = Object.entries(snapshot.values)
+    .filter(([key]) => !isTerminal(key))
+    .map(([, value]) => value);
+  const minValue = Math.min(...nonTerminalValues);
+  const maxValue = Math.max(...nonTerminalValues);
+  gridworld.innerHTML = "";
+
+  for (let y = 0; y < ROWS; y += 1) {
+    for (let x = 0; x < COLS; x += 1) {
+      const key = keyFrom(x, y);
+      const cell = document.createElement("div");
+      cell.className = "demo-grid-cell";
+
+      if (isWall(key)) {
+        cell.classList.add("wall");
+        cell.innerHTML = `
+          <div class="demo-grid-coord">x=${x}, y=${y}</div>
+          <div class="demo-grid-value">Wall</div>
+          <div class="demo-grid-meta">Blocked square</div>
+        `;
+        gridworld.appendChild(cell);
+        continue;
+      }
+
+      if (isTerminal(key)) {
+        cell.classList.add("terminal", TERMINAL_REWARDS[key] > 0 ? "good" : "bad");
+        cell.innerHTML = `
+          <div class="demo-grid-coord">x=${x}, y=${y}</div>
+          <div class="demo-grid-value">${TERMINAL_REWARDS[key] > 0 ? "+1" : "-1"}</div>
+          <div class="demo-badge-row">
+            <div class="demo-badge">Terminal</div>
+          </div>
+          <div class="demo-grid-meta">Reward on entry; no further backups after termination.</div>
+        `;
+        gridworld.appendChild(cell);
+        continue;
+      }
+
+      cell.style.background = colorForValue(snapshot.values[key], minValue, maxValue);
+      if (key === uiState.selectedKey) cell.classList.add("selected");
+      const badges = [];
+      if (key === START_KEY) badges.push("Start");
+      if (key === uiState.selectedKey) badges.push("Selected");
+      const actionKey = snapshot.policy[key];
+      const symbol = actionKey ? ACTION_BY_KEY[actionKey].symbol : "&#9679;";
+
+      cell.innerHTML = `
+        <div class="demo-grid-coord">x=${x}, y=${y}</div>
+        <div class="demo-grid-value">${snapshot.values[key].toFixed(3)}</div>
+        <div class="demo-grid-policy">${symbol}</div>
+        <div class="demo-badge-row">
+          ${badges.map((badge) => `<div class="demo-badge">${badge}</div>`).join("")}
+        </div>
+        <div class="demo-grid-meta">Greedy action under V_${snapshot.iteration}: ${ACTION_BY_KEY[actionKey].label}</div>
+      `;
+      cell.addEventListener("click", () => {
+        uiState.selectedKey = key;
+        render();
+      });
+      gridworld.appendChild(cell);
+    }
+  }
+}
+
+function renderActionPlot(snapshot) {
+  const qValues = snapshot.qByState[uiState.selectedKey];
+  const bestAction = snapshot.policy[uiState.selectedKey];
+  Plotly.react(
+    actionPlot,
+    [
+      {
+        type: "bar",
+        x: ACTIONS.map((action) => action.label),
+        y: ACTIONS.map((action) => qValues[action.key]),
+        marker: {
+          color: ACTIONS.map((action) => (action.key === bestAction ? action.color : "#94a3b8")),
+        },
+        hovertemplate: "%{x}<br>backup=%{y:.4f}<extra></extra>",
+      },
+    ],
+    {
+      margin: { l: 52, r: 16, t: 22, b: 42 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "candidate action" },
+      yaxis: { title: "one-step Bellman backup", zerolinecolor: "#c7d2e0" },
+      shapes: [
+        {
+          type: "line",
+          x0: -0.5,
+          x1: 3.5,
+          y0: snapshot.nextValues[uiState.selectedKey],
+          y1: snapshot.nextValues[uiState.selectedKey],
+          line: { color: "#111827", dash: "dash", width: 2 },
+        },
+      ],
+      annotations: [
+        {
+          x: 3.3,
+          y: snapshot.nextValues[uiState.selectedKey],
+          text: `V_${snapshot.iteration + 1}(s)`,
+          showarrow: false,
+          xanchor: "right",
+          yanchor: "bottom",
+          font: { size: 11, color: "#111827" },
+        },
+      ],
+    },
+    { responsive: true, displayModeBar: false }
+  );
+}
+
+function renderHistoryPlot() {
+  const iterations = uiState.history.map((item) => item.iteration);
+  const selectedValues = uiState.history.map((item) => item.values[uiState.selectedKey]);
+  const deltas = uiState.history.map((item) => item.delta);
+  const currentIteration = Number(iterationRange.value);
+  Plotly.react(
+    historyPlot,
+    [
+      {
+        type: "bar",
+        x: iterations,
+        y: deltas,
+        marker: { color: "rgba(148, 163, 184, 0.5)" },
+        yaxis: "y2",
+        name: "max sweep change",
+        hovertemplate: "i=%{x}<br>delta=%{y:.5f}<extra></extra>",
+      },
+      {
+        type: "scatter",
+        mode: "lines+markers",
+        x: iterations,
+        y: selectedValues,
+        line: { color: "#2563eb", width: 3 },
+        marker: { size: 7, color: "#2563eb" },
+        name: "selected V_i(s)",
+        hovertemplate: "i=%{x}<br>V_i=%{y:.4f}<extra></extra>",
+      },
+      {
+        type: "scatter",
+        mode: "markers",
+        x: [currentIteration],
+        y: [selectedValues[currentIteration]],
+        marker: { size: 11, color: "#ef4444", line: { color: "#7f1d1d", width: 1 } },
+        name: "current iteration",
+        hovertemplate: "current i=%{x}<br>V_i=%{y:.4f}<extra></extra>",
+      },
+    ],
+    {
+      margin: { l: 52, r: 52, t: 22, b: 42 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "iteration i", dtick: 2 },
+      yaxis: { title: "selected state value" },
+      yaxis2: { title: "max sweep change", overlaying: "y", side: "right" },
+      legend: { orientation: "h", x: 0, y: 1.14 },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+}
+
+function renderNotes(snapshot) {
+  const point = pointFrom(uiState.selectedKey);
+  const bestAction = snapshot.policy[uiState.selectedKey];
+  const qValues = snapshot.qByState[uiState.selectedKey];
+  const sorted = Object.entries(qValues).sort((a, b) => b[1] - a[1]);
+  const margin = sorted[0][1] - sorted[1][1];
+  Demo.renderLines("noteLines", [
+    `Selected state x=${point.x}, y=${point.y} currently prefers ${ACTION_BY_KEY[bestAction].label}.`,
+    `The next Bellman sweep would set V_${snapshot.iteration + 1}(s) = ${formatSigned(snapshot.nextValues[uiState.selectedKey])}.`,
+    `The gap between the best and second-best action backups is ${margin.toFixed(4)}.`,
+    "Early iterations only know about rewards that are a few transitions away; later sweeps propagate those values farther across the grid.",
+  ]);
+}
+
+function renderStats(snapshot) {
+  const currentIteration = Number(iterationRange.value);
+  const gamma = Number(gammaRange.value);
+  const slip = Number(slipRange.value);
+  const livingReward = Number(livingRewardRange.value);
+  Demo.renderLines("statLines", [
+    `Displayed table: V_${currentIteration}`,
+    `Current selected-state value: ${formatSigned(snapshot.values[uiState.selectedKey])}`,
+    `Next-sweep value for the selected state: ${formatSigned(snapshot.nextValues[uiState.selectedKey])}`,
+    `Max absolute change on the next sweep: ${snapshot.delta.toExponential(3)}`,
+    `Gamma = ${gamma.toFixed(2)}, living reward = ${formatSigned(livingReward)}, slip = ${slip.toFixed(2)}`,
+    `Convergence status: ${snapshot.delta < 1e-4 ? "nearly converged" : "still propagating value"}`,
+  ]);
+}
+
+function render() {
+  if (!uiState.history.length) rebuildHistory();
+  const iteration = Number(iterationRange.value);
+  const snapshot = uiState.history[iteration];
+  renderGrid(snapshot);
+  renderActionPlot(snapshot);
+  renderHistoryPlot();
+  renderNotes(snapshot);
+  renderStats(snapshot);
+}
+
+function init() {
+  Demo.bindRangeDisplays([
+    { range: "iterationRange", output: "iterationValue", formatter: (value) => value },
+    { range: "livingRewardRange", output: "livingRewardValue", formatter: (value) => formatSigned(Number(value)) },
+    { range: "gammaRange", output: "gammaValue", formatter: (value) => Number(value).toFixed(2) },
+    { range: "slipRange", output: "slipValue", formatter: (value) => Number(value).toFixed(2) },
+  ]);
+
+  iterationRange.addEventListener("input", render);
+  livingRewardRange.addEventListener("input", () => {
+    rebuildHistory();
+    render();
+  });
+  gammaRange.addEventListener("input", () => {
+    rebuildHistory();
+    render();
+  });
+  slipRange.addEventListener("input", () => {
+    rebuildHistory();
+    render();
+  });
+  prevBtn.addEventListener("click", () => {
+    iterationRange.value = String(Math.max(0, Number(iterationRange.value) - 1));
+    render();
+  });
+  nextBtn.addEventListener("click", () => {
+    iterationRange.value = String(Math.min(uiState.history.length - 1, Number(iterationRange.value) + 1));
+    render();
+  });
+  jumpBtn.addEventListener("click", () => {
+    iterationRange.value = String(Math.min(uiState.history.length - 1, Number(iterationRange.value) + 5));
+    render();
+  });
+  resetBtn.addEventListener("click", () => {
+    iterationRange.value = "0";
+    livingRewardRange.value = "-0.04";
+    gammaRange.value = "0.92";
+    slipRange.value = "0.10";
+    uiState.selectedKey = START_KEY;
+    rebuildHistory();
+    render();
+  });
+
+  rebuildHistory();
+  render();
+}
+
+init();
+
+    </script>
+  </body>
+</html>

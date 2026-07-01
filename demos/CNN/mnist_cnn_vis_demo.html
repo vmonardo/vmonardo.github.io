@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>MNIST CNN Layer Visualizer</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .container {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 12px;
+        height: 100vh;
+      }
+      .panel {
+        padding: 12px;
+        border-right: 1px solid var(--border);
+        background: var(--panel);
+      }
+      .panel h2 {
+        margin: 0 0 8px 0;
+        font-size: 16px;
+      }
+      .howto {
+        font-size: 12px;
+        color: #444;
+        line-height: 1.35;
+        margin-bottom: 10px;
+      }
+      .draw-card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px;
+      }
+      #drawCanvas {
+        width: 260px;
+        height: 260px;
+        border: 1px solid #e0e0e0;
+        background: #000;
+        touch-action: none;
+      }
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      button {
+        padding: 6px 8px;
+        font-size: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #f0f0f0;
+      }
+      .predictions {
+        margin-top: 10px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px;
+      }
+      .predictions-title {
+        font-size: 12px;
+        margin: 0 0 6px 0;
+        color: #333;
+      }
+      .pred-note {
+        font-size: 11px;
+        color: #666;
+        margin-bottom: 6px;
+      }
+      .bar {
+        display: grid;
+        grid-template-columns: 20px 1fr 40px;
+        gap: 6px;
+        align-items: center;
+        font-size: 11px;
+        margin: 4px 0;
+      }
+      .bar-track {
+        height: 8px;
+        background: #eee;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        background: #1f77b4;
+      }
+      .main {
+        padding: 12px;
+        overflow: auto;
+      }
+      .summary {
+        margin-bottom: 12px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 12px;
+        line-height: 1.45;
+        color: #444;
+      }
+      .layer {
+        margin-bottom: 16px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px;
+      }
+      .layer h3 {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+      }
+      .layer-note {
+        font-size: 11px;
+        color: #666;
+        margin: 0 0 8px 0;
+        line-height: 1.35;
+      }
+      .feature-grid {
+        display: grid;
+        gap: 8px;
+      }
+      .feature-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        color: #666;
+      }
+      .feature-canvas {
+        width: 64px;
+        height: 64px;
+        border: 1px solid #e5e5e5;
+        image-rendering: pixelated;
+        background: #000;
+      }
+      .dense-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+        gap: 6px;
+      }
+      .dense-cell {
+        background: #f8f8f8;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        padding: 4px;
+        text-align: center;
+        font-size: 11px;
+      }
+      .dense-map {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-start;
+      }
+      .dense-canvas {
+        width: 200px;
+        height: 200px;
+        border: 1px solid #e5e5e5;
+        image-rendering: pixelated;
+        background: #000;
+      }
+      .dense-caption {
+        font-size: 11px;
+        color: #666;
+      }
+      .filter-grid {
+        display: grid;
+        gap: 8px;
+        grid-template-columns: repeat(auto-fill, minmax(86px, 1fr));
+      }
+      .filter-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        color: #666;
+      }
+      .filter-canvas {
+        width: 72px;
+        height: 72px;
+        border: 1px solid #e5e5e5;
+        image-rendering: pixelated;
+        background: #000;
+      }
+      .footer {
+        margin-top: 12px;
+        font-size: 11px;
+        color: #777;
+      }
+      .footer a {
+        color: #3a6ea5;
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+<section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>What are the inputs and labels for MNIST classification?</li>
+<li>What do earlier versus later convolution layers seem to detect?</li>
+<li>What are the input and output dimensions at each stage of the network?</li>
+<li>What do 'flatten' and 'dense' mean in this model?</li>
+<li>How do the CNN architecture choices encode useful inductive biases for images?</li>
+<li>What could cause a confident but wrong prediction?</li>
+    </ul>
+  </div>
+</section>
+
+    <div class="container">
+      <div class="panel">
+        <h2>MNIST CNN Visualizer</h2>
+        <div class="howto">
+          Draw a digit (0–9) on the black canvas. The model will predict the digit
+          and show intermediate activations after each learned filter is applied.
+        </div>
+        <div class="draw-card">
+          <canvas id="drawCanvas" width="260" height="260"></canvas>
+          <div class="controls">
+            <button id="clearBtn">Clear</button>
+            <button id="randomBtn">Random</button>
+          </div>
+        </div>
+        <div class="predictions">
+          <div class="predictions-title">Predictions</div>
+          <div class="pred-note" id="predNote"></div>
+          <div id="predictionsBox"></div>
+        </div>
+        <div class="footer">Inspired by <a href="https://adamharley.com/nn_vis/cnn/2d.html" target="_blank" rel="noopener">A. Harley CNN 2D Visualization</a>.</div>
+      </div>
+      <div class="main">
+        <div class="summary" id="summaryBox">Model summary and parameter counts will appear here.</div>
+        <div id="layersContainer"></div>
+      </div>
+    </div>
+    <script>
+      const MODEL_URL = "./mnist_cnn_model/model.json";
+      const drawCanvas = document.getElementById("drawCanvas");
+      const clearBtn = document.getElementById("clearBtn");
+      const randomBtn = document.getElementById("randomBtn");
+      const predictionsBox = document.getElementById("predictionsBox");
+      const predNote = document.getElementById("predNote");
+      const summaryBox = document.getElementById("summaryBox");
+      const layersContainer = document.getElementById("layersContainer");
+
+      let model = null;
+      let viewModel = null;
+      let drawing = false;
+      let dataProvider = null;
+      let lastPointer = null;
+      const FILTER_PREVIEW_LIMIT = 8;
+
+      function product(shape) {
+        return shape.reduce((acc, v) => acc * v, 1);
+      }
+
+      function layerParamCount(layer) {
+        if (!layer.weights || !layer.weights.length) return 0;
+        return layer.weights
+          .map(w => product(w.shape))
+          .reduce((acc, v) => acc + v, 0);
+      }
+
+      function setupCanvas() {
+        const ctx = drawCanvas.getContext("2d");
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+        ctx.lineWidth = 18;
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "#fff";
+      }
+
+      function getPos(e) {
+        const rect = drawCanvas.getBoundingClientRect();
+        const x = (e.clientX - rect.left) * (drawCanvas.width / rect.width);
+        const y = (e.clientY - rect.top) * (drawCanvas.height / rect.height);
+        return {x, y};
+      }
+
+      function drawStart(e) {
+        drawing = true;
+        const ctx = drawCanvas.getContext("2d");
+        const {x, y} = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+      }
+
+      function drawMove(e) {
+        if (!drawing) return;
+        const ctx = drawCanvas.getContext("2d");
+        const {x, y} = getPos(e);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+
+      function drawEnd() {
+        if (!drawing) return;
+        drawing = false;
+        runInference();
+      }
+
+      function clearCanvas() {
+        const ctx = drawCanvas.getContext("2d");
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+        runInference();
+      }
+
+      function randomDigit() {
+        const ctx = drawCanvas.getContext("2d");
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, drawCanvas.width, drawCanvas.height);
+        ctx.fillStyle = "#fff";
+        const digit = Math.floor(Math.random() * 10);
+        ctx.font = "180px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(String(digit), drawCanvas.width / 2, drawCanvas.height / 2 + 10);
+        runInference();
+      }
+
+      function canvasToInput() {
+        const tmp = document.createElement("canvas");
+        tmp.width = 28;
+        tmp.height = 28;
+        const tctx = tmp.getContext("2d");
+        tctx.drawImage(drawCanvas, 0, 0, 28, 28);
+        const data = tctx.getImageData(0, 0, 28, 28).data;
+        const arr = new Float32Array(28 * 28);
+        for (let i = 0; i < 28 * 28; i++) {
+          const r = data[i * 4];
+          arr[i] = r / 255;
+        }
+        return tf.tensor4d(arr, [1, 28, 28, 1]);
+      }
+
+      function createLayerCard(name, shape, content, noteText = "") {
+        const card = document.createElement("div");
+        card.className = "layer";
+        const title = document.createElement("h3");
+        title.textContent = `${name} (${shape.join("×")})`;
+        card.appendChild(title);
+        if (noteText) {
+          const note = document.createElement("div");
+          note.className = "layer-note";
+          note.textContent = noteText;
+          card.appendChild(note);
+        }
+        card.appendChild(content);
+        layersContainer.appendChild(card);
+      }
+
+      function renderFilters(layer, maxFilters = FILTER_PREVIEW_LIMIT) {
+        const kernelVar = layer.weights.find(w => w.name.includes("kernel"));
+        if (!kernelVar) return null;
+        const kernel = kernelVar.val.arraySync();
+        const kH = kernel.length;
+        const kW = kernel[0].length;
+        const inC = kernel[0][0].length;
+        const outC = kernel[0][0][0].length;
+        const grid = document.createElement("div");
+        grid.className = "filter-grid";
+
+        for (let oc = 0; oc < Math.min(outC, maxFilters); oc++) {
+          const canvas = document.createElement("canvas");
+          canvas.width = kW;
+          canvas.height = kH;
+          canvas.className = "filter-canvas";
+          const ctx = canvas.getContext("2d");
+          const imageData = ctx.createImageData(kW, kH);
+          let min = Infinity;
+          let max = -Infinity;
+          const values = [];
+          for (let y = 0; y < kH; y++) {
+            for (let x = 0; x < kW; x++) {
+              const v = kernel[y][x][0][oc];
+              values.push(v);
+              min = Math.min(min, v);
+              max = Math.max(max, v);
+            }
+          }
+          const span = max - min || 1;
+          values.forEach((v, i) => {
+            const norm = Math.round(((v - min) / span) * 255);
+            const idx = i * 4;
+            imageData.data[idx] = norm;
+            imageData.data[idx + 1] = norm;
+            imageData.data[idx + 2] = norm;
+            imageData.data[idx + 3] = 255;
+          });
+          ctx.putImageData(imageData, 0, 0);
+
+          const cell = document.createElement("div");
+          cell.className = "filter-cell";
+          cell.appendChild(canvas);
+          const label = document.createElement("div");
+          label.textContent = `filter ${oc}`;
+          cell.appendChild(label);
+          grid.appendChild(cell);
+        }
+        return {grid, shape: [kH, kW, inC, outC]};
+      }
+
+      function renderFeatureMaps(tensor, maxChannels = 12) {
+        const [_, h, w, c] = tensor.shape;
+        const data = tensor.dataSync();
+        const grid = document.createElement("div");
+        grid.className = "feature-grid";
+        const cols = Math.min(6, maxChannels);
+        grid.style.gridTemplateColumns = `repeat(${cols}, 72px)`;
+
+        for (let ch = 0; ch < Math.min(c, maxChannels); ch++) {
+          let min = Infinity;
+          let max = -Infinity;
+          const channel = [];
+          for (let y = 0; y < h; y++) {
+            const row = [];
+            for (let x = 0; x < w; x++) {
+              const idx = ((y * w + x) * c) + ch;
+              const v = data[idx];
+              row.push(v);
+              if (v < min) min = v;
+              if (v > max) max = v;
+            }
+            channel.push(row);
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          canvas.className = "feature-canvas";
+          const ctx = canvas.getContext("2d");
+          const imageData = ctx.createImageData(w, h);
+          const span = max - min || 1;
+          for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+              const v = (channel[y][x] - min) / span;
+              const cval = Math.max(0, Math.min(255, Math.round(v * 255)));
+              const idx = (y * w + x) * 4;
+              imageData.data[idx] = cval;
+              imageData.data[idx + 1] = cval;
+              imageData.data[idx + 2] = cval;
+              imageData.data[idx + 3] = 255;
+            }
+          }
+          ctx.putImageData(imageData, 0, 0);
+
+          const cell = document.createElement("div");
+          cell.className = "feature-cell";
+          cell.appendChild(canvas);
+          const label = document.createElement("div");
+          label.textContent = `ch ${ch}`;
+          cell.appendChild(label);
+          grid.appendChild(cell);
+        }
+        return grid;
+      }
+
+      function renderDenseMap(tensor) {
+        const data = Array.from(tensor.dataSync());
+        const n = data.length;
+        const cols = Math.ceil(Math.sqrt(n));
+        const rows = Math.ceil(n / cols);
+        let min = Infinity;
+        let max = -Infinity;
+        for (const v of data) {
+          if (v < min) min = v;
+          if (v > max) max = v;
+        }
+        const span = max - min || 1;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = cols;
+        canvas.height = rows;
+        canvas.className = "dense-canvas";
+        const ctx = canvas.getContext("2d");
+        const imageData = ctx.createImageData(cols, rows);
+
+        for (let i = 0; i < cols * rows; i++) {
+          const v = i < n ? (data[i] - min) / span : 0;
+          const cval = Math.max(0, Math.min(255, Math.round(v * 255)));
+          const idx = i * 4;
+          imageData.data[idx] = cval;
+          imageData.data[idx + 1] = cval;
+          imageData.data[idx + 2] = cval;
+          imageData.data[idx + 3] = 255;
+        }
+        ctx.putImageData(imageData, 0, 0);
+
+        const wrap = document.createElement("div");
+        wrap.className = "dense-map";
+        const caption = document.createElement("div");
+        caption.className = "dense-caption";
+        caption.textContent = `Colormap of ${n} activations (min ${min.toFixed(2)}, max ${max.toFixed(2)})`;
+        wrap.appendChild(canvas);
+        wrap.appendChild(caption);
+        return wrap;
+      }
+
+      function renderPredictions(probs) {
+        predictionsBox.innerHTML = "";
+        predNote.textContent = probs.length === 10
+          ? "Classes: 0–9"
+          : `Model outputs ${probs.length} classes (0–${probs.length - 1}).`;
+        probs.forEach((p, i) => {
+          const bar = document.createElement("div");
+          bar.className = "bar";
+          const label = document.createElement("div");
+          label.textContent = i;
+          const track = document.createElement("div");
+          track.className = "bar-track";
+          const fill = document.createElement("div");
+          fill.className = "bar-fill";
+          fill.style.width = `${(p * 100).toFixed(1)}%`;
+          track.appendChild(fill);
+          const val = document.createElement("div");
+          val.textContent = p.toFixed(2);
+          bar.appendChild(label);
+          bar.appendChild(track);
+          bar.appendChild(val);
+          predictionsBox.appendChild(bar);
+        });
+      }
+
+      async function runInference() {
+        if (!viewModel) return;
+        const input = canvasToInput();
+        const outputs = viewModel.predict(input);
+        const outList = Array.isArray(outputs) ? outputs : [outputs];
+
+        layersContainer.innerHTML = "";
+        let probs = null;
+
+        outList.forEach((tensor, i) => {
+          const shape = tensor.shape.slice(1);
+          const layer = model.layers[i];
+          const layerName = layer.name;
+          const className = layer.getClassName ? layer.getClassName() : "";
+          const params = layerParamCount(layer);
+          if (layer.getClassName && layer.getClassName().toLowerCase().includes("maxpool")) {
+            return;
+          }
+          let noteText = `Type: ${className || "layer"} | output shape: ${shape.join("×")} | parameters: ${params}`;
+          if (tensor.rank === 4) {
+            const grid = renderFeatureMaps(tensor, 12);
+            if (className.toLowerCase().includes("conv")) {
+              noteText += " | Each displayed channel is one feature map after a learned filter has been applied.";
+            }
+            createLayerCard(layerName, shape, grid, noteText);
+            if (className.toLowerCase().includes("conv")) {
+              const filterPreview = renderFilters(layer);
+              if (filterPreview) {
+                createLayerCard(
+                  `${layerName} filters`,
+                  filterPreview.shape,
+                  filterPreview.grid,
+                  "These are the learned filter weights themselves, not activations."
+                );
+              }
+            }
+          } else if (tensor.rank === 2) {
+            const dense = renderDenseMap(tensor);
+            if (className.toLowerCase().includes("flatten")) {
+              noteText += " | Flatten reshapes a stack of feature maps into one long vector.";
+            } else if (className.toLowerCase().includes("dense")) {
+              noteText += " | Dense means every output unit connects to every input value from the previous stage.";
+            }
+            createLayerCard(layerName, shape, dense, noteText);
+            if (shape[0] === 10) {
+              probs = Array.from(tensor.dataSync());
+            }
+          } else {
+            const dense = renderDenseMap(tensor.reshape([1, tensor.size]));
+            createLayerCard(layerName, shape, dense, noteText);
+          }
+        });
+
+        if (!probs) {
+          const last = outList[outList.length - 1];
+          probs = Array.from(last.dataSync());
+        }
+        renderPredictions(probs);
+
+        tf.dispose(outList);
+        input.dispose();
+      }
+
+      function setStatus(msg) {
+        predictionsBox.innerHTML = `<div style="font-size:12px;color:#666">${msg}</div>`;
+      }
+
+
+      async function load() {
+        try {
+          setStatus("Loading model...");
+          model = await tf.loadLayersModel(MODEL_URL);
+        } catch (err) {
+          console.error(err);
+          if (location.protocol === "file:") {
+            setStatus("Model failed to load over file://. Run python3 -m http.server and open the http:// URL.");
+          } else {
+            setStatus("Model failed to load. Run python3 cnns/download_mnist_tfjs_model.py");
+          }
+          return;
+        }
+        viewModel = tf.model({ inputs: model.inputs, outputs: model.layers.map(l => l.output) });
+        const lines = model.layers.map((layer, idx) => {
+          const outShape = Array.isArray(layer.outputShape) ? layer.outputShape.slice(1).join("×") : "";
+          return `${idx + 1}. ${layer.name} (${layer.getClassName()}) → ${outShape} | params ${layerParamCount(layer)}`;
+        });
+        const totalParams = model.layers.reduce((acc, layer) => acc + layerParamCount(layer), 0);
+        summaryBox.innerHTML = `<strong>Model summary.</strong> Input: 28×28×1. Output: 10 class scores.<br>` +
+          `<strong>Total parameters:</strong> ${totalParams}.<br>` +
+          `<strong>Architecture note:</strong> Convolutions reuse the same small filter across the image, which builds in the inductive bias that the same local pattern can matter in many positions.<br><br>` +
+          lines.join("<br>");
+        runInference();
+      }
+
+      drawCanvas.addEventListener("pointerdown", (e) => {
+        drawCanvas.setPointerCapture(e.pointerId);
+        lastPointer = e.pointerId;
+        drawStart(e);
+      });
+      drawCanvas.addEventListener("pointermove", (e) => drawMove(e));
+      drawCanvas.addEventListener("pointerup", (e) => {
+        if (lastPointer === e.pointerId) {
+          drawEnd();
+          drawCanvas.releasePointerCapture(e.pointerId);
+        }
+      });
+      drawCanvas.addEventListener("pointerleave", drawEnd);
+
+      clearBtn.addEventListener("click", clearCanvas);
+      randomBtn.addEventListener("click", randomDigit);
+
+      setupCanvas();
+      load();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chain Rule Practice</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 400px;
+        gap: 14px;
+        min-height: 100vh;
+        padding: 14px;
+      }
+      .workspace {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 14px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+      }
+      .graph-card svg {
+        width: 100%;
+        height: 360px;
+      }
+      .panel {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+      }
+      .panel h1 {
+        margin: 0 0 8px 0;
+        font-size: 24px;
+      }
+      .howto {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.5;
+        margin-bottom: 12px;
+      }
+      .value-chip {
+        display: inline-block;
+        margin-right: 8px;
+        margin-bottom: 8px;
+        padding: 6px 10px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        border-radius: 999px;
+        font-size: 13px;
+      }
+      .section-title {
+        margin: 0 0 8px 0;
+        font-size: 16px;
+      }
+      .input-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .field {
+        display: grid;
+        gap: 4px;
+      }
+      .field label {
+        font-size: 13px;
+      }
+      .field input {
+        width: 100%;
+        padding: 7px 8px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 13px;
+      }
+      .field input.correct {
+        border-color: #16a34a;
+        background: #f0fdf4;
+      }
+      .field input.incorrect {
+        border-color: #dc2626;
+        background: #fef2f2;
+      }
+      .button-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .status-box,
+      .tape-box {
+        margin-top: 12px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+      }
+      .status-box h3,
+      .tape-box h3 {
+        margin: 0 0 6px 0;
+        font-size: 14px;
+      }
+      .status-line,
+      .tape-line {
+        font-size: 13px;
+        color: #334155;
+        line-height: 1.45;
+      }
+      .graph-node rect {
+        fill: #f8fafc;
+        stroke: #cbd5e1;
+        stroke-width: 2;
+      }
+      .graph-node text {
+        font-size: 14px;
+        font-weight: 700;
+        fill: #0f172a;
+      }
+      .graph-edge {
+        stroke: #94a3b8;
+        stroke-width: 2.5;
+        fill: none;
+        marker-end: url(#arrow);
+      }
+      .small-note {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 8px;
+      }
+      @media (max-width: 1020px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 640px) {
+        .input-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+<section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>Which quantities are simple forward-pass values, and which are local derivatives?</li>
+<li>Why does df/dx receive contributions from more than one path through the graph?</li>
+<li>Which saved states are enough to compute the backward pass for this graph efficiently?</li>
+<li>How does this exercise connect to what an automatic differentiation library is doing internally?</li>
+<li>If the function changed but remained differentiable, what parts of this chain-rule workflow would stay the same?</li>
+    </ul>
+  </div>
+</section>
+
+    <div class="container">
+      <div class="workspace">
+        <div class="card graph-card">
+          <h2 class="section-title">Graph For f(x, y) = (sin(x) + x y)^2</h2>
+          <svg viewBox="0 0 820 360" aria-label="Chain rule computation graph">
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 z" fill="#94a3b8"></path>
+              </marker>
+            </defs>
+            <path class="graph-edge" d="M120 90 C 170 90, 180 90, 230 90"></path>
+            <path class="graph-edge" d="M120 90 C 165 135, 175 230, 230 250"></path>
+            <path class="graph-edge" d="M120 250 C 170 250, 180 250, 230 250"></path>
+            <path class="graph-edge" d="M370 90 C 430 90, 455 160, 500 170"></path>
+            <path class="graph-edge" d="M370 250 C 430 250, 455 180, 500 170"></path>
+            <path class="graph-edge" d="M640 170 C 675 170, 685 170, 700 170"></path>
+            <g class="graph-node" transform="translate(20 45)">
+              <rect width="100" height="90" rx="12"></rect>
+              <text x="20" y="28">x</text>
+            </g>
+            <g class="graph-node" transform="translate(20 205)">
+              <rect width="100" height="90" rx="12"></rect>
+              <text x="20" y="28">y</text>
+            </g>
+            <g class="graph-node" transform="translate(230 45)">
+              <rect width="140" height="90" rx="12"></rect>
+              <text x="20" y="28">a = sin(x)</text>
+            </g>
+            <g class="graph-node" transform="translate(230 205)">
+              <rect width="140" height="90" rx="12"></rect>
+              <text x="20" y="28">b = x * y</text>
+            </g>
+            <g class="graph-node" transform="translate(500 125)">
+              <rect width="140" height="90" rx="12"></rect>
+              <text x="20" y="28">c = a + b</text>
+            </g>
+            <g class="graph-node" transform="translate(700 125)">
+              <rect width="100" height="90" rx="12"></rect>
+              <text x="20" y="28">f = c^2</text>
+            </g>
+          </svg>
+          <div class="small-note">
+            Forward values: a, b, c, f. Local derivatives: da/dx, db/dx, db/dy, df/dc.
+            Final gradients: df/dx and df/dy.
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="section-title">Practice Fields</h2>
+          <div id="valueChips"></div>
+
+          <h3 class="section-title">Forward values</h3>
+          <div class="input-grid">
+            <div class="field"><label for="aInput">a = sin(x)</label><input id="aInput" data-key="a" type="number" step="0.01"></div>
+            <div class="field"><label for="bInput">b = x * y</label><input id="bInput" data-key="b" type="number" step="0.01"></div>
+            <div class="field"><label for="cInput">c = a + b</label><input id="cInput" data-key="c" type="number" step="0.01"></div>
+            <div class="field"><label for="fInput">f = c^2</label><input id="fInput" data-key="f" type="number" step="0.01"></div>
+          </div>
+
+          <h3 class="section-title" style="margin-top:16px;">Local derivatives</h3>
+          <div class="input-grid">
+            <div class="field"><label for="daDxInput">da/dx = cos(x)</label><input id="daDxInput" data-key="da_dx" type="number" step="0.01"></div>
+            <div class="field"><label for="dbDxInput">db/dx = y</label><input id="dbDxInput" data-key="db_dx" type="number" step="0.01"></div>
+            <div class="field"><label for="dbDyInput">db/dy = x</label><input id="dbDyInput" data-key="db_dy" type="number" step="0.01"></div>
+            <div class="field"><label for="dfDcInput">df/dc = 2c</label><input id="dfDcInput" data-key="df_dc" type="number" step="0.01"></div>
+          </div>
+
+          <h3 class="section-title" style="margin-top:16px;">Final gradients</h3>
+          <div class="input-grid">
+            <div class="field"><label for="dfDxInput">df/dx</label><input id="dfDxInput" data-key="df_dx" type="number" step="0.01"></div>
+            <div class="field"><label for="dfDyInput">df/dy</label><input id="dfDyInput" data-key="df_dy" type="number" step="0.01"></div>
+          </div>
+
+          <div class="button-row">
+            <button id="checkBtn" type="button">Check work</button>
+            <button id="revealBtn" type="button">Reveal answers</button>
+            <button id="newValuesBtn" type="button">New numbers</button>
+          </div>
+
+          <div class="status-box">
+            <h3>Status</h3>
+            <div id="statusLine" class="status-line">
+              Enter your forward values, local derivatives, and final gradients, then click Check work.
+            </div>
+          </div>
+
+          <div class="tape-box">
+            <h3>Saved Tape For Backward</h3>
+            <div class="tape-line">
+              For this graph, keeping <strong>x</strong>, <strong>y</strong>, and <strong>c</strong>
+              is enough to reconstruct the needed local derivatives efficiently.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <h1>Chain Rule Practice</h1>
+        <div class="howto">
+          This is a guided follow-up to the computation graph stepper. You are given
+          numeric inputs x and y. Fill in the forward values, then the local derivatives,
+          then the final gradients. Use a small tolerance, not exact symbolic forms.
+        </div>
+        <div class="howto">
+          The key habit is to separate:
+          <strong>forward values</strong>,
+          <strong>local derivatives</strong>,
+          and <strong>full gradients</strong>.
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      const valueChips = document.getElementById("valueChips");
+      const statusLine = document.getElementById("statusLine");
+      const checkBtn = document.getElementById("checkBtn");
+      const revealBtn = document.getElementById("revealBtn");
+      const newValuesBtn = document.getElementById("newValuesBtn");
+      const fields = [...document.querySelectorAll("input[data-key]")];
+      const TOLERANCE = 0.03;
+      let currentInputs = { x: 1.2, y: -0.7 };
+
+      function roundedRandom() {
+        const value = -1.8 + Math.random() * 3.6;
+        return Math.round(value * 10) / 10;
+      }
+
+      function computeAnswers(x, y) {
+        const a = Math.sin(x);
+        const b = x * y;
+        const c = a + b;
+        const f = c * c;
+        const daDx = Math.cos(x);
+        const dbDx = y;
+        const dbDy = x;
+        const dfDc = 2 * c;
+        const dfDx = dfDc * daDx + dfDc * dbDx;
+        const dfDy = dfDc * dbDy;
+        return {
+          a,
+          b,
+          c,
+          f,
+          da_dx: daDx,
+          db_dx: dbDx,
+          db_dy: dbDy,
+          df_dc: dfDc,
+          df_dx: dfDx,
+          df_dy: dfDy,
+        };
+      }
+
+      function renderChips() {
+        valueChips.innerHTML = `
+          <span class="value-chip">x = ${currentInputs.x.toFixed(1)}</span>
+          <span class="value-chip">y = ${currentInputs.y.toFixed(1)}</span>
+        `;
+      }
+
+      function clearFieldClasses() {
+        fields.forEach((field) => {
+          field.classList.remove("correct");
+          field.classList.remove("incorrect");
+        });
+      }
+
+      function checkAnswers(reveal = false) {
+        const answers = computeAnswers(currentInputs.x, currentInputs.y);
+        let correct = 0;
+        fields.forEach((field) => {
+          const key = field.dataset.key;
+          const target = answers[key];
+          if (reveal) {
+            field.value = target.toFixed(4);
+          }
+          const value = Number(field.value);
+          const isCorrect = Number.isFinite(value) && Math.abs(value - target) <= TOLERANCE;
+          field.classList.remove("correct");
+          field.classList.remove("incorrect");
+          field.classList.add(isCorrect ? "correct" : "incorrect");
+          if (isCorrect) {
+            correct += 1;
+          }
+        });
+        statusLine.textContent = reveal
+          ? "Answers revealed. Notice that df/dx combines two paths through the graph."
+          : `${correct} / ${fields.length} fields are within the tolerance of ${TOLERANCE.toFixed(2)}.`;
+      }
+
+      function newNumbers() {
+        currentInputs = { x: roundedRandom(), y: roundedRandom() };
+        if (Math.abs(currentInputs.x) < 0.2) currentInputs.x = 0.8;
+        if (Math.abs(currentInputs.y) < 0.2) currentInputs.y = -0.9;
+        renderChips();
+        fields.forEach((field) => {
+          field.value = "";
+        });
+        clearFieldClasses();
+        statusLine.textContent = "New numbers loaded. Work through the graph from left to right, then backpropagate.";
+      }
+
+      checkBtn.addEventListener("click", () => checkAnswers(false));
+      revealBtn.addEventListener("click", () => checkAnswers(true));
+      newValuesBtn.addEventListener("click", newNumbers);
+
+      renderChips();
+    </script>
+  </body>
+</html>

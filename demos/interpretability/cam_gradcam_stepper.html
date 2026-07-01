@@ -1,0 +1,1340 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Animal Grad-CAM Explorer</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 400px;
+        gap: 14px;
+        min-height: 100vh;
+        padding: 14px;
+      }
+      .visuals {
+        display: grid;
+        grid-template-rows: minmax(430px, auto) minmax(300px, auto);
+        gap: 14px;
+      }
+      .lower-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+        gap: 14px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .card-header {
+        padding: 12px 14px 0;
+      }
+      .card-header h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .card-header p {
+        margin: 6px 0 0;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .viewer-shell {
+        padding: 14px;
+      }
+      .viewer-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .viewer-card {
+        display: grid;
+        gap: 8px;
+      }
+      .viewer-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #334155;
+      }
+      .image-stack {
+        position: relative;
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #e2e8f0;
+      }
+      .image-stack img,
+      .image-stack canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .image-stack img {
+        object-fit: cover;
+      }
+      .image-stack canvas {
+        pointer-events: none;
+      }
+      .main-caption {
+        margin-top: 12px;
+        font-size: 13px;
+        color: #334155;
+        line-height: 1.55;
+      }
+      .prediction-wrap,
+      .map-wrap {
+        padding: 14px;
+      }
+      .prediction-list {
+        display: grid;
+        gap: 10px;
+      }
+      .prediction-row {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        padding: 10px;
+        display: grid;
+        gap: 8px;
+        cursor: pointer;
+        transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+      }
+      .prediction-row:hover {
+        transform: translateY(-1px);
+      }
+      .prediction-row.active {
+        border-color: #0f172a;
+        box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.06);
+        background: #f8fafc;
+      }
+      .prediction-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: baseline;
+      }
+      .prediction-label {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .prediction-prob {
+        font-size: 13px;
+        color: #334155;
+        font-variant-numeric: tabular-nums;
+      }
+      .prediction-track {
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: #e2e8f0;
+      }
+      .prediction-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #60a5fa 0%, #2563eb 100%);
+      }
+      .prediction-note {
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.45;
+      }
+      .map-grid {
+        display: grid;
+        grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+      }
+      .map-frame {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+      }
+      .map-frame canvas {
+        display: block;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background: #fff;
+      }
+      .map-stats {
+        display: grid;
+        gap: 10px;
+      }
+      .mini-card {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px;
+        background: #f8fafc;
+      }
+      .mini-label {
+        font-size: 11px;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 4px;
+      }
+      .mini-value {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        line-height: 1.35;
+      }
+      .mini-note {
+        margin-top: 4px;
+        font-size: 12px;
+        color: #475569;
+        line-height: 1.45;
+      }
+      .panel {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+        background: #fff;
+      }
+      .panel h1 {
+        margin: 0 0 8px 0;
+        font-size: 24px;
+      }
+      .howto {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.55;
+        margin-bottom: 12px;
+      }
+      .control {
+        margin-bottom: 12px;
+      }
+      .control label {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 6px;
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .control select,
+      .control input[type="file"] {
+        width: 100%;
+        padding: 7px 8px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 13px;
+        background: #fff;
+      }
+      .slider-value {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .button-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .button-row button {
+        min-height: 38px;
+      }
+      .status-box,
+      .note-box,
+      .stat-box {
+        margin-top: 12px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+      }
+      .status-box h3,
+      .note-box h3,
+      .stat-box h3 {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+      }
+      .status-line,
+      .note-line,
+      .stat-line {
+        font-size: 13px;
+        color: #334155;
+        line-height: 1.5;
+        margin-bottom: 7px;
+      }
+      .status-line:last-child,
+      .note-line:last-child,
+      .stat-line:last-child {
+        margin-bottom: 0;
+      }
+      .status-line.strong {
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .status-line.warn {
+        color: #b45309;
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .legend-pill {
+        font-size: 12px;
+        padding: 4px 8px;
+        border-radius: 999px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #bfdbfe;
+      }
+      @media (max-width: 1140px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 920px) {
+        .viewer-grid,
+        .lower-grid,
+        .map-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 720px) {
+        .button-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+<section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>How does Grad-CAM turn a class score into a spatial explanation over the image?</li>
+<li>Why should we expect the clearest explanations on images containing one clear animal rather than several competing objects?</li>
+<li>What changes when you ask for a lower-ranked animal label instead of the top predicted one?</li>
+<li>Why is the low-resolution class map still useful even though it is not pixel-accurate?</li>
+<li>What kinds of failures show that an explanation is only as good as the underlying model and training set?</li>
+    </ul>
+  </div>
+</section>
+
+    <div class="container">
+      <div class="visuals">
+        <section class="card">
+          <div class="card-header">
+            <h2>Uploaded Animal Image And Grad-CAM Overlay</h2>
+            <p>
+              The heatmap is computed from the selected animal-label score and the model's
+              last convolutional feature maps, then resized back onto the image.
+            </p>
+          </div>
+          <div class="viewer-shell">
+            <div class="viewer-grid">
+              <div class="viewer-card">
+                <div class="viewer-title">Current image</div>
+                <div id="sourceStack" class="image-stack" style="aspect-ratio: 1 / 1;">
+                  <img id="sourceImage" alt="Image selected for Grad-CAM analysis">
+                </div>
+              </div>
+              <div class="viewer-card">
+                <div id="overlayTitle" class="viewer-title">Grad-CAM overlay</div>
+                <div id="overlayStack" class="image-stack" style="aspect-ratio: 1 / 1;">
+                  <img id="overlayImage" alt="Image with Grad-CAM overlay">
+                  <canvas id="overlayCanvas"></canvas>
+                </div>
+              </div>
+            </div>
+            <div id="mainCaption" class="main-caption"></div>
+          </div>
+        </section>
+
+        <div class="lower-grid">
+          <section class="card">
+            <div class="card-header">
+              <h2>Animal Predictions</h2>
+              <p>
+                Click a row to explain that animal label instead of the current top one.
+              </p>
+            </div>
+            <div class="prediction-wrap">
+              <div id="predictionList" class="prediction-list"></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h2>Low-Resolution Animal Map</h2>
+              <p>
+                Grad-CAM is computed on the final convolutional grid, not at the pixel
+                level. This coarse map is the real signal; the overlay above is just an
+                upsampled visualization of it.
+              </p>
+            </div>
+            <div class="map-wrap">
+              <div class="map-grid">
+                <div class="map-frame">
+                  <canvas id="classMapCanvas" width="260" height="260"></canvas>
+                </div>
+                <div id="mapStats" class="map-stats"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <h1>Animal Grad-CAM Explorer</h1>
+        <div class="howto">
+          Upload a clear photo containing one dominant animal, or use one of the local
+          samples, then choose which animal label you want
+          to explain.
+        </div>
+
+        <div class="control">
+          <label for="sampleSelect">Sample image</label>
+          <select id="sampleSelect"></select>
+        </div>
+
+        <div class="control">
+          <label for="uploadInput">Upload image</label>
+          <input id="uploadInput" type="file" accept="image/*">
+        </div>
+
+        <div class="control">
+          <label for="classSelect">Explain animal label</label>
+          <select id="classSelect"></select>
+        </div>
+
+        <div class="control">
+          <label for="opacityRange">
+            <span>Overlay opacity</span>
+            <span id="opacityValue" class="slider-value"></span>
+          </label>
+          <input id="opacityRange" type="range" min="0.20" max="0.95" step="0.05" value="0.60">
+        </div>
+
+        <div class="control">
+          <label for="thresholdRange">
+            <span>Highlight threshold</span>
+            <span id="thresholdValue" class="slider-value"></span>
+          </label>
+          <input id="thresholdRange" type="range" min="0.00" max="0.85" step="0.05" value="0.20">
+        </div>
+
+        <div class="button-row">
+          <button id="analyzeBtn" type="button">Recompute</button>
+          <button id="topClassBtn" type="button">Explain top animal</button>
+          <button id="resetBtn" type="button">Reset sample</button>
+        </div>
+
+        <div class="note-box">
+          <h3>Use Good Inputs</h3>
+          <div class="note-line">
+            This demo works best on clear animal photos, especially one prominent
+            mammal, bird, reptile, fish, or insect.
+          </div>
+          <div class="note-line">
+            It is much less trustworthy on people, cars, screenshots, diagrams,
+            text-heavy images, abstract art, or crowded scenes with several competing
+            objects.
+          </div>
+          <div class="legend">
+            <div class="legend-pill">Good: one prominent animal</div>
+            <div class="legend-pill">Weak: crowded or non-animal image</div>
+          </div>
+        </div>
+
+        <div class="status-box">
+          <h3>Status</h3>
+          <div id="statusLines"></div>
+        </div>
+
+        <div class="stat-box">
+          <h3>Explanation Summary</h3>
+          <div id="statLines"></div>
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      const SAMPLE_IMAGES = [{"id":"catdog_room","label":"Cat and dog by a window","path":"assets/cam_gradcam_catdog_scene.png","hint":"This sample is deliberately multi-object, so the heatmap can shift between the dog and cat categories."},{"id":"dogcar_ride","label":"Dog riding in a car","path":"assets/cam_cam_dogcar_scene.png","hint":"The dog usually dominates, but the passenger and car interior can still pull the explanation around."}];
+      const ANIMAL_GROUP_SPECS = [{"id":"dog","label":"Dog","summary":"Many dog breeds are merged into one simple dog label.","ranges":[[151,268]],"exact":[],"contains":[]},{"id":"cat","label":"Cat","summary":"Domestic cat subtypes are merged into one cat label.","ranges":[],"exact":["tabby","tiger_cat","persian_cat","siamese_cat","egyptian_cat"],"contains":[]},{"id":"rabbit","label":"Rabbit","summary":"Rabbit- and hare-like labels are merged into rabbit.","ranges":[],"exact":["wood_rabbit","hare","angora"],"contains":[]},{"id":"hamster","label":"Hamster","summary":"Hamster predictions are shown with a basic animal name.","ranges":[],"exact":["hamster"],"contains":[]},{"id":"guinea_pig","label":"Guinea pig","summary":"Guinea pig predictions are shown with a basic animal name.","ranges":[],"exact":["guinea_pig"],"contains":[]},{"id":"horse","label":"Horse","summary":"Horse-like labels are merged into horse.","ranges":[],"exact":["sorrel"],"contains":[]},{"id":"zebra","label":"Zebra","summary":"Zebra predictions are shown with a basic animal name.","ranges":[],"exact":["zebra"],"contains":[]},{"id":"pig","label":"Pig","summary":"Pig-like labels are merged into pig.","ranges":[],"exact":["hog","wild_boar"],"contains":[]},{"id":"cow","label":"Cow","summary":"Cow- and ox-like labels are merged into cow.","ranges":[],"exact":["ox","water_buffalo","bison"],"contains":[]},{"id":"sheep","label":"Sheep","summary":"Sheep-like labels are merged into sheep.","ranges":[],"exact":["ram","bighorn"],"contains":[]},{"id":"goat","label":"Goat","summary":"Goat-like labels are merged into goat.","ranges":[],"exact":["ibex"],"contains":[]},{"id":"camel","label":"Camel","summary":"Camel predictions are shown with a basic animal name.","ranges":[],"exact":["arabian_camel"],"contains":[]},{"id":"llama","label":"Llama","summary":"Llama predictions are shown with a basic animal name.","ranges":[],"exact":["llama"],"contains":[]},{"id":"elephant","label":"Elephant","summary":"Elephant subtypes are merged into elephant.","ranges":[],"exact":["indian_elephant","african_elephant","tusker"],"contains":[]},{"id":"panda","label":"Panda","summary":"Panda-like labels are merged into panda.","ranges":[],"exact":["giant_panda","lesser_panda"],"contains":["panda"]},{"id":"bear","label":"Bear","summary":"Bear subtypes are merged into bear.","ranges":[],"exact":[],"contains":["bear"]},{"id":"fox","label":"Fox","summary":"Fox subtypes are merged into fox.","ranges":[],"exact":[],"contains":["fox"]},{"id":"wolf","label":"Wolf","summary":"Wolf-like labels are merged into wolf.","ranges":[],"exact":["timber_wolf","white_wolf","red_wolf","coyote"],"contains":["wolf"]},{"id":"raccoon","label":"Raccoon","summary":"Raccoon predictions are shown with a basic animal name.","ranges":[],"exact":["raccoon"],"contains":[]},{"id":"badger","label":"Badger","summary":"Badger predictions are shown with a basic animal name.","ranges":[],"exact":["badger"],"contains":[]},{"id":"skunk","label":"Skunk","summary":"Skunk predictions are shown with a basic animal name.","ranges":[],"exact":["skunk"],"contains":[]},{"id":"otter","label":"Otter","summary":"Otter predictions are shown with a basic animal name.","ranges":[],"exact":["otter"],"contains":[]},{"id":"monkey","label":"Monkey","summary":"Many monkey subtypes are merged into monkey.","ranges":[],"exact":["baboon","macaque","langur","colobus","proboscis_monkey","marmoset","capuchin","howler_monkey","patas","guenon"],"contains":["monkey"]},{"id":"ape","label":"Ape","summary":"Great apes and close relatives are merged into ape.","ranges":[],"exact":["chimpanzee","gorilla","orangutan","siamang","gibbon"],"contains":[]},{"id":"koala","label":"Koala","summary":"Koala predictions are shown with a basic animal name.","ranges":[],"exact":["koala"],"contains":[]},{"id":"wombat","label":"Wombat","summary":"Wombat predictions are shown with a basic animal name.","ranges":[],"exact":["wombat"],"contains":[]},{"id":"wallaby","label":"Wallaby","summary":"Wallaby predictions are shown with a basic animal name.","ranges":[],"exact":["wallaby"],"contains":[]},{"id":"echidna","label":"Echidna","summary":"Echidna predictions are shown with a basic animal name.","ranges":[],"exact":["echidna"],"contains":[]},{"id":"platypus","label":"Platypus","summary":"Platypus predictions are shown with a basic animal name.","ranges":[],"exact":["platypus"],"contains":[]},{"id":"porcupine","label":"Porcupine","summary":"Porcupine predictions are shown with a basic animal name.","ranges":[],"exact":["porcupine"],"contains":[]},{"id":"beaver","label":"Beaver","summary":"Beaver predictions are shown with a basic animal name.","ranges":[],"exact":["beaver"],"contains":[]},{"id":"squirrel","label":"Squirrel","summary":"Squirrel-like labels are merged into squirrel.","ranges":[],"exact":["fox_squirrel"],"contains":["squirrel"]},{"id":"lion","label":"Lion","summary":"Lion predictions are shown with a basic animal name.","ranges":[],"exact":["lion"],"contains":[]},{"id":"tiger","label":"Tiger","summary":"Tiger predictions are shown with a basic animal name.","ranges":[],"exact":["tiger"],"contains":[]},{"id":"leopard","label":"Leopard","summary":"Leopard-like labels are merged into leopard.","ranges":[],"exact":["leopard","snow_leopard"],"contains":[]},{"id":"jaguar","label":"Jaguar","summary":"Jaguar predictions are shown with a basic animal name.","ranges":[],"exact":["jaguar"],"contains":[]},{"id":"cheetah","label":"Cheetah","summary":"Cheetah predictions are shown with a basic animal name.","ranges":[],"exact":["cheetah"],"contains":[]},{"id":"giraffe","label":"Giraffe","summary":"Giraffe predictions are shown with a basic animal name.","ranges":[],"exact":["giraffe"],"contains":[]},{"id":"hippo","label":"Hippo","summary":"Hippopotamus predictions are shown with a basic animal name.","ranges":[],"exact":["hippopotamus"],"contains":[]},{"id":"rhino","label":"Rhino","summary":"Rhinoceros predictions are shown with a basic animal name.","ranges":[],"exact":["rhinoceros"],"contains":[]},{"id":"eagle","label":"Eagle","summary":"Eagle predictions are shown with a basic animal name.","ranges":[],"exact":["bald_eagle"],"contains":[]},{"id":"owl","label":"Owl","summary":"Owl predictions are shown with a basic animal name.","ranges":[],"exact":["great_grey_owl"],"contains":[]},{"id":"parrot","label":"Parrot","summary":"Parrot-like labels are merged into parrot.","ranges":[],"exact":["african_grey","macaw","sulphur_crested_cockatoo","lorikeet"],"contains":[]},{"id":"hummingbird","label":"Hummingbird","summary":"Hummingbird predictions are shown with a basic animal name.","ranges":[],"exact":["hummingbird"],"contains":[]},{"id":"duck","label":"Duck","summary":"Duck-like labels are merged into duck.","ranges":[],"exact":["drake","red_breasted_merganser"],"contains":[]},{"id":"goose","label":"Goose","summary":"Goose predictions are shown with a basic animal name.","ranges":[],"exact":["goose"],"contains":[]},{"id":"swan","label":"Swan","summary":"Swan predictions are shown with a basic animal name.","ranges":[],"exact":["black_swan"],"contains":[]},{"id":"penguin","label":"Penguin","summary":"Penguin predictions are shown with a basic animal name.","ranges":[],"exact":["king_penguin"],"contains":[]},{"id":"flamingo","label":"Flamingo","summary":"Flamingo predictions are shown with a basic animal name.","ranges":[],"exact":["flamingo"],"contains":[]},{"id":"pelican","label":"Pelican","summary":"Pelican predictions are shown with a basic animal name.","ranges":[],"exact":["pelican"],"contains":[]},{"id":"chicken","label":"Chicken","summary":"Rooster and hen labels are merged into chicken.","ranges":[],"exact":["rooster","hen"],"contains":[]},{"id":"peacock","label":"Peacock","summary":"Peacock predictions are shown with a basic animal name.","ranges":[],"exact":["peacock"],"contains":[]},{"id":"ostrich","label":"Ostrich","summary":"Ostrich predictions are shown with a basic animal name.","ranges":[],"exact":["ostrich"],"contains":[]},{"id":"shark","label":"Shark","summary":"Shark subtypes are merged into shark.","ranges":[],"exact":["great_white_shark","tiger_shark","hammerhead"],"contains":[]},{"id":"ray","label":"Ray","summary":"Ray subtypes are merged into ray.","ranges":[],"exact":["electric_ray","stingray"],"contains":[]},{"id":"whale","label":"Whale","summary":"Whale-like labels are merged into whale.","ranges":[],"exact":["grey_whale","killer_whale"],"contains":[]},{"id":"turtle","label":"Turtle","summary":"Turtle subtypes are merged into turtle.","ranges":[],"exact":["loggerhead","leatherback_turtle","mud_turtle","terrapin","box_turtle"],"contains":[]},{"id":"lizard","label":"Lizard","summary":"Many lizard subtypes are merged into lizard.","ranges":[],"exact":["banded_gecko","common_iguana","american_chameleon","whiptail","agama","frilled_lizard","alligator_lizard","gila_monster","green_lizard","african_chameleon","komodo_dragon"],"contains":[]},{"id":"crocodile","label":"Crocodile","summary":"Crocodile and alligator labels are merged into crocodile.","ranges":[],"exact":["african_crocodile","american_alligator"],"contains":[]},{"id":"snake","label":"Snake","summary":"Many snake subtypes are merged into snake.","ranges":[[52,68]],"exact":[],"contains":[]},{"id":"frog","label":"Frog","summary":"Frog subtypes are merged into frog.","ranges":[],"exact":["bullfrog","tree_frog","tailed_frog"],"contains":[]},{"id":"salamander","label":"Salamander","summary":"Salamander-like labels are merged into salamander.","ranges":[],"exact":["fire_salamander","smooth_newt","newt","spotted_salamander","axolotl"],"contains":[]},{"id":"crab","label":"Crab","summary":"Crab subtypes are merged into crab.","ranges":[],"exact":["dungeness_crab","rock_crab","fiddler_crab","king_crab"],"contains":[]},{"id":"lobster","label":"Lobster","summary":"Lobster-like labels are merged into lobster.","ranges":[],"exact":["american_lobster","spiny_lobster","crayfish"],"contains":[]},{"id":"butterfly","label":"Butterfly","summary":"Butterfly subtypes are merged into butterfly.","ranges":[],"exact":["admiral","ringlet","monarch","cabbage_butterfly","sulphur_butterfly","lycaenid"],"contains":[]},{"id":"spider","label":"Spider","summary":"Spider subtypes are merged into spider.","ranges":[],"exact":["black_and_gold_garden_spider","barn_spider","garden_spider","black_widow","tarantula","wolf_spider"],"contains":[]},{"id":"scorpion","label":"Scorpion","summary":"Scorpion predictions are shown with a basic animal name.","ranges":[],"exact":["scorpion"],"contains":[]}];
+      const REMOTE_MODEL_URL = "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json";
+      const REMOTE_LABELS_URL = "https://storage.googleapis.com/download.tensorflow.org/data/imagenet_class_index.json";
+      const IMAGE_SIZE = 224;
+
+      const sourceImage = document.getElementById("sourceImage");
+      const overlayImage = document.getElementById("overlayImage");
+      const sourceStack = document.getElementById("sourceStack");
+      const overlayStack = document.getElementById("overlayStack");
+      const overlayCanvas = document.getElementById("overlayCanvas");
+      const classMapCanvas = document.getElementById("classMapCanvas");
+      const mainCaption = document.getElementById("mainCaption");
+      const overlayTitle = document.getElementById("overlayTitle");
+      const predictionList = document.getElementById("predictionList");
+      const mapStats = document.getElementById("mapStats");
+
+      const sampleSelect = document.getElementById("sampleSelect");
+      const uploadInput = document.getElementById("uploadInput");
+      const classSelect = document.getElementById("classSelect");
+      const opacityRange = document.getElementById("opacityRange");
+      const thresholdRange = document.getElementById("thresholdRange");
+      const opacityValue = document.getElementById("opacityValue");
+      const thresholdValue = document.getElementById("thresholdValue");
+      const analyzeBtn = document.getElementById("analyzeBtn");
+      const topClassBtn = document.getElementById("topClassBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const statusLines = document.getElementById("statusLines");
+      const statLines = document.getElementById("statLines");
+
+      const state = {
+        model: null,
+        convModel: null,
+        tailModel: null,
+        labels: [],
+        animalGroups: [],
+        lastConvLayerName: "",
+        lastConvShape: null,
+        predictions: [],
+        lowResMap: null,
+        targetClassIndex: null,
+        targetProbability: null,
+        animalProbabilityMass: 0,
+        classIndexOffset: 0,
+        backend: "",
+        inferenceMs: null,
+        currentImageLabel: SAMPLE_IMAGES[0].label,
+        currentImageHint: SAMPLE_IMAGES[0].hint,
+        uploaded: false,
+        sampleId: SAMPLE_IMAGES[0].id,
+        modelReady: false,
+        imageReady: false,
+        busy: false
+      };
+
+      function getSampleById(sampleId) {
+        return SAMPLE_IMAGES.find((sample) => sample.id === sampleId) || SAMPLE_IMAGES[0];
+      }
+
+      function formatPercent(value) {
+        return `${(value * 100).toFixed(1)}%`;
+      }
+
+      function asTensor(output) {
+        return Array.isArray(output) ? output[0] : output;
+      }
+
+      function normalizeShape(shape) {
+        if (!shape) {
+          return null;
+        }
+        if (Array.isArray(shape[0])) {
+          return shape[0];
+        }
+        return shape;
+      }
+
+      function normalizeLabel(label) {
+        return label.toLowerCase().replaceAll(" ", "_").replaceAll("-", "_");
+      }
+
+      function readableRawLabel(label) {
+        return String(label).replaceAll("_", " ");
+      }
+
+      function labelGroupingNote() {
+        return "Each displayed animal label is formed by summing related raw ImageNet classes rather than reading off a single native model output.";
+      }
+
+      function mapDescriptionLabel() {
+        return "grouped-animal map";
+      }
+
+      function matchesGroupToken(normalized, token) {
+        return normalized === token
+          || normalized.startsWith(`${token}_`)
+          || normalized.endsWith(`_${token}`)
+          || normalized.includes(`_${token}_`);
+      }
+
+      function buildAnimalGroups(labels) {
+        return ANIMAL_GROUP_SPECS.map((spec) => {
+          const members = new Set();
+          (spec.ranges || []).forEach(([start, end]) => {
+            for (let idx = start; idx <= end && idx < labels.length; idx += 1) {
+              members.add(idx);
+            }
+          });
+          labels.forEach((label, idx) => {
+            const normalized = normalizeLabel(label);
+            if ((spec.exact || []).includes(normalized)) {
+              members.add(idx);
+            }
+            if ((spec.contains || []).some((token) => matchesGroupToken(normalized, token))) {
+              members.add(idx);
+            }
+          });
+          return {
+            ...spec,
+            memberIndices: Array.from(members).sort((a, b) => a - b)
+          };
+        })
+          .filter((group) => group.memberIndices.length > 0)
+          .map((group, groupIndex) => ({
+            ...group,
+            groupIndex
+          }));
+      }
+
+      function groupForIndex(index) {
+        return state.animalGroups.find((group) => group.groupIndex === index) || null;
+      }
+
+      function labelForIndex(index) {
+        const group = groupForIndex(index);
+        return group ? group.label : `animal label ${index}`;
+      }
+
+      function outputIndicesForGroup(group) {
+        return group.memberIndices.map((index) => index + state.classIndexOffset);
+      }
+
+      function rawMembersForGroup(probabilities, group) {
+        return outputIndicesForGroup(group)
+          .map((outputIndex) => {
+            const labelIndex = outputIndex - state.classIndexOffset;
+            return {
+              label: state.labels[labelIndex] || `class ${labelIndex}`,
+              prob: probabilities[outputIndex] || 0
+            };
+          })
+          .sort((a, b) => b.prob - a.prob);
+      }
+
+      function contributorText(contributors, limit = 3) {
+        const shown = contributors
+          .filter((entry) => entry.prob > 0)
+          .slice(0, limit);
+        if (!shown.length) {
+          return "No single raw ImageNet class contributes much probability on this image.";
+        }
+        return shown
+          .map((entry) => `${readableRawLabel(entry.label)} ${formatPercent(entry.prob)}`)
+          .join(", ");
+      }
+
+      function groupProbabilities(probabilities) {
+        return state.animalGroups.map((group) => {
+          const rawMembers = rawMembersForGroup(probabilities, group);
+          return {
+            index: group.groupIndex,
+            label: group.label,
+            summary: group.summary,
+            prob: rawMembers.reduce((total, entry) => total + entry.prob, 0),
+            memberCount: group.memberIndices.length,
+            topContributors: rawMembers.slice(0, 5),
+            contributorText: contributorText(rawMembers)
+          };
+        });
+      }
+
+      function topAnimalGroups(probabilities, k) {
+        return groupProbabilities(probabilities)
+          .sort((a, b) => b.prob - a.prob)
+          .slice(0, k);
+      }
+
+      function predictionForIndex(index) {
+        return state.predictions.find((entry) => entry.index === index) || null;
+      }
+
+      function animalWarningLevel() {
+        if (!state.predictions.length) {
+          return "none";
+        }
+        const topProbability = state.predictions[0].prob;
+        if (topProbability < 0.12 || state.animalProbabilityMass < 0.22) {
+          return "high";
+        }
+        if (topProbability < 0.24 || state.animalProbabilityMass < 0.40) {
+          return "medium";
+        }
+        return "low";
+      }
+
+      function setBusy(isBusy) {
+        state.busy = isBusy;
+        analyzeBtn.disabled = isBusy || !state.modelReady || !state.imageReady;
+        topClassBtn.disabled = isBusy || !state.modelReady || !state.imageReady || state.predictions.length === 0;
+        resetBtn.disabled = isBusy;
+        classSelect.disabled = isBusy || state.predictions.length === 0;
+        sampleSelect.disabled = isBusy;
+        uploadInput.disabled = isBusy;
+      }
+
+      function setStatus(lines) {
+        statusLines.innerHTML = lines
+          .map((line) => {
+            const className = line.kind ? `status-line ${line.kind}` : "status-line";
+            return `<div class="${className}">${line.text}</div>`;
+          })
+          .join("");
+      }
+
+      function renderStaticControls() {
+        sampleSelect.innerHTML = SAMPLE_IMAGES.map(
+          (sample) => `<option value="${sample.id}">${sample.label}</option>`
+        ).join("");
+        sampleSelect.value = state.sampleId;
+        opacityValue.textContent = opacityRange.value;
+        thresholdValue.textContent = thresholdRange.value;
+      }
+
+      function updateImageAspect() {
+        if (!sourceImage.naturalWidth || !sourceImage.naturalHeight) {
+          return;
+        }
+        const ratio = `${sourceImage.naturalWidth} / ${sourceImage.naturalHeight}`;
+        sourceStack.style.aspectRatio = ratio;
+        overlayStack.style.aspectRatio = ratio;
+      }
+
+      async function chooseBackend() {
+        const preferred = ["webgl", "cpu"];
+        for (const name of preferred) {
+          try {
+            const ok = await tf.setBackend(name);
+            if (ok) {
+              await tf.ready();
+              return name;
+            }
+          } catch (error) {
+            console.warn(`Could not activate backend ${name}`, error);
+          }
+        }
+        await tf.ready();
+        return tf.getBackend();
+      }
+
+      async function loadRemoteLabels() {
+        try {
+          const response = await fetch(REMOTE_LABELS_URL);
+          if (!response.ok) {
+            throw new Error(`label fetch failed with status ${response.status}`);
+          }
+          const data = await response.json();
+          return Object.keys(data)
+            .sort((a, b) => Number(a) - Number(b))
+            .map((key) => data[key][1]);
+        } catch (error) {
+          console.warn("Could not load ImageNet labels", error);
+          return [];
+        }
+      }
+
+      function findLastConvLayer(model) {
+        for (let idx = model.layers.length - 1; idx >= 0; idx -= 1) {
+          const layer = model.layers[idx];
+          const shape = normalizeShape(layer.outputShape);
+          if (shape && shape.length === 4 && shape[1] > 1 && shape[2] > 1) {
+            return layer;
+          }
+        }
+        throw new Error("Could not find a 4D convolutional feature map in the loaded model.");
+      }
+
+      function buildTailModel(model, lastConvLayer) {
+        const inputShape = normalizeShape(lastConvLayer.outputShape).slice(1);
+        const convIndex = model.layers.findIndex((layer) => layer.name === lastConvLayer.name);
+        const tailInput = tf.input({ shape: inputShape });
+        let current = tailInput;
+        for (let idx = convIndex + 1; idx < model.layers.length; idx += 1) {
+          current = model.layers[idx].apply(current);
+        }
+        return tf.model({ inputs: tailInput, outputs: current });
+      }
+
+      async function loadModel() {
+        setStatus([
+          { text: "Loading the image classifier...", kind: "strong" },
+          { text: "This demo needs to be opened over http://, not file://, so the browser can fetch the model files." }
+        ]);
+        if (location.protocol === "file:") {
+          setStatus([
+            { text: "The page is running via file://, so model loading may fail.", kind: "warn" },
+            { text: "Use `python3 interpretability/cam_gradcam_stepper.py --serve` and open the localhost URL instead." }
+          ]);
+        }
+        try {
+          state.backend = await chooseBackend();
+          state.labels = await loadRemoteLabels();
+          state.animalGroups = buildAnimalGroups(state.labels);
+          if (!state.animalGroups.length) {
+            throw new Error("Could not build the available animal labels.");
+          }
+          state.model = await tf.loadLayersModel(REMOTE_MODEL_URL);
+          const lastConvLayer = findLastConvLayer(state.model);
+          state.convModel = tf.model({
+            inputs: state.model.inputs,
+            outputs: lastConvLayer.output
+          });
+          state.tailModel = buildTailModel(state.model, lastConvLayer);
+          state.lastConvLayerName = lastConvLayer.name;
+          state.lastConvShape = normalizeShape(lastConvLayer.outputShape).slice(1);
+          state.modelReady = true;
+          renderStats();
+          setStatus([
+            { text: "Model loaded successfully.", kind: "strong" },
+            { text: "Choose a sample or upload an animal photo to generate predictions and a Grad-CAM heatmap." },
+            { text: "The displayed animal labels are classroom groupings built from the model's raw ImageNet outputs." }
+          ]);
+          setBusy(false);
+          if (state.imageReady) {
+            await analyzeCurrentImage();
+          }
+        } catch (error) {
+          console.error(error);
+          setStatus([
+            { text: "Model loading failed.", kind: "strong" },
+            { text: String(error), kind: "warn" },
+            { text: "If you opened the page directly from disk, serve it over localhost first." }
+          ]);
+          renderStats();
+          setBusy(false);
+        }
+      }
+
+      function preprocessImage(imgElement) {
+        return tf.tidy(() => {
+          const pixels = tf.browser.fromPixels(imgElement).toFloat();
+          const resized = tf.image.resizeBilinear(pixels, [IMAGE_SIZE, IMAGE_SIZE], true);
+          const normalized = resized.div(127.5).sub(1);
+          return normalized.expandDims(0);
+        });
+      }
+
+      function computeCoverage(heatmap, threshold) {
+        const values = heatmap.flat();
+        if (!values.length) {
+          return 0;
+        }
+        const hits = values.filter((value) => value >= threshold).length;
+        return hits / values.length;
+      }
+
+      function maxValue(heatmap) {
+        return heatmap.flat().reduce((best, value) => Math.max(best, value), 0);
+      }
+
+      function colorForValue(value) {
+        const t = Math.max(0, Math.min(1, value));
+        if (t <= 0.5) {
+          const local = t / 0.5;
+          const start = [255, 247, 188];
+          const end = [253, 141, 60];
+          return [
+            Math.round(start[0] + (end[0] - start[0]) * local),
+            Math.round(start[1] + (end[1] - start[1]) * local),
+            Math.round(start[2] + (end[2] - start[2]) * local)
+          ];
+        }
+        const local = (t - 0.5) / 0.5;
+        const start = [253, 141, 60];
+        const end = [189, 0, 38];
+        return [
+          Math.round(start[0] + (end[0] - start[0]) * local),
+          Math.round(start[1] + (end[1] - start[1]) * local),
+          Math.round(start[2] + (end[2] - start[2]) * local)
+        ];
+      }
+
+      function paintHeatmap(canvas, heatmap, options = {}) {
+        if (!heatmap) {
+          const ctx = canvas.getContext("2d");
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          return;
+        }
+        const {
+          smooth = false,
+          threshold = 0,
+          opacity = 1,
+          showGrid = false
+        } = options;
+        const rows = heatmap.length;
+        const cols = heatmap[0].length;
+        const dpr = window.devicePixelRatio || 1;
+        const width = canvas.clientWidth || canvas.width;
+        const height = canvas.clientHeight || canvas.height;
+        canvas.width = Math.max(1, Math.round(width * dpr));
+        canvas.height = Math.max(1, Math.round(height * dpr));
+        const ctx = canvas.getContext("2d");
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, width, height);
+
+        const offscreen = document.createElement("canvas");
+        offscreen.width = cols;
+        offscreen.height = rows;
+        const offCtx = offscreen.getContext("2d");
+        const imageData = offCtx.createImageData(cols, rows);
+
+        for (let row = 0; row < rows; row += 1) {
+          for (let col = 0; col < cols; col += 1) {
+            const value = heatmap[row][col];
+            const scaled = value <= threshold ? 0 : (value - threshold) / Math.max(1e-6, 1 - threshold);
+            const [r, g, b] = colorForValue(scaled);
+            const idx = (row * cols + col) * 4;
+            imageData.data[idx] = r;
+            imageData.data[idx + 1] = g;
+            imageData.data[idx + 2] = b;
+            imageData.data[idx + 3] = Math.round((0.10 + scaled * 0.90) * opacity * 255);
+          }
+        }
+
+        offCtx.putImageData(imageData, 0, 0);
+        ctx.imageSmoothingEnabled = smooth;
+        ctx.drawImage(offscreen, 0, 0, width, height);
+
+        if (showGrid) {
+          ctx.save();
+          ctx.strokeStyle = "rgba(15, 23, 42, 0.18)";
+          ctx.lineWidth = 1;
+          const cellWidth = width / cols;
+          const cellHeight = height / rows;
+          for (let col = 1; col < cols; col += 1) {
+            const x = col * cellWidth;
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, height);
+            ctx.stroke();
+          }
+          for (let row = 1; row < rows; row += 1) {
+            const y = row * cellHeight;
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(width, y);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+      }
+
+      function renderPredictions() {
+        predictionList.innerHTML = "";
+        if (!state.predictions.length) {
+          predictionList.innerHTML = '<div class="prediction-note">Predictions will appear after the model finishes loading and the current image is analyzed.</div>';
+          return;
+        }
+
+        predictionList.innerHTML = state.predictions.map((entry) => `
+          <button class="prediction-row ${entry.index === state.targetClassIndex ? "active" : ""}" type="button" data-class-index="${entry.index}">
+            <div class="prediction-top">
+              <div class="prediction-label">${entry.label}</div>
+              <div class="prediction-prob">${formatPercent(entry.prob)}</div>
+            </div>
+            <div class="prediction-track">
+              <div class="prediction-fill" style="width: ${Math.max(2, entry.prob * 100)}%;"></div>
+            </div>
+            <div class="prediction-note">${entry.summary}</div>
+            <div class="prediction-note">Built by summing ${entry.memberCount} raw ImageNet classes. Largest contributors here: ${entry.contributorText}.</div>
+          </button>
+        `).join("");
+
+        predictionList.querySelectorAll(".prediction-row").forEach((button) => {
+          button.addEventListener("click", async () => {
+            const classIndex = Number(button.dataset.classIndex);
+            classSelect.value = String(classIndex);
+            await analyzeCurrentImage(classIndex);
+          });
+        });
+      }
+
+      function renderClassOptions() {
+        classSelect.innerHTML = "";
+        state.predictions.forEach((entry) => {
+          const option = document.createElement("option");
+          option.value = String(entry.index);
+          option.textContent = `${entry.label} (${formatPercent(entry.prob)})`;
+          if (entry.index === state.targetClassIndex) {
+            option.selected = true;
+          }
+          classSelect.appendChild(option);
+        });
+      }
+
+      function renderMapStats() {
+        if (!state.lowResMap || !state.lastConvShape) {
+          mapStats.innerHTML = "";
+          return;
+        }
+        const currentPrediction = predictionForIndex(state.targetClassIndex);
+        const threshold = Number(thresholdRange.value);
+        const coverage = computeCoverage(state.lowResMap, threshold);
+        const peak = maxValue(state.lowResMap);
+        const spatial = `${state.lowResMap.length} × ${state.lowResMap[0].length}`;
+        const warningLevel = animalWarningLevel();
+        const warningText =
+          warningLevel === "high"
+            ? "Weak animal match. The image may not contain one of the supported animal labels."
+            : warningLevel === "medium"
+              ? "Moderate animal match. Competing objects or unusual poses may blur the explanation."
+              : "Strong animal match.";
+        mapStats.innerHTML = `
+          <div class="mini-card">
+            <div class="mini-label">Target animal label</div>
+            <div class="mini-value">${labelForIndex(state.targetClassIndex)}</div>
+            <div class="mini-note">Current score: ${state.targetProbability == null ? "—" : formatPercent(state.targetProbability)}. Built from ${currentPrediction ? currentPrediction.memberCount : "—"} raw ImageNet classes.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Conv-grid resolution</div>
+            <div class="mini-value">${spatial}</div>
+            <div class="mini-note">This low-resolution grid is the real ${mapDescriptionLabel()} before upsampling.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Highlighted coverage</div>
+            <div class="mini-value">${formatPercent(coverage)}</div>
+            <div class="mini-note">Fraction of map cells at or above the current threshold.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Animal-match strength</div>
+            <div class="mini-value">${formatPercent(state.animalProbabilityMass)}</div>
+            <div class="mini-note">${warningText}</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Peak activation</div>
+            <div class="mini-value">${peak.toFixed(2)}</div>
+            <div class="mini-note">Normalized after ReLU, so the hottest location is usually near 1.00.</div>
+          </div>
+        `;
+      }
+
+      function renderOverlayTitle() {
+        if (state.targetClassIndex == null) {
+          overlayTitle.textContent = "Grad-CAM overlay";
+          return;
+        }
+        overlayTitle.textContent = `Grad-CAM overlay for ${labelForIndex(state.targetClassIndex)}`;
+      }
+
+      function renderCaption() {
+        const sampleText = state.uploaded ? "Uploaded image" : state.currentImageLabel;
+        const probabilityText = state.targetProbability == null ? "—" : formatPercent(state.targetProbability);
+        const layerText = state.lastConvShape ? `${state.lastConvShape[0]} × ${state.lastConvShape[1]} × ${state.lastConvShape[2]}` : "—";
+        const currentPrediction = predictionForIndex(state.targetClassIndex);
+        const contributorLine = currentPrediction
+          ? `Largest raw ImageNet contributors on this image: <strong>${currentPrediction.contributorText}</strong>.`
+          : "";
+        mainCaption.innerHTML = `
+          <strong>${sampleText}.</strong> ${state.currentImageHint}
+          ${labelGroupingNote()}
+          The current explanation targets <strong>${state.targetClassIndex == null ? "the selected animal label" : labelForIndex(state.targetClassIndex)}</strong>
+          at <strong>${probabilityText}</strong>. The last convolutional tensor feeding Grad-CAM is
+          <strong>${layerText}</strong>, so the overlay is necessarily coarser than the image.
+          ${contributorLine}
+        `;
+      }
+
+      function renderStats() {
+        const lines = [];
+        lines.push("Predictions come from MobileNet trained on the 1,000 ImageNet classes.");
+        lines.push("The animal labels shown here are display labels built by summing related raw ImageNet classes.");
+        lines.push("Open a prediction row to see which raw ImageNet classes contributed most to that broader label.");
+        lines.push(`Input image size: ${IMAGE_SIZE} × ${IMAGE_SIZE}`);
+        lines.push(`Grad-CAM uses the final convolutional layer to build a coarse ${mapDescriptionLabel()}.`);
+        if (state.lastConvShape) {
+          lines.push(`Current animal-map resolution: ${state.lastConvShape[0]} × ${state.lastConvShape[1]}`);
+        }
+        statLines.innerHTML = lines.map((line) => `<div class="stat-line">${line}</div>`).join("");
+      }
+
+      function redrawHeatmaps() {
+        opacityValue.textContent = opacityRange.value;
+        thresholdValue.textContent = thresholdRange.value;
+        paintHeatmap(classMapCanvas, state.lowResMap, {
+          smooth: false,
+          threshold: 0,
+          opacity: 1,
+          showGrid: true
+        });
+        paintHeatmap(overlayCanvas, state.lowResMap, {
+          smooth: true,
+          threshold: Number(thresholdRange.value),
+          opacity: Number(opacityRange.value),
+          showGrid: false
+        });
+        renderMapStats();
+      }
+
+      async function analyzeCurrentImage(requestedClassIndex = null) {
+        if (!state.modelReady || !state.imageReady || !sourceImage.naturalWidth) {
+          return;
+        }
+        setBusy(true);
+        setStatus([
+          { text: "Running inference and recomputing Grad-CAM...", kind: "strong" },
+          { text: "This can take a moment the first time, especially while the browser warms up WebGL." }
+        ]);
+
+        const start = performance.now();
+        const input = preprocessImage(sourceImage);
+        let predictionTensor = null;
+        let convTensor = null;
+        let gradTensor = null;
+        let pooledTensor = null;
+        let heatmapTensor = null;
+        let targetIndexTensor = null;
+
+        try {
+          predictionTensor = asTensor(state.model.predict(input)).reshape([-1]);
+          const rawScores = Array.from(await predictionTensor.data());
+          state.classIndexOffset = rawScores.length === state.labels.length + 1 ? 1 : 0;
+
+          let probabilities = rawScores;
+          const sum = rawScores.reduce((acc, value) => acc + value, 0);
+          const looksLikeProbabilities = rawScores.every((value) => value >= 0) && sum > 0.99 && sum < 1.01;
+          if (!looksLikeProbabilities) {
+            const probsTensor = tf.softmax(predictionTensor);
+            probabilities = Array.from(await probsTensor.data());
+            probsTensor.dispose();
+          }
+
+          const allGroupedPredictions = groupProbabilities(probabilities);
+          state.predictions = allGroupedPredictions
+            .sort((a, b) => b.prob - a.prob)
+            .slice(0, Math.min(8, state.animalGroups.length));
+          state.animalProbabilityMass = allGroupedPredictions.reduce((total, entry) => total + entry.prob, 0);
+          const fallbackClass = state.predictions.length ? state.predictions[0].index : 0;
+          state.targetClassIndex = requestedClassIndex != null ? requestedClassIndex : fallbackClass;
+          state.targetProbability = state.predictions.find((entry) => entry.index === state.targetClassIndex)?.prob ?? null;
+
+          convTensor = asTensor(state.convModel.predict(input));
+          const targetGroup = groupForIndex(state.targetClassIndex);
+          if (!targetGroup) {
+            throw new Error("Could not find the selected animal label.");
+          }
+          const targetOutputIndices = outputIndicesForGroup(targetGroup);
+          targetIndexTensor = tf.tensor1d(targetOutputIndices, "int32");
+          const gradFunction = tf.grad((convInput) => {
+            const tailOut = asTensor(state.tailModel.apply(convInput)).reshape([-1]);
+            return tf.gather(tailOut, targetIndexTensor).sum();
+          });
+          gradTensor = gradFunction(convTensor);
+          pooledTensor = gradTensor.mean([0, 1, 2]);
+
+          heatmapTensor = tf.tidy(() => {
+            const activations = convTensor.squeeze([0]);
+            const weights = pooledTensor.reshape([1, 1, -1]);
+            const weighted = activations.mul(weights).sum(-1);
+            const relu = weighted.relu();
+            return relu.div(relu.max().add(1e-8));
+          });
+
+          state.lowResMap = await heatmapTensor.array();
+          state.inferenceMs = performance.now() - start;
+
+          renderClassOptions();
+          renderPredictions();
+          renderOverlayTitle();
+          renderCaption();
+          renderStats();
+          redrawHeatmaps();
+
+          setStatus([
+            { text: "Grad-CAM updated.", kind: "strong" },
+            { text: `Explaining ${labelForIndex(state.targetClassIndex)} on ${state.uploaded ? "the uploaded image" : state.currentImageLabel}.` },
+            { text: animalWarningLevel() === "low"
+              ? "The model sees a reasonably clear animal match in this image."
+              : "The model is less certain that this image contains one of the supported animal labels." }
+          ]);
+        } catch (error) {
+          console.error(error);
+          setStatus([
+            { text: "Inference failed.", kind: "strong" },
+            { text: String(error), kind: "warn" },
+            { text: "Try a clearer animal photo with one dominant subject, or reload the page." }
+          ]);
+        } finally {
+          if (targetIndexTensor) {
+            targetIndexTensor.dispose();
+          }
+          tf.dispose([input, predictionTensor, convTensor, gradTensor, pooledTensor, heatmapTensor]);
+          setBusy(false);
+        }
+      }
+
+      function setImageSource(src, label, hint, uploaded) {
+        state.currentImageLabel = label;
+        state.currentImageHint = hint;
+        state.uploaded = uploaded;
+        state.imageReady = false;
+        sourceImage.src = src;
+        overlayImage.src = src;
+      }
+
+      function loadCurrentSample() {
+        const sample = getSampleById(sampleSelect.value);
+        state.sampleId = sample.id;
+        setImageSource(sample.path, sample.label, sample.hint, false);
+      }
+
+      sourceImage.addEventListener("load", async () => {
+        state.imageReady = true;
+        updateImageAspect();
+        renderCaption();
+        redrawHeatmaps();
+        if (state.modelReady) {
+          await analyzeCurrentImage();
+        }
+      });
+
+      overlayImage.addEventListener("load", () => {
+        updateImageAspect();
+        redrawHeatmaps();
+      });
+
+      sampleSelect.addEventListener("change", () => {
+        loadCurrentSample();
+      });
+
+      uploadInput.addEventListener("change", (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) {
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          setImageSource(
+            String(reader.result),
+            "Uploaded image",
+            "Uploaded images work best when they show one clear animal from a common category such as dog, cat, bird, horse, fish, reptile, or insect.",
+            true
+          );
+        };
+        reader.readAsDataURL(file);
+      });
+
+      classSelect.addEventListener("change", async () => {
+        const classIndex = Number(classSelect.value);
+        if (!Number.isNaN(classIndex)) {
+          await analyzeCurrentImage(classIndex);
+        }
+      });
+
+      opacityRange.addEventListener("input", redrawHeatmaps);
+      thresholdRange.addEventListener("input", redrawHeatmaps);
+
+      analyzeBtn.addEventListener("click", async () => {
+        const requested = classSelect.value ? Number(classSelect.value) : null;
+        await analyzeCurrentImage(requested);
+      });
+
+      topClassBtn.addEventListener("click", async () => {
+        if (!state.predictions.length) {
+          return;
+        }
+        const topIndex = state.predictions[0].index;
+        classSelect.value = String(topIndex);
+        await analyzeCurrentImage(topIndex);
+      });
+
+      resetBtn.addEventListener("click", () => {
+        sampleSelect.value = state.sampleId;
+        loadCurrentSample();
+      });
+
+      window.addEventListener("resize", redrawHeatmaps);
+
+      function init() {
+        renderStaticControls();
+        renderStats();
+        loadCurrentSample();
+        setBusy(true);
+        loadModel();
+      }
+
+      init();
+    </script>
+  </body>
+</html>

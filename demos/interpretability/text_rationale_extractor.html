@@ -1,0 +1,873 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Text Rationale Extractor</title>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 390px;
+        gap: 14px;
+        min-height: 100vh;
+        padding: 14px;
+      }
+      .visuals {
+        display: grid;
+        grid-template-rows: minmax(360px, auto) minmax(380px, auto);
+        gap: 14px;
+      }
+      .lower-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        align-items: stretch;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .plot-card {
+        display: grid;
+        grid-template-rows: auto minmax(340px, 1fr);
+      }
+      .card-header {
+        padding: 12px 14px 0;
+      }
+      .card-header h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .card-header p {
+        margin: 6px 0 0;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .review-wrap {
+        padding: 14px;
+      }
+      .review-card {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+        background: #f8fafc;
+      }
+      .source-box {
+        display: grid;
+        gap: 4px;
+        margin-bottom: 12px;
+        padding: 10px 12px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+      }
+      .source-title {
+        font-size: 15px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .source-meta {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .source-meta a {
+        color: #2563eb;
+        text-decoration: none;
+      }
+      .source-meta a:hover {
+        text-decoration: underline;
+      }
+      .token-stream {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px 6px;
+        line-height: 1.8;
+      }
+      .token {
+        padding: 3px 6px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+      }
+      .token:hover {
+        transform: translateY(-1px);
+        border-color: #cbd5e1;
+      }
+      .token.selected {
+        border-color: #0f172a;
+        box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
+      }
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .legend-item {
+        font-size: 12px;
+        border-radius: 999px;
+        padding: 4px 8px;
+        border: 1px solid var(--border);
+        background: #fff;
+        color: #334155;
+      }
+      .mini-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+      .mini-stat {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px;
+        background: #fff;
+      }
+      .mini-stat-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+      .mini-stat-value {
+        font-size: 22px;
+        font-weight: 700;
+      }
+      .plot {
+        width: 100%;
+        height: 100%;
+        min-height: 340px;
+      }
+      .panel {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+        background: #fff;
+      }
+      .panel h1 {
+        margin: 0 0 8px 0;
+        font-size: 24px;
+      }
+      .howto {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.55;
+        margin-bottom: 12px;
+      }
+      .control {
+        margin-bottom: 12px;
+      }
+      .control label {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 4px;
+        font-size: 13px;
+      }
+      .control select {
+        width: 100%;
+        padding: 7px 8px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 13px;
+      }
+      .slider-value {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .button-row {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .stat-box,
+      .note-box {
+        margin-top: 12px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+      }
+      .stat-box h3,
+      .note-box h3 {
+        margin: 0 0 8px 0;
+        font-size: 14px;
+      }
+      .stat-line,
+      .note-line {
+        font-size: 13px;
+        color: #334155;
+        line-height: 1.5;
+      }
+      @media (max-width: 1080px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 840px) {
+        .lower-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 640px) {
+        .button-row,
+        .mini-stats {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+<section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>Why should a rationale be both concise and sufficient rather than simply as long as possible?</li>
+<li>What do the rationale-only and complement-only predictions tell us about faithfulness?</li>
+<li>How can performance, story, and style in the same review rely on different evidence spans from the same full review?</li>
+<li>Why might a model highlight tokens that are statistically useful but not especially satisfying to a human reader?</li>
+<li>How should you interpret a rationale that preserves the prediction only when it includes many tokens?</li>
+    </ul>
+  </div>
+</section>
+
+    <div class="container">
+      <div class="visuals">
+        <section class="card">
+          <div class="card-header">
+            <h2>Public-Domain Review And Extracted Evidence</h2>
+            <p>
+              Click tokens to build a manual rationale, or use the auto top-k extractor.
+              This version uses full public-domain movie reviews with light OCR cleanup
+              for readability. Color indicates contribution direction for the chosen
+              aspect, and the bold outline indicates which tokens currently belong to the rationale.
+            </p>
+          </div>
+          <div class="review-wrap">
+            <div class="review-card">
+              <div class="source-box">
+                <div id="sourceTitle" class="source-title"></div>
+                <div id="sourceMeta" class="source-meta"></div>
+              </div>
+              <div id="tokenStream" class="token-stream"></div>
+              <div class="legend">
+                <div class="legend-item">Green = positive contribution</div>
+                <div class="legend-item">Red = negative contribution</div>
+                <div class="legend-item">Gray = near-neutral token</div>
+                <div class="legend-item">Dark outline = selected rationale</div>
+              </div>
+              <div class="mini-stats">
+                <div class="mini-stat">
+                  <div class="mini-stat-label">Full prediction</div>
+                  <div id="fullValue" class="mini-stat-value"></div>
+                </div>
+                <div class="mini-stat">
+                  <div class="mini-stat-label">Rationale-only</div>
+                  <div id="selectedValue" class="mini-stat-value"></div>
+                </div>
+                <div class="mini-stat">
+                  <div class="mini-stat-label">Complement-only</div>
+                  <div id="complementValue" class="mini-stat-value"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="lower-grid">
+          <section class="card plot-card">
+            <div class="card-header">
+              <h2>Token Contributions</h2>
+              <p>
+                The bar chart shows which tokens support or oppose the chosen aspect
+                prediction. The automatic extractor ranks by absolute contribution.
+              </p>
+            </div>
+            <div id="contribPlot" class="plot"></div>
+          </section>
+
+          <section class="card plot-card">
+            <div class="card-header">
+              <h2>Prediction Comparison</h2>
+              <p>
+                Compare the full review score to the score from only the selected rationale
+                and the score from the remaining text with the rationale removed.
+              </p>
+            </div>
+            <div id="predictionPlot" class="plot"></div>
+          </section>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <h1>Text Rationale Extractor</h1>
+        <div class="howto">
+          The lecture deck uses review text with highlighted rationales to illustrate
+          concise extractive explanations. This version uses full public-domain movie
+          reviews: choose a film, inspect the source note, then compare the full review
+          to a short rationale and to the leftover text after the rationale is removed.
+        </div>
+
+        <div class="control">
+          <label for="reviewSelect">Movie</label>
+          <select id="reviewSelect">
+            <option value="ladies_of_leisure">Ladies of Leisure</option>
+            <option value="man_from_blankleys">The Man From Blankley's</option>
+            <option value="rio_rita">Rio Rita</option>
+            <option value="his_glorious_night">His Glorious Night</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label for="aspectSelect">Aspect</label>
+          <select id="aspectSelect">
+            <option value="performance">Performance</option>
+            <option value="story">Story</option>
+            <option value="style">Style</option>
+          </select>
+        </div>
+
+        <div class="control">
+          <label for="budgetRange">
+            <span>Auto rationale budget k</span>
+            <span id="budgetValue" class="slider-value"></span>
+          </label>
+          <input id="budgetRange" type="range" min="2" max="16" step="1" value="7">
+        </div>
+
+        <div class="button-row">
+          <button id="autoBtn" type="button">Auto top-k</button>
+          <button id="clearBtn" type="button">Clear</button>
+          <button id="resetBtn" type="button">Reset movie</button>
+        </div>
+
+        <div class="note-box">
+          <h3>Reading The Rationale</h3>
+          <div id="noteLines"></div>
+        </div>
+
+        <div class="stat-box">
+          <h3>Faithfulness Signals</h3>
+          <div id="statLines"></div>
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      const tokenStream = document.getElementById("tokenStream");
+      const fullValue = document.getElementById("fullValue");
+      const selectedValue = document.getElementById("selectedValue");
+      const complementValue = document.getElementById("complementValue");
+      const contribPlot = document.getElementById("contribPlot");
+      const predictionPlot = document.getElementById("predictionPlot");
+      const reviewSelect = document.getElementById("reviewSelect");
+      const aspectSelect = document.getElementById("aspectSelect");
+      const budgetRange = document.getElementById("budgetRange");
+      const budgetValue = document.getElementById("budgetValue");
+      const autoBtn = document.getElementById("autoBtn");
+      const clearBtn = document.getElementById("clearBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const sourceTitle = document.getElementById("sourceTitle");
+      const sourceMeta = document.getElementById("sourceMeta");
+      const noteLines = document.getElementById("noteLines");
+      const statLines = document.getElementById("statLines");
+
+      const REVIEWS = {
+        ladies_of_leisure: {
+          title: "Ladies of Leisure (1930)",
+          publication: "The Evening Star",
+          date: "April 13, 1930",
+          source_url: "https://chroniclingamerica.loc.gov/lccn/sn83045462/1930-04-13/ed-1/seq-57/",
+          text: "This picture, which has not yet been exhibited in New York, or anywhere except in Washington and Los Angeles, is a much better production than its stage parent, Belasco's 'Ladies of the Evening.' The story has been changed, switched around and made into a movie, a treatment which should be required of stage productions before the screen versions are made. The average stage show will not stand unchanged transfer to the studio and the sound picture. Now that the vehicle has received a word or two, we get down to the real subject, a new star of the photoplay. Barbara Stanwyck, by her work in 'Ladies of Leisure,' steps from the featured players to the spotlight of the movie world. Her success is immediate, her work so thoroughly good that she will find herself in the select group headed by Greta Garbo. Combined with Miss Stanwyck's cleverness in handling her role is her unusual beauty and grace. There is another bit in 'Ladies of Leisure' which is handled by a capable character actor, Lowell Sherman. It is about the best thing he had done, showing that an actor never grows too old to improve.",
+        },
+        man_from_blankleys: {
+          title: "The Man From Blankley's (1930)",
+          publication: "The Evening Star",
+          date: "April 13, 1930",
+          source_url: "https://chroniclingamerica.loc.gov/lccn/sn83045462/1930-04-13/ed-1/seq-57/",
+          text: "New York critics and theater audiences are talking about John Barrymore, comedian. They have discovered that this distinguished actor is a real comedian, the fact having developed through his work in the new picture, 'The Man From Blankley's.' The star's vehicle came into a New York theater unheralded. The producers, Warner Brothers, seemed to have an idea of exhibiting the picture cold in the metropolis. It was given no advance publicity and very little advertising. Then New York discovered that John Barrymore was a comedian. But the critics should have gone back over Mr. Barrymore's early stage career. Who can forget his comedy parts in 'The Fortune Hunter,' 'A Slice of Life,' 'The Affairs of Anatol,' 'The Man From Mexico' and 'Here Comes the Bride'?",
+        },
+        rio_rita: {
+          title: "Rio Rita (1929)",
+          publication: "The Evening Star",
+          date: "October 13, 1929",
+          source_url: "https://chroniclingamerica.loc.gov/lccn/sn83045462/1929-10-13/ed-1/seq-59/",
+          text: "Bebe Daniels gives an excellent portrayal of Rita, and she sings the role with a dash and depth of feeling that cannot help but win for her many new admirers. John Boles is splendid. The two comics, Bert Wheeler and Bobby Woolsey, do their stuff in a fashion that is sure fire. Luther Reed did a thorough and workmanlike job at directing, and the technicolor work is unusually fine. 'Rio Rita' is extravagantly produced. We could write columns about it and still say no more than that, to date, it is the perfect screen musical.",
+        },
+        his_glorious_night: {
+          title: "His Glorious Night (1929)",
+          publication: "The Evening Star",
+          date: "October 13, 1929",
+          source_url: "https://chroniclingamerica.loc.gov/lccn/sn83045462/1929-10-13/ed-1/seq-59/",
+          text: "For some reason or other, John Gilbert has gone boom as a screen lover. You can blame it upon the talkies, or perhaps the star has lost his technique; but, anyway, his 'His Glorious Night' effort turned from rather serious drama to comedy. John came to Washington with a wonderful reputation. His work in the silents had stamped him as the greatest of all pantomime lovers, so there was a great outpouring of admirers to hear impassioned words when 'His Glorious Night' came to town. By his one-week stand, John has just about lost his reputation. His admirers, watching him go through long and ardent scenes, first giggled, then they laughed, and perhaps they howled. In the silents, the love scenes could be drawn out just as long as desired; they were dreamy affairs with no human voices to break the spell. But audible love-making is a bit boresome to the spectators. The screen stories must be produced in closer relation to stage plays. The screen has become a stage, with its sound effects. John Gilbert was unlucky in becoming the subject of an operation in which the patient died, an audible passing away.",
+        },
+      };
+
+      const TOKEN_WEIGHTS = {
+        picture: { performance: 0.0, story: 0.08, style: 0.18 },
+        production: { performance: 0.0, story: 0.08, style: 0.22 },
+        stage: { performance: 0.0, story: 0.16, style: 0.10 },
+        parent: { performance: 0.0, story: 0.10, style: 0.0 },
+        story: { performance: 0.0, story: 0.36, style: 0.0 },
+        changed: { performance: 0.0, story: 0.18, style: 0.0 },
+        switched: { performance: 0.0, story: 0.14, style: 0.0 },
+        treatment: { performance: 0.0, story: 0.18, style: 0.08 },
+        screen: { performance: 0.0, story: 0.10, style: 0.18 },
+        studio: { performance: 0.0, story: 0.06, style: 0.12 },
+        sound: { performance: 0.0, story: 0.10, style: 0.28 },
+        vehicle: { performance: 0.0, story: 0.10, style: 0.0 },
+        subject: { performance: 0.0, story: 0.06, style: 0.0 },
+        star: { performance: 0.18, story: 0.0, style: 0.06 },
+        photoplay: { performance: 0.0, story: 0.0, style: 0.24 },
+        barbara: { performance: 0.14, story: 0.0, style: 0.0 },
+        stanwyck: { performance: 0.60, story: 0.0, style: 0.0 },
+        work: { performance: 0.18, story: 0.06, style: 0.06 },
+        featured: { performance: 0.12, story: 0.0, style: 0.0 },
+        players: { performance: 0.14, story: 0.0, style: 0.0 },
+        spotlight: { performance: 0.16, story: 0.0, style: 0.12 },
+        movie: { performance: 0.0, story: 0.0, style: 0.12 },
+        world: { performance: 0.06, story: 0.0, style: 0.04 },
+        success: { performance: 0.24, story: 0.0, style: 0.0 },
+        immediate: { performance: 0.16, story: 0.0, style: 0.0 },
+        thoroughly: { performance: 0.14, story: 0.0, style: 0.0 },
+        good: { performance: 0.18, story: 0.08, style: 0.0 },
+        select: { performance: 0.08, story: 0.0, style: 0.0 },
+        group: { performance: 0.06, story: 0.0, style: 0.0 },
+        cleverness: { performance: 0.34, story: 0.0, style: 0.0 },
+        handling: { performance: 0.18, story: 0.0, style: 0.0 },
+        role: { performance: 0.22, story: 0.08, style: 0.0 },
+        unusual: { performance: 0.0, story: 0.0, style: 0.14 },
+        beauty: { performance: 0.16, story: 0.0, style: 0.30 },
+        grace: { performance: 0.18, story: 0.0, style: 0.28 },
+        capable: { performance: 0.28, story: 0.0, style: 0.0 },
+        character: { performance: 0.18, story: 0.08, style: 0.0 },
+        lowell: { performance: 0.34, story: 0.0, style: 0.0 },
+        sherman: { performance: 0.44, story: 0.0, style: 0.0 },
+        best: { performance: 0.20, story: 0.04, style: 0.0 },
+        improve: { performance: 0.20, story: 0.0, style: 0.0 },
+        critics: { performance: 0.0, story: 0.0, style: 0.04 },
+        audiences: { performance: 0.0, story: 0.0, style: 0.04 },
+        talking: { performance: 0.0, story: 0.0, style: 0.06 },
+        john: { performance: 0.12, story: 0.0, style: 0.0 },
+        barrymore: { performance: 0.58, story: 0.0, style: 0.0 },
+        discovered: { performance: 0.16, story: 0.0, style: 0.0 },
+        distinguished: { performance: 0.34, story: 0.0, style: 0.0 },
+        actor: { performance: 0.48, story: 0.0, style: 0.0 },
+        real: { performance: 0.10, story: 0.0, style: 0.0 },
+        comedian: { performance: 0.54, story: 0.12, style: 0.04 },
+        theater: { performance: 0.0, story: 0.0, style: 0.08 },
+        unheralded: { performance: 0.0, story: 0.0, style: -0.12 },
+        producers: { performance: 0.0, story: 0.0, style: 0.04 },
+        cold: { performance: 0.0, story: 0.0, style: -0.08 },
+        metropolis: { performance: 0.0, story: 0.0, style: 0.04 },
+        publicity: { performance: 0.0, story: 0.0, style: -0.10 },
+        advertising: { performance: 0.0, story: 0.0, style: -0.12 },
+        early: { performance: 0.0, story: 0.0, style: 0.04 },
+        comedy: { performance: 0.12, story: 0.22, style: 0.0 },
+        parts: { performance: 0.10, story: 0.08, style: 0.0 },
+        fortune: { performance: 0.10, story: 0.0, style: 0.0 },
+        hunter: { performance: 0.10, story: 0.0, style: 0.0 },
+        affairs: { performance: 0.0, story: 0.12, style: 0.0 },
+        bride: { performance: 0.0, story: 0.08, style: 0.0 },
+        bebe: { performance: 0.14, story: 0.0, style: 0.0 },
+        daniels: { performance: 0.58, story: 0.0, style: 0.0 },
+        excellent: { performance: 0.30, story: 0.0, style: 0.06 },
+        portrayal: { performance: 0.52, story: 0.0, style: 0.0 },
+        sings: { performance: 0.18, story: 0.0, style: 0.06 },
+        dash: { performance: 0.18, story: 0.0, style: 0.08 },
+        depth: { performance: 0.22, story: 0.10, style: 0.0 },
+        feeling: { performance: 0.18, story: 0.10, style: 0.0 },
+        admirers: { performance: 0.12, story: 0.0, style: 0.0 },
+        boles: { performance: 0.54, story: 0.0, style: 0.0 },
+        splendid: { performance: 0.42, story: 0.0, style: 0.04 },
+        comics: { performance: 0.16, story: 0.18, style: 0.0 },
+        bert: { performance: 0.18, story: 0.0, style: 0.0 },
+        wheeler: { performance: 0.38, story: 0.0, style: 0.0 },
+        bobby: { performance: 0.18, story: 0.0, style: 0.0 },
+        woolsey: { performance: 0.38, story: 0.0, style: 0.0 },
+        sure: { performance: 0.12, story: 0.06, style: 0.0 },
+        fire: { performance: 0.14, story: 0.10, style: 0.0 },
+        luther: { performance: 0.0, story: 0.0, style: 0.06 },
+        reed: { performance: 0.0, story: 0.0, style: 0.06 },
+        thorough: { performance: 0.0, story: 0.08, style: 0.20 },
+        workmanlike: { performance: 0.0, story: 0.06, style: 0.18 },
+        directing: { performance: 0.0, story: 0.10, style: 0.34 },
+        technicolor: { performance: 0.0, story: 0.0, style: 0.64 },
+        unusually: { performance: 0.0, story: 0.0, style: 0.16 },
+        fine: { performance: 0.08, story: 0.0, style: 0.30 },
+        extravagantly: { performance: 0.0, story: 0.0, style: 0.48 },
+        produced: { performance: 0.0, story: 0.0, style: 0.34 },
+        write: { performance: 0.0, story: 0.0, style: 0.04 },
+        columns: { performance: 0.0, story: 0.0, style: 0.04 },
+        more: { performance: 0.0, story: 0.06, style: 0.0 },
+        date: { performance: 0.0, story: 0.0, style: 0.04 },
+        perfect: { performance: 0.10, story: 0.12, style: 0.18 },
+        musical: { performance: 0.0, story: 0.10, style: 0.34 },
+        boom: { performance: 0.0, story: -0.18, style: 0.0 },
+        lover: { performance: 0.0, story: 0.0, style: 0.06 },
+        blame: { performance: 0.0, story: -0.14, style: 0.0 },
+        talkies: { performance: 0.0, story: 0.0, style: 0.34 },
+        technique: { performance: -0.18, story: 0.0, style: 0.0 },
+        effort: { performance: -0.08, story: -0.12, style: 0.0 },
+        turned: { performance: 0.0, story: -0.18, style: 0.0 },
+        rather: { performance: 0.0, story: -0.06, style: 0.0 },
+        serious: { performance: 0.0, story: 0.18, style: 0.0 },
+        drama: { performance: 0.0, story: 0.30, style: 0.0 },
+        reputation: { performance: 0.08, story: 0.0, style: 0.0 },
+        silents: { performance: 0.0, story: 0.0, style: 0.26 },
+        greatest: { performance: 0.18, story: 0.0, style: 0.0 },
+        pantomime: { performance: 0.32, story: 0.0, style: 0.0 },
+        lovers: { performance: 0.0, story: 0.0, style: 0.04 },
+        impassioned: { performance: 0.10, story: 0.14, style: 0.0 },
+        words: { performance: 0.0, story: 0.10, style: 0.0 },
+        oneweek: { performance: 0.0, story: 0.0, style: 0.0 },
+        watching: { performance: 0.0, story: 0.0, style: 0.04 },
+        long: { performance: 0.0, story: -0.24, style: 0.0 },
+        ardent: { performance: 0.0, story: -0.08, style: 0.0 },
+        scenes: { performance: 0.0, story: 0.08, style: 0.12 },
+        first: { performance: 0.0, story: 0.0, style: 0.0 },
+        giggled: { performance: -0.24, story: -0.22, style: 0.0 },
+        laughed: { performance: -0.34, story: -0.24, style: 0.0 },
+        perhaps: { performance: 0.0, story: 0.0, style: 0.0 },
+        howled: { performance: -0.46, story: -0.34, style: 0.0 },
+        dreamy: { performance: 0.0, story: 0.06, style: 0.16 },
+        human: { performance: 0.0, story: 0.0, style: 0.0 },
+        voices: { performance: 0.0, story: 0.0, style: 0.22 },
+        break: { performance: 0.0, story: -0.08, style: 0.0 },
+        spell: { performance: 0.0, story: 0.10, style: 0.16 },
+        audible: { performance: 0.0, story: 0.0, style: 0.18 },
+        lovemaking: { performance: 0.0, story: -0.18, style: 0.0 },
+        bit: { performance: 0.0, story: 0.0, style: 0.0 },
+        boresome: { performance: 0.0, story: -0.50, style: -0.16 },
+        spectators: { performance: 0.0, story: 0.0, style: 0.0 },
+        relation: { performance: 0.0, story: 0.18, style: 0.0 },
+        effects: { performance: 0.0, story: 0.0, style: 0.24 },
+        operation: { performance: 0.0, story: -0.16, style: 0.0 },
+        patient: { performance: 0.0, story: -0.18, style: 0.0 },
+        died: { performance: 0.0, story: -0.28, style: 0.0 },
+        passing: { performance: 0.0, story: -0.10, style: 0.0 },
+        away: { performance: 0.0, story: -0.08, style: 0.0 },
+      };
+
+      const state = {
+        selectedIndices: new Set(),
+      };
+
+      function sanitize(token) {
+        return token.toLowerCase().replace(/[^a-z]/g, "");
+      }
+
+      function clampRating(value) {
+        return Math.max(1, Math.min(5, value));
+      }
+
+      function getTokens() {
+        return REVIEWS[reviewSelect.value].text.split(/\s+/);
+      }
+
+      function renderSource(review) {
+        sourceTitle.textContent = review.title;
+        sourceMeta.innerHTML = `${review.publication}, ${review.date}. Public-domain newspaper review with light OCR cleanup for readability. <a href="${review.source_url}" target="_blank" rel="noreferrer">Open source page</a>`;
+      }
+
+      function prettyAspect(aspect) {
+        if (aspect === "performance") return "Performance";
+        if (aspect === "story") return "Story";
+        if (aspect === "style") return "Style";
+        return aspect;
+      }
+
+      function getContribution(token, aspect) {
+        const key = sanitize(token);
+        if (!key || !TOKEN_WEIGHTS[key]) return 0;
+        return TOKEN_WEIGHTS[key][aspect] || 0;
+      }
+
+      function scoreFromIndices(tokens, aspect, indices) {
+        const base = 3.0;
+        let total = base;
+        indices.forEach((idx) => {
+          total += getContribution(tokens[idx], aspect);
+        });
+        return clampRating(total);
+      }
+
+      function allIndices(tokens) {
+        return tokens.map((_, idx) => idx);
+      }
+
+      function autoSelect() {
+        const tokens = getTokens();
+        const aspect = aspectSelect.value;
+        const ranked = tokens.map((token, idx) => ({
+          idx,
+          token,
+          contribution: getContribution(token, aspect),
+          absContribution: Math.abs(getContribution(token, aspect)),
+        })).sort((a, b) => b.absContribution - a.absContribution);
+        state.selectedIndices = new Set(
+          ranked
+            .filter((item) => item.absContribution > 0.02)
+            .slice(0, Number(budgetRange.value))
+            .map((item) => item.idx)
+        );
+      }
+
+      function tokenColor(contribution) {
+        const strength = Math.min(1, Math.abs(contribution) / 0.6);
+        if (Math.abs(contribution) < 0.03) {
+          const gray = Math.round(247 - 12 * strength);
+          return `rgb(${gray}, ${gray}, ${gray})`;
+        }
+        if (contribution > 0) {
+          const g = Math.round(255 - 70 * strength);
+          return `rgb(220, ${g}, 220)`;
+        }
+        const r = Math.round(255 - 18 * strength);
+        return `rgb(${r}, 224, 224)`;
+      }
+
+      function renderTokens(tokens, aspect) {
+        tokenStream.innerHTML = tokens.map((token, idx) => {
+          const contribution = getContribution(token, aspect);
+          const selected = state.selectedIndices.has(idx) ? " selected" : "";
+          return `<span class="token${selected}" data-idx="${idx}" style="background:${tokenColor(contribution)};">${token}</span>`;
+        }).join("");
+        tokenStream.querySelectorAll(".token").forEach((el) => {
+          el.addEventListener("click", () => {
+            const idx = Number(el.dataset.idx);
+            if (state.selectedIndices.has(idx)) state.selectedIndices.delete(idx);
+            else state.selectedIndices.add(idx);
+            render();
+          });
+        });
+      }
+
+      function renderContributionPlot(tokens, aspect) {
+        const aspectLabel = prettyAspect(aspect);
+        const ranked = tokens.map((token, idx) => ({
+          idx,
+          token: sanitize(token) || token,
+          contribution: getContribution(token, aspect),
+        })).filter((item) => Math.abs(item.contribution) > 0.01)
+          .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution))
+          .slice(0, 12);
+
+        Plotly.react(
+          contribPlot,
+          [
+            {
+              type: "bar",
+              x: ranked.map((item) => item.token),
+              y: ranked.map((item) => item.contribution),
+              marker: {
+                color: ranked.map((item) => (
+                  state.selectedIndices.has(item.idx)
+                    ? (item.contribution >= 0 ? "#16a34a" : "#ef4444")
+                    : (item.contribution >= 0 ? "#86efac" : "#fca5a5")
+                )),
+              },
+              hovertemplate: "%{x}<br>contribution=%{y:.3f}<extra></extra>",
+            },
+          ],
+          {
+            margin: { l: 52, r: 18, t: 18, b: 54 },
+            paper_bgcolor: "#ffffff",
+            plot_bgcolor: "#ffffff",
+            xaxis: { title: "token" },
+            yaxis: { title: `${aspectLabel} contribution`, zerolinecolor: "#c7d2e0" },
+          },
+          { responsive: true, displayModeBar: false }
+        );
+      }
+
+      function renderPredictionPlot(fullScore, selectedScore, complementScore) {
+        Plotly.react(
+          predictionPlot,
+          [
+            {
+              type: "bar",
+              x: ["Full review", "Rationale only", "Complement only", "Base prior"],
+              y: [fullScore, selectedScore, complementScore, 3.0],
+              marker: { color: ["#2563eb", "#10b981", "#f97316", "#94a3b8"] },
+              hovertemplate: "%{x}<br>score=%{y:.2f}<extra></extra>",
+            },
+          ],
+          {
+            margin: { l: 52, r: 18, t: 18, b: 54 },
+            paper_bgcolor: "#ffffff",
+            plot_bgcolor: "#ffffff",
+            xaxis: { title: "input view" },
+            yaxis: { title: "aspect rating", range: [1, 5], zerolinecolor: "#c7d2e0" },
+          },
+          { responsive: true, displayModeBar: false }
+        );
+      }
+
+      function renderNotes(tokens, aspect, fullScore, selectedScore, complementScore) {
+        const aspectLabel = prettyAspect(aspect);
+        const rankedSelected = [...state.selectedIndices]
+          .map((idx) => ({
+            token: sanitize(tokens[idx]) || tokens[idx],
+            contribution: getContribution(tokens[idx], aspect),
+          }))
+          .sort((a, b) => Math.abs(b.contribution) - Math.abs(a.contribution));
+        const topPhrase = rankedSelected.slice(0, 4).map((item) => item.token).join(", ") || "no tokens selected";
+        noteLines.innerHTML = [
+          `The current rationale for ${aspectLabel} is driven most strongly by: ${topPhrase}.`,
+          `A small sufficiency gap means the selected span almost preserves the original prediction by itself.`,
+          `A large complement-only change means the selected span carries information that the rest of the review cannot fully replace.`,
+          `Different aspects of the same movie review can prefer different evidence spans, even when they share some tokens.`,
+        ].map((line) => `<div class="note-line">${line}</div>`).join("");
+      }
+
+      function renderStats(tokens, aspect, fullScore, selectedScore, complementScore) {
+        const aspectLabel = prettyAspect(aspect);
+        const selectedList = [...state.selectedIndices];
+        const all = new Set(allIndices(tokens));
+        selectedList.forEach((idx) => all.delete(idx));
+        const sufficiencyGap = Math.abs(fullScore - selectedScore);
+        const comprehensivenessGap = Math.abs(fullScore - complementScore);
+        const selectedContribution = selectedScore - 3.0;
+        const complementContribution = complementScore - 3.0;
+        statLines.innerHTML = [
+          `Selected rationale length: ${selectedList.length} tokens`,
+          `Sufficiency gap |full - rationale|: ${sufficiencyGap.toFixed(3)}`,
+          `Comprehensiveness gap |full - complement|: ${comprehensivenessGap.toFixed(3)}`,
+          `Selected contribution above prior: ${selectedContribution.toFixed(3)}`,
+          `Complement contribution above prior: ${complementContribution.toFixed(3)}`,
+          `Aspect currently being explained: ${aspectLabel}`,
+        ].map((line) => `<div class="stat-line">${line}</div>`).join("");
+      }
+
+      function render() {
+        const review = REVIEWS[reviewSelect.value];
+        const tokens = getTokens();
+        const aspect = aspectSelect.value;
+        const selectedIndices = [...state.selectedIndices];
+        const complementIndices = allIndices(tokens).filter((idx) => !state.selectedIndices.has(idx));
+        const fullScore = scoreFromIndices(tokens, aspect, allIndices(tokens));
+        const selectedScore = scoreFromIndices(tokens, aspect, selectedIndices);
+        const complementScore = scoreFromIndices(tokens, aspect, complementIndices);
+
+        budgetValue.textContent = budgetRange.value;
+        fullValue.textContent = fullScore.toFixed(2);
+        selectedValue.textContent = selectedScore.toFixed(2);
+        complementValue.textContent = complementScore.toFixed(2);
+
+        renderSource(review);
+        renderTokens(tokens, aspect);
+        renderContributionPlot(tokens, aspect);
+        renderPredictionPlot(fullScore, selectedScore, complementScore);
+        renderNotes(tokens, aspect, fullScore, selectedScore, complementScore);
+        renderStats(tokens, aspect, fullScore, selectedScore, complementScore);
+      }
+
+      function resetSelection() {
+        autoSelect();
+        render();
+      }
+
+      reviewSelect.addEventListener("change", resetSelection);
+      aspectSelect.addEventListener("change", resetSelection);
+      budgetRange.addEventListener("input", resetSelection);
+      autoBtn.addEventListener("click", resetSelection);
+      clearBtn.addEventListener("click", () => {
+        state.selectedIndices = new Set();
+        render();
+      });
+      resetBtn.addEventListener("click", () => {
+        reviewSelect.value = "ladies_of_leisure";
+        aspectSelect.value = "performance";
+        budgetRange.value = "7";
+        resetSelection();
+      });
+
+      resetSelection();
+    </script>
+  </body>
+</html>

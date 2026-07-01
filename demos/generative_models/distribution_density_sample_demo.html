@@ -1,0 +1,914 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Distribution vs Density vs Sample</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .demo-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 14px;
+}
+
+.demo-stage,
+.demo-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.demo-stage {
+  overflow: hidden;
+}
+
+.demo-panel {
+  padding: 14px;
+}
+
+.demo-panel h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.demo-howto {
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.demo-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1020px) {
+  .demo-shell {
+    grid-template-columns: 1fr;
+  }
+}
+      .demo-controls {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-control-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.demo-control,
+.demo-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-control-label,
+.demo-field label {
+  display: block;
+  font-size: 13px;
+}
+
+.demo-slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.demo-slider-value {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.demo-control input,
+.demo-control select,
+.demo-control textarea,
+.demo-field input,
+.demo-field select,
+.demo-field textarea {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-button-row {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-button-columns, 4), minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demo-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-card {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-callout {
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.demo-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.demo-card-body {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.demo-lines,
+.demo-list {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.demo-list-item {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.demo-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
+.demo-plot-grid {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-plot-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-plot-frame {
+  width: 100%;
+  height: 100%;
+  min-height: var(--demo-plot-min-height, 280px);
+}
+
+@media (max-width: 640px) {
+  .demo-button-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demo-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+      .distribution-stage {
+  --demo-plot-min-height: 320px;
+}
+
+.distribution-plots {
+  grid-template-rows: minmax(360px, 1fr) minmax(320px, 1fr);
+  min-height: 700px;
+}
+
+    </style>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <div class="demo-shell">
+  <section class="demo-stage distribution-stage">
+
+    <div class="demo-plot-grid distribution-plots">
+      <div class="demo-plot-card"><div id="theoryPlot" class="demo-plot-frame"></div></div>
+      <div class="demo-plot-card"><div id="samplePlot" class="demo-plot-frame"></div></div>
+    </div>
+  </section>
+  <aside class="demo-panel">
+    <h1>Distribution vs Density vs Sample</h1>
+    <div class="demo-howto">The top plot shows the full distribution. The highlighted location shows the density or probability mass there. The bottom plot shows actual sampled data points collected so far.</div>
+    <div class="demo-controls" style="--demo-control-columns: 2;">
+      <div class="demo-control demo-field">
+        <label class="demo-control-label" for="distributionSelect">Example distribution</label>
+        <select id="distributionSelect">
+          <option value="normal" selected="selected">Continuous normal</option>
+          <option value="bimodal">Continuous bimodal mixture</option>
+          <option value="categorical">Discrete categorical</option>
+        </select>
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="inspectRange"><span>Inspect location</span><span id="inspectValue" class="demo-slider-value"></span></label>
+        <input id="inspectRange" type="range" value="0" min="-4" max="4" step="0.05">
+      </div>
+    </div>
+    <div class="demo-button-row" style="--demo-button-columns: 4;">
+      <button id="drawOneBtn" type="button">Draw 1</button>
+      <button id="drawTwentyBtn" type="button">Draw 20</button>
+      <button id="drawHundredBtn" type="button">Draw 100</button>
+      <button id="resetBtn" type="button">Reset</button>
+    </div>
+    <div class="demo-card">
+      <h3>Vocabulary</h3>
+      <div >
+    <div id="definitionLines" class="demo-lines"></div>
+    <div class="demo-pill-row">
+      <div class="demo-pill">Distribution = full rule</div>
+      <div class="demo-pill">Density or mass = one location</div>
+      <div class="demo-pill">Sample = one actual draw</div>
+    </div>
+    </div>
+    </div>
+    <div class="demo-card">
+      <h3>Current Reading</h3>
+      <div id="statLines" class="demo-lines"></div>
+    </div>
+    <div class="demo-card">
+      <h3>Recent Samples</h3>
+      <div id="recentSamples" class="demo-card-body"></div>
+    </div>
+  </aside>
+</div>
+    <section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>What is the difference between the full distribution, the density or probability mass at one location, and a drawn sample?</li>
+<li>Why is the exact probability of one continuous point zero even though the density there can be high?</li>
+<li>How does the empirical histogram change as you draw more samples?</li>
+<li>For the discrete case, how is probability mass at a category different from density in the continuous case?</li>
+<li>When do the samples start to reflect the overall distribution more clearly?</li>
+    </ul>
+  </div>
+</section>
+    <script>
+      window.DEMO_PAYLOAD = {};
+    </script>
+    <script>
+      (() => {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  function resolve(target) {
+    if (typeof target === "string") {
+      return document.getElementById(target);
+    }
+    return target;
+  }
+
+  function setAttrs(node, attrs = {}) {
+    Object.entries(attrs).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
+        node.removeAttribute(key);
+        return;
+      }
+      node.setAttribute(key, String(value));
+    });
+    return node;
+  }
+
+  function setText(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.textContent = value;
+    }
+    return node;
+  }
+
+  function setHTML(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.innerHTML = value;
+    }
+    return node;
+  }
+
+  function create(tagName, attrs = {}, textContent = null) {
+    const node = document.createElementNS(SVG_NS, tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function append(parent, tagName, attrs = {}, textContent = null) {
+    const node = create(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function createHtml(tagName, attrs = {}, textContent = null) {
+    const node = document.createElement(tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function appendHtml(parent, tagName, attrs = {}, textContent = null) {
+    const node = createHtml(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function clear(target) {
+    const node = resolve(target);
+    while (node && node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+    return node;
+  }
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function query(selector, root = document) {
+    const node = resolve(root);
+    return node ? node.querySelector(selector) : null;
+  }
+
+  function queryAll(selector, root = document) {
+    const node = resolve(root);
+    return node ? [...node.querySelectorAll(selector)] : [];
+  }
+
+  function formatNumber(value, digits = 4) {
+    return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
+  }
+
+  function formatFixed(value, digits = 2) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(digits) : "?";
+  }
+
+  function readNumber(input, fallback = 0) {
+    const node = resolve(input);
+    if (!node) {
+      return fallback;
+    }
+    const value = Number(node.value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function clamp(value, minValue, maxValue) {
+    return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function renderItems(target, items, options = {}) {
+    const {
+      className = "demo-line",
+      tagName = "div",
+      html = false,
+    } = options;
+    const node = clear(target);
+    if (!node) {
+      return null;
+    }
+    items.forEach((item) => {
+      const row = createHtml(tagName, className ? { class: className } : {});
+      if (html) {
+        row.innerHTML = item;
+      } else {
+        row.textContent = item;
+      }
+      node.appendChild(row);
+    });
+    return node;
+  }
+
+  function renderLines(target, lines, className = "demo-line", html = false) {
+    return renderItems(target, lines, { className, html });
+  }
+
+  function renderList(target, items, className = "demo-list-item", html = false) {
+    return renderItems(target, items, { className, html });
+  }
+
+  function bindRangeDisplay(rangeInput, valueNode, formatter = (value) => value) {
+    const input = resolve(rangeInput);
+    const output = resolve(valueNode);
+    if (!input || !output) {
+      return () => {};
+    }
+    const update = () => {
+      output.textContent = formatter(input.value, input);
+    };
+    input.addEventListener("input", update);
+    update();
+    return update;
+  }
+
+  function bindRangeDisplays(bindings) {
+    return bindings.map((binding) =>
+      bindRangeDisplay(binding.range, binding.output, binding.formatter)
+    );
+  }
+
+  const runtime = {
+    SVG_NS,
+    append,
+    appendHtml,
+    byId,
+    bindRangeDisplay,
+    bindRangeDisplays,
+    clamp,
+    clear,
+    create,
+    createHtml,
+    formatFixed,
+    formatNumber,
+    query,
+    queryAll,
+    readNumber,
+    renderItems,
+    renderLines,
+    renderList,
+    resolve,
+    setAttrs,
+    setHTML,
+    setText,
+  };
+
+  window.SvgDemoRuntime = runtime;
+  window.DemoRuntime = runtime;
+})();
+
+    </script>
+    <script>
+      const Demo = window.DemoRuntime;
+const theoryPlot = Demo.byId("theoryPlot");
+const samplePlot = Demo.byId("samplePlot");
+const distributionSelect = Demo.byId("distributionSelect");
+const inspectRange = Demo.byId("inspectRange");
+const drawOneBtn = Demo.byId("drawOneBtn");
+const drawTwentyBtn = Demo.byId("drawTwentyBtn");
+const drawHundredBtn = Demo.byId("drawHundredBtn");
+const resetBtn = Demo.byId("resetBtn");
+
+const state = {
+  key: "normal",
+  samples: [],
+};
+
+function randn() {
+  let u = 0;
+  let v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+
+function normalPdf(x, mu, sigma) {
+  const z = (x - mu) / sigma;
+  return Math.exp(-0.5 * z * z) / (sigma * Math.sqrt(2 * Math.PI));
+}
+
+function chooseWeighted(weights) {
+  const r = Math.random();
+  let total = 0;
+  for (let i = 0; i < weights.length; i += 1) {
+    total += weights[i];
+    if (r <= total) return i;
+  }
+  return weights.length - 1;
+}
+
+const distributions = {
+  normal: {
+    name: "Continuous normal",
+    kind: "continuous",
+    defaultInspect: 0,
+    supportText: "All real numbers",
+    description: "A continuous distribution spreads probability across a whole range of values.",
+    xMin: -4.5,
+    xMax: 4.5,
+    sliderMin: -4,
+    sliderMax: 4,
+    sliderStep: 0.05,
+    pdf: (x) => normalPdf(x, 0, 1),
+    sample: () => randn(),
+  },
+  bimodal: {
+    name: "Continuous bimodal mixture",
+    kind: "continuous",
+    defaultInspect: -1.5,
+    supportText: "All real numbers",
+    description: "This distribution has two high-density regions, so samples tend to cluster in two places.",
+    xMin: -5,
+    xMax: 5,
+    sliderMin: -4.5,
+    sliderMax: 4.5,
+    sliderStep: 0.05,
+    pdf: (x) => 0.55 * normalPdf(x, -1.5, 0.7) + 0.45 * normalPdf(x, 1.9, 0.85),
+    sample: () => (Math.random() < 0.55 ? -1.5 + 0.7 * randn() : 1.9 + 0.85 * randn()),
+  },
+  categorical: {
+    name: "Discrete categorical",
+    kind: "discrete",
+    defaultInspect: 2,
+    supportText: "Only the five categories 0, 1, 2, 3, 4",
+    description: "A discrete distribution assigns direct probability mass to a finite set of categories.",
+    xMin: -0.75,
+    xMax: 4.75,
+    sliderMin: 0,
+    sliderMax: 4,
+    sliderStep: 1,
+    probs: [0.08, 0.22, 0.34, 0.24, 0.12],
+    pdf: function(x) {
+      const idx = Math.round(x);
+      return idx >= 0 && idx < this.probs.length ? this.probs[idx] : 0;
+    },
+    sample: function() {
+      return chooseWeighted(this.probs);
+    },
+  },
+};
+
+function integratePdf(pdfFn, a, b, n = 250) {
+  const step = (b - a) / n;
+  let total = 0;
+  for (let i = 0; i <= n; i += 1) {
+    const x = a + i * step;
+    const weight = i === 0 || i === n ? 0.5 : 1.0;
+    total += weight * pdfFn(x);
+  }
+  return total * step;
+}
+
+function syncSlider() {
+  const cfg = distributions[state.key];
+  inspectRange.min = String(cfg.sliderMin);
+  inspectRange.max = String(cfg.sliderMax);
+  inspectRange.step = String(cfg.sliderStep);
+  const current = Number(inspectRange.value);
+  if (current < cfg.sliderMin || current > cfg.sliderMax) {
+    inspectRange.value = String(cfg.defaultInspect);
+  }
+  if (cfg.kind === "discrete") {
+    inspectRange.value = String(Math.round(Number(inspectRange.value)));
+    Demo.setText("inspectValue", `category ${inspectRange.value}`);
+  } else {
+    Demo.setText("inspectValue", Number(inspectRange.value).toFixed(2));
+  }
+}
+
+function drawSamples(count) {
+  const cfg = distributions[state.key];
+  for (let i = 0; i < count; i += 1) {
+    state.samples.push(cfg.sample());
+  }
+  render();
+}
+
+function renderDefinitions() {
+  const cfg = distributions[state.key];
+  const densityWord = cfg.kind === "continuous" ? "density" : "probability mass";
+  Demo.renderLines("definitionLines", [
+    "Distribution: the full rule that covers every possible outcome in this example.",
+    `${densityWord[0].toUpperCase() + densityWord.slice(1)}: the likelihood reading at one chosen location.`,
+    "Sample: one actual data point drawn from the distribution.",
+    `Support: ${cfg.supportText}.`,
+    cfg.description,
+  ]);
+}
+
+function renderTheoryPlot() {
+  const cfg = distributions[state.key];
+  const inspect = Number(inspectRange.value);
+
+  if (cfg.kind === "continuous") {
+    const xs = [];
+    const ys = [];
+    for (let x = cfg.xMin; x <= cfg.xMax + 1e-9; x += 0.05) {
+      xs.push(x);
+      ys.push(cfg.pdf(x));
+    }
+    const intervalHalfWidth = 0.25;
+    const a = Math.max(cfg.xMin, inspect - intervalHalfWidth);
+    const b = Math.min(cfg.xMax, inspect + intervalHalfWidth);
+    const intervalXs = [];
+    const intervalYs = [];
+    for (let x = a; x <= b + 1e-9; x += 0.03) {
+      intervalXs.push(x);
+      intervalYs.push(cfg.pdf(x));
+    }
+
+    Plotly.react(
+      theoryPlot,
+      [
+        {
+          type: "scatter",
+          mode: "lines",
+          x: xs,
+          y: ys,
+          line: { color: "#2563eb", width: 3 },
+          name: "Distribution density",
+        },
+        {
+          type: "scatter",
+          mode: "lines",
+          x: [a, ...intervalXs, b],
+          y: [0, ...intervalYs, 0],
+          fill: "tozeroy",
+          line: { color: "rgba(249,115,22,0.9)", width: 2 },
+          fillcolor: "rgba(249,115,22,0.2)",
+          name: "Small interval around the inspected point",
+        },
+        {
+          type: "scatter",
+          mode: "markers",
+          x: [inspect],
+          y: [cfg.pdf(inspect)],
+          marker: { size: 12, color: "#ef4444", line: { width: 2, color: "#7f1d1d" } },
+          name: "Inspected point",
+        },
+      ],
+      {
+        title: "Top plot: the full distribution and the density at one point",
+        margin: { l: 55, r: 20, t: 48, b: 48 },
+        paper_bgcolor: "#ffffff",
+        plot_bgcolor: "#ffffff",
+        xaxis: { title: "value" },
+        yaxis: { title: "density" },
+        legend: { orientation: "h", x: 0, y: 1.12 },
+      },
+      { responsive: true, displayModeBar: false }
+    );
+    return;
+  }
+
+  const xs = [0, 1, 2, 3, 4];
+  const colors = xs.map((x) => (x === inspect ? "#ef4444" : "#2563eb"));
+  Plotly.react(
+    theoryPlot,
+    [
+      {
+        type: "bar",
+        x: xs,
+        y: cfg.probs,
+        marker: { color: colors },
+        name: "Probability mass",
+      },
+    ],
+    {
+      title: "Top plot: the full discrete distribution and the mass at one category",
+      margin: { l: 55, r: 20, t: 48, b: 48 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "category", tickmode: "array", tickvals: xs },
+      yaxis: { title: "probability mass", range: [0, 0.42] },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+}
+
+function renderSamplePlot() {
+  const cfg = distributions[state.key];
+  if (cfg.kind === "continuous") {
+    Plotly.react(
+      samplePlot,
+      [
+        {
+          type: "histogram",
+          x: state.samples,
+          histnorm: "probability density",
+          marker: { color: "rgba(16,185,129,0.75)", line: { width: 1, color: "#065f46" } },
+          xbins: { start: cfg.xMin, end: cfg.xMax, size: 0.35 },
+          name: "Empirical histogram",
+        },
+        {
+          type: "scatter",
+          mode: "markers",
+          x: state.samples,
+          y: state.samples.map(() => -0.01),
+          marker: { size: 7, color: "#111827", opacity: 0.55 },
+          name: "Individual samples",
+          hovertemplate: "sample=%{x:.3f}<extra></extra>",
+        },
+      ],
+      {
+        title: `Bottom plot: ${state.samples.length} drawn samples`,
+        margin: { l: 55, r: 20, t: 48, b: 48 },
+        paper_bgcolor: "#ffffff",
+        plot_bgcolor: "#ffffff",
+        xaxis: { title: "sampled values", range: [cfg.xMin, cfg.xMax] },
+        yaxis: { title: "empirical density", range: [-0.03, 0.8] },
+        legend: { orientation: "h", x: 0, y: 1.12 },
+      },
+      { responsive: true, displayModeBar: false }
+    );
+    return;
+  }
+
+  const counts = [0, 0, 0, 0, 0];
+  state.samples.forEach((value) => {
+    counts[value] += 1;
+  });
+  Plotly.react(
+    samplePlot,
+    [
+      {
+        type: "bar",
+        x: [0, 1, 2, 3, 4],
+        y: counts,
+        marker: { color: "rgba(16,185,129,0.75)" },
+        name: "Sample counts",
+      },
+    ],
+    {
+      title: `Bottom plot: ${state.samples.length} drawn samples`,
+      margin: { l: 55, r: 20, t: 48, b: 48 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "category", tickmode: "array", tickvals: [0, 1, 2, 3, 4] },
+      yaxis: { title: "count", rangemode: "tozero" },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+}
+
+function renderStats() {
+  const cfg = distributions[state.key];
+  const inspect = Number(inspectRange.value);
+  const densityValue = cfg.pdf(inspect);
+  const count = state.samples.length;
+  const recent = state.samples.slice(-8).map((value) => (
+    cfg.kind === "continuous" ? value.toFixed(2) : String(value)
+  ));
+  Demo.setText("recentSamples", recent.length > 0 ? recent.join(", ") : "No samples yet.");
+
+  if (cfg.kind === "continuous") {
+    const a = inspect - 0.25;
+    const b = inspect + 0.25;
+    const intervalProb = integratePdf(cfg.pdf, a, b);
+    const empiricalNear =
+      count === 0 ? 0 : state.samples.filter((value) => value >= a && value <= b).length / count;
+    Demo.renderLines("statLines", [
+      `Density at x = ${inspect.toFixed(2)}: ${densityValue.toFixed(4)}`,
+      `Approximate probability in [${a.toFixed(2)}, ${b.toFixed(2)}]: ${intervalProb.toFixed(4)}`,
+      `Empirical fraction of samples in that interval: ${empiricalNear.toFixed(4)}`,
+      `Samples drawn so far: ${count}`,
+      "Exact probability of one single point in a continuous distribution: 0",
+    ]);
+    return;
+  }
+
+  const empiricalMass =
+    count === 0 ? 0 : state.samples.filter((value) => value === inspect).length / count;
+  Demo.renderLines("statLines", [
+    `Probability mass at category ${inspect}: ${densityValue.toFixed(4)}`,
+    `Empirical fraction of samples at category ${inspect}: ${empiricalMass.toFixed(4)}`,
+    `Samples drawn so far: ${count}`,
+    "In the discrete case, the bar height is directly the probability of that category.",
+  ]);
+}
+
+function render() {
+  syncSlider();
+  renderDefinitions();
+  renderTheoryPlot();
+  renderSamplePlot();
+  renderStats();
+}
+
+function init() {
+  distributionSelect.addEventListener("change", () => {
+    state.key = distributionSelect.value;
+    inspectRange.value = String(distributions[state.key].defaultInspect);
+    state.samples = [];
+    render();
+  });
+  inspectRange.addEventListener("input", render);
+  drawOneBtn.addEventListener("click", () => drawSamples(1));
+  drawTwentyBtn.addEventListener("click", () => drawSamples(20));
+  drawHundredBtn.addEventListener("click", () => drawSamples(100));
+  resetBtn.addEventListener("click", () => {
+    state.samples = [];
+    render();
+  });
+  render();
+}
+
+init();
+
+    </script>
+  </body>
+</html>

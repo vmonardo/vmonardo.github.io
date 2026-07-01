@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Text Summarization Demo</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        gap: 12px;
+        min-height: 100vh;
+        padding: 16px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 12px;
+      }
+      textarea {
+        width: 100%;
+        min-height: 220px;
+        padding: 8px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin: 8px 0;
+      }
+      .row input {
+        width: 80px;
+        padding: 4px 6px;
+      }
+      .text-box {
+        white-space: pre-wrap;
+        line-height: 1.5;
+        font-size: 14px;
+      }
+      ul {
+        padding-left: 18px;
+      }
+      .meta {
+        font-size: 12px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+<section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>What is the input and what is the output of summarization?</li>
+<li>What are the “features” in the TF vs embedding approaches?</li>
+<li>How would you evaluate summary quality and faithfulness?</li>
+<li>What biases can appear when ranking sentences by frequency?</li>
+    </ul>
+  </div>
+</section>
+
+    <div class="container">
+      <div class="card">
+        <h2>Input Text</h2>
+        <textarea id="inputText">Machine learning can be applied to images, text, and audio by transforming raw inputs into numerical representations. For text summarization, models learn which phrases carry the most information and how to compress them without losing meaning. Unlike rule-based systems, learned models infer patterns from data. The same idea underlies image classifiers: they learn filters and features directly from pixels. Across modalities, we still define inputs, outputs, and a loss function that rewards correct predictions. Evaluation differs: for summarization we may check coverage and faithfulness; for image classification we check accuracy on labels. Feedback and iteration remain central. If a summary misses key points, we adjust the model or data; if an image model confuses cats and dogs, we add examples or tweak the architecture. The workflow -- represent, learn, evaluate, refine -- stays the same even as the data changes.</textarea>
+        <div class="row">
+          <label for="summarySize">Summary size</label>
+          <input id="summarySize" type="number" min="1" max="10" value="3">
+          <button onclick="runSummary()">Summarize</button>
+        </div>
+        <div class="meta">Interactive summary uses term-frequency scoring in the browser.</div>
+      </div>
+      <div class="card">
+        <h2>Summary</h2>
+        <ul id="summaryList">
+          <li>The workflow -- represent, learn, evaluate, refine -- stays the same even as the data changes.</li>
+<li>If a summary misses key points, we adjust the model or data; if an image model confuses cats and dogs, we add examples or tweak the architecture.</li>
+<li>For text summarization, models learn which phrases carry the most information and how to compress them without losing meaning.</li>
+        </ul>
+        <h3>Key Terms</h3>
+        <div id="keyTerms">learn, data, image, text, inputs, summarization, models, same</div>
+        <div class="meta">Mode: Embeddings (GloVe)</div>
+      </div>
+    </div>
+    <script>
+      const STOPWORDS = new Set(['your', 'our', 'had', 'have', 'are', 'but', 'you', 'in', 'as', 'at', 'were', 'for', 'this', 'it', 'the', 'a', 'to', 'is', 'that', 'with', 'would', 'may', 'and', 'could', 'we', 'an', 'of', 'or', 'they', 'their', 'has', 'will', 'might', 'be', 'was', 'not', 'from', 'can', 'should', 'by', 'on']);
+      function tokenizeSentences(text) {
+        return text.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
+      }
+      function tokenizeWords(text) {
+        const matches = text.toLowerCase().match(/[a-z']+/g);
+        return matches ? matches : [];
+      }
+      function summarizeTF(text, summarySize) {
+        const sentences = tokenizeSentences(text);
+        if (!sentences.length) {
+          return {summary: [], keyTerms: []};
+        }
+        const termCounts = new Map();
+        for (const sent of sentences) {
+          for (const token of tokenizeWords(sent)) {
+            if (!STOPWORDS.has(token)) {
+              termCounts.set(token, (termCounts.get(token) || 0) + 1);
+            }
+          }
+        }
+        const scored = sentences.map(sent => {
+          let score = 0;
+          for (const token of tokenizeWords(sent)) {
+            if (!STOPWORDS.has(token)) score += termCounts.get(token) || 0;
+          }
+          return {score, sent};
+        });
+        scored.sort((a, b) => b.score - a.score);
+        const summary = scored.slice(0, summarySize).map(s => s.sent);
+        const keyTerms = Array.from(termCounts.entries())
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 8)
+          .map(x => x[0]);
+        return {summary, keyTerms};
+      }
+      function runSummary() {
+        const text = document.getElementById('inputText').value;
+        const size = Math.max(1, Math.min(10, parseInt(document.getElementById('summarySize').value || '3', 10)));
+        const result = summarizeTF(text, size);
+        const list = document.getElementById('summaryList');
+        list.innerHTML = '';
+        if (!result.summary.length) {
+          list.innerHTML = '<li>No summary.</li>';
+        } else {
+          for (const sent of result.summary) {
+            const li = document.createElement('li');
+            li.textContent = sent;
+            list.appendChild(li);
+          }
+        }
+        document.getElementById('keyTerms').textContent = result.keyTerms.join(', ') || 'None';
+      }
+    </script>
+  </body>
+</html>

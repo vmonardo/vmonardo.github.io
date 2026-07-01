@@ -1,0 +1,750 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Noise To Data Map</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .demo-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 14px;
+}
+
+.demo-stage,
+.demo-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.demo-stage {
+  overflow: hidden;
+}
+
+.demo-panel {
+  padding: 14px;
+}
+
+.demo-panel h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.demo-howto {
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.demo-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1020px) {
+  .demo-shell {
+    grid-template-columns: 1fr;
+  }
+}
+      .demo-controls {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-control-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.demo-control,
+.demo-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-control-label,
+.demo-field label {
+  display: block;
+  font-size: 13px;
+}
+
+.demo-slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.demo-slider-value {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.demo-control input,
+.demo-control select,
+.demo-control textarea,
+.demo-field input,
+.demo-field select,
+.demo-field textarea {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-button-row {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-button-columns, 4), minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demo-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-card {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-callout {
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.demo-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.demo-card-body {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.demo-lines,
+.demo-list {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.demo-list-item {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.demo-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
+.demo-plot-grid {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-plot-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-plot-frame {
+  width: 100%;
+  height: 100%;
+  min-height: var(--demo-plot-min-height, 280px);
+}
+
+@media (max-width: 640px) {
+  .demo-button-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demo-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+      .noise-stage {
+  --demo-plot-min-height: 520px;
+}
+
+.noise-plots {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 760px) {
+  .noise-plots {
+    grid-template-columns: 1fr;
+  }
+}
+
+    </style>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <div class="demo-shell">
+  <section class="demo-stage noise-stage">
+
+    <div class="demo-plot-grid noise-plots">
+      <div class="demo-plot-card"><div id="latentPlot" class="demo-plot-frame"></div></div>
+      <div class="demo-plot-card"><div id="outputPlot" class="demo-plot-frame"></div></div>
+    </div>
+  </section>
+  <aside class="demo-panel">
+    <h1>Noise To Data Map</h1>
+    <div class="demo-howto">A simple latent noise variable is sampled first, then a parametric map turns that simple noise into a structured data point.<div class="demo-callout"><strong>z ~ N(0, I)</strong>: sample a simple noise vector.<br><strong>x = g<sub>&theta;</sub>(z)</strong>: pass it through a learned map.<br>The parameters <strong>&theta;</strong> are fixed in this demo, but in a real generative model they would be learned from data.</div></div>
+    <div class="demo-controls" style="--demo-control-columns: 2;">
+      <div class="demo-control demo-field">
+        <label class="demo-control-label" for="mapSelect">Map g_theta</label>
+        <select id="mapSelect">
+          <option value="affine" selected="selected">Affine map</option>
+          <option value="ring">Ring map</option>
+          <option value="split">Split-into-clusters map</option>
+          <option value="spiral">Spiral map</option>
+        </select>
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="sampleCountRange"><span>Number of sampled z points</span><span id="sampleCountValue" class="demo-slider-value"></span></label>
+        <input id="sampleCountRange" type="range" value="260" min="80" max="700" step="20">
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="highlightRange"><span>Highlighted sample index</span><span id="highlightValue" class="demo-slider-value"></span></label>
+        <input id="highlightRange" type="range" value="0" min="0" max="259" step="1">
+      </div>
+    </div>
+    <div class="demo-button-row" style="--demo-button-columns: 2;">
+      <button id="resampleBtn" type="button">Resample z</button>
+      <button id="nextPointBtn" type="button">Next highlighted point</button>
+    </div>
+    <div class="demo-card">
+      <h3>What To Notice</h3>
+      <div >
+    <div id="explanationLines" class="demo-lines"></div>
+    <div class="demo-pill-row">
+      <div class="demo-pill">Latent noise is simple</div>
+      <div class="demo-pill">Map is parametric</div>
+      <div class="demo-pill">Output can look structured</div>
+    </div>
+    </div>
+    </div>
+    <div class="demo-card">
+      <h3>Highlighted Sample</h3>
+      <div id="statLines" class="demo-lines"></div>
+    </div>
+  </aside>
+</div>
+    <section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>What stays simple about the latent variable z even when the output distribution x becomes complicated?</li>
+<li>How does the mapping x = g_theta(z) change the geometry of the samples?</li>
+<li>What are the roles of z, x, and the parameters theta in this demo?</li>
+<li>Why is this a generative view of modeling rather than a classifier?</li>
+<li>Which maps seem able to create more structured outputs from the same simple latent noise?</li>
+    </ul>
+  </div>
+</section>
+    <script>
+      window.DEMO_PAYLOAD = {};
+    </script>
+    <script>
+      (() => {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  function resolve(target) {
+    if (typeof target === "string") {
+      return document.getElementById(target);
+    }
+    return target;
+  }
+
+  function setAttrs(node, attrs = {}) {
+    Object.entries(attrs).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
+        node.removeAttribute(key);
+        return;
+      }
+      node.setAttribute(key, String(value));
+    });
+    return node;
+  }
+
+  function setText(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.textContent = value;
+    }
+    return node;
+  }
+
+  function setHTML(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.innerHTML = value;
+    }
+    return node;
+  }
+
+  function create(tagName, attrs = {}, textContent = null) {
+    const node = document.createElementNS(SVG_NS, tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function append(parent, tagName, attrs = {}, textContent = null) {
+    const node = create(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function createHtml(tagName, attrs = {}, textContent = null) {
+    const node = document.createElement(tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function appendHtml(parent, tagName, attrs = {}, textContent = null) {
+    const node = createHtml(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function clear(target) {
+    const node = resolve(target);
+    while (node && node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+    return node;
+  }
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function query(selector, root = document) {
+    const node = resolve(root);
+    return node ? node.querySelector(selector) : null;
+  }
+
+  function queryAll(selector, root = document) {
+    const node = resolve(root);
+    return node ? [...node.querySelectorAll(selector)] : [];
+  }
+
+  function formatNumber(value, digits = 4) {
+    return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
+  }
+
+  function formatFixed(value, digits = 2) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(digits) : "?";
+  }
+
+  function readNumber(input, fallback = 0) {
+    const node = resolve(input);
+    if (!node) {
+      return fallback;
+    }
+    const value = Number(node.value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function clamp(value, minValue, maxValue) {
+    return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function renderItems(target, items, options = {}) {
+    const {
+      className = "demo-line",
+      tagName = "div",
+      html = false,
+    } = options;
+    const node = clear(target);
+    if (!node) {
+      return null;
+    }
+    items.forEach((item) => {
+      const row = createHtml(tagName, className ? { class: className } : {});
+      if (html) {
+        row.innerHTML = item;
+      } else {
+        row.textContent = item;
+      }
+      node.appendChild(row);
+    });
+    return node;
+  }
+
+  function renderLines(target, lines, className = "demo-line", html = false) {
+    return renderItems(target, lines, { className, html });
+  }
+
+  function renderList(target, items, className = "demo-list-item", html = false) {
+    return renderItems(target, items, { className, html });
+  }
+
+  function bindRangeDisplay(rangeInput, valueNode, formatter = (value) => value) {
+    const input = resolve(rangeInput);
+    const output = resolve(valueNode);
+    if (!input || !output) {
+      return () => {};
+    }
+    const update = () => {
+      output.textContent = formatter(input.value, input);
+    };
+    input.addEventListener("input", update);
+    update();
+    return update;
+  }
+
+  function bindRangeDisplays(bindings) {
+    return bindings.map((binding) =>
+      bindRangeDisplay(binding.range, binding.output, binding.formatter)
+    );
+  }
+
+  const runtime = {
+    SVG_NS,
+    append,
+    appendHtml,
+    byId,
+    bindRangeDisplay,
+    bindRangeDisplays,
+    clamp,
+    clear,
+    create,
+    createHtml,
+    formatFixed,
+    formatNumber,
+    query,
+    queryAll,
+    readNumber,
+    renderItems,
+    renderLines,
+    renderList,
+    resolve,
+    setAttrs,
+    setHTML,
+    setText,
+  };
+
+  window.SvgDemoRuntime = runtime;
+  window.DemoRuntime = runtime;
+})();
+
+    </script>
+    <script>
+      const Demo = window.DemoRuntime;
+const latentPlot = Demo.byId("latentPlot");
+const outputPlot = Demo.byId("outputPlot");
+const mapSelect = Demo.byId("mapSelect");
+const sampleCountRange = Demo.byId("sampleCountRange");
+const highlightRange = Demo.byId("highlightRange");
+const resampleBtn = Demo.byId("resampleBtn");
+const nextPointBtn = Demo.byId("nextPointBtn");
+
+const state = {
+  mapKey: "affine",
+  zSamples: [],
+};
+
+function randn() {
+  let u = 0;
+  let v = 0;
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+
+const maps = {
+  affine: {
+    name: "Affine map",
+    story: "A linear map mainly stretches, rotates, and shifts the simple Gaussian cloud.",
+    transform: ([z1, z2]) => [1.6 * z1 + 0.6 * z2, -0.4 * z1 + 1.2 * z2 + 0.5],
+  },
+  ring: {
+    name: "Ring map",
+    story: "The same simple Gaussian latent noise is turned into a ring-shaped output distribution.",
+    transform: ([z1, z2]) => {
+      const angle = 1.35 * z1;
+      const radius = 2.3 + 0.35 * z2;
+      return [radius * Math.cos(angle), radius * Math.sin(angle)];
+    },
+  },
+  split: {
+    name: "Split-into-clusters map",
+    story: "One half of latent space is sent to one cluster, and the other half is sent to another.",
+    transform: ([z1, z2]) => {
+      if (z1 >= 0) return [1.8 + 0.55 * z1, z2 + 0.25 * z1 * z1];
+      return [-1.8 + 0.55 * z1, z2 - 0.25 * z1 * z1];
+    },
+  },
+  spiral: {
+    name: "Spiral map",
+    story: "A nonlinear map can bend latent noise into a more structured spiral-like manifold.",
+    transform: ([z1, z2]) => {
+      const angle = 1.7 * z1 + 0.25 * z2;
+      const radius = 0.9 + 0.45 * (z1 + 2.5) + 0.15 * z2;
+      return [radius * Math.cos(angle), radius * Math.sin(angle)];
+    },
+  },
+};
+
+function sampleLatent(n) {
+  state.zSamples = Array.from({ length: n }, () => [randn(), randn()]);
+}
+
+function renderExplanation() {
+  const cfg = maps[state.mapKey];
+  Demo.renderLines("explanationLines", [
+    "Latent distribution: every z point is sampled from the same simple standard normal distribution.",
+    `Map: ${cfg.name}. ${cfg.story}`,
+    "Generative view: sample z first, then compute x = g_theta(z).",
+    "Parametric view: theta refers to the fixed parameters inside the chosen map.",
+  ]);
+}
+
+function renderPlots() {
+  const cfg = maps[state.mapKey];
+  const xsLatent = state.zSamples.map((point) => point[0]);
+  const ysLatent = state.zSamples.map((point) => point[1]);
+  const outputs = state.zSamples.map((point) => cfg.transform(point));
+  const xsOutput = outputs.map((point) => point[0]);
+  const ysOutput = outputs.map((point) => point[1]);
+  const idx = Math.min(Number(highlightRange.value), state.zSamples.length - 1);
+  const z = state.zSamples[idx];
+  const x = outputs[idx];
+
+  Plotly.react(
+    latentPlot,
+    [
+      {
+        type: "scatter",
+        mode: "markers",
+        x: xsLatent,
+        y: ysLatent,
+        marker: { size: 7, color: "rgba(37,99,235,0.55)" },
+        name: "Latent z samples",
+      },
+      {
+        type: "scatter",
+        mode: "markers",
+        x: [z[0]],
+        y: [z[1]],
+        marker: { size: 14, color: "#f59e0b", line: { width: 2, color: "#92400e" } },
+        name: "Highlighted z",
+      },
+    ],
+    {
+      title: "Simple latent noise z ~ N(0, I)",
+      margin: { l: 55, r: 20, t: 48, b: 48 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "z1", range: [-4.2, 4.2] },
+      yaxis: { title: "z2", range: [-4.2, 4.2], scaleanchor: "x" },
+      legend: { orientation: "h", x: 0, y: 1.12 },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+
+  Plotly.react(
+    outputPlot,
+    [
+      {
+        type: "scatter",
+        mode: "markers",
+        x: xsOutput,
+        y: ysOutput,
+        marker: { size: 7, color: "rgba(16,185,129,0.6)" },
+        name: "Output x samples",
+      },
+      {
+        type: "scatter",
+        mode: "markers",
+        x: [x[0]],
+        y: [x[1]],
+        marker: { size: 14, color: "#ef4444", line: { width: 2, color: "#7f1d1d" } },
+        name: "Highlighted x",
+      },
+    ],
+    {
+      title: `Structured outputs after x = g_theta(z): ${cfg.name}`,
+      margin: { l: 55, r: 20, t: 48, b: 48 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "x1", range: [-4.8, 4.8] },
+      yaxis: { title: "x2", range: [-4.8, 4.8], scaleanchor: "x" },
+      legend: { orientation: "h", x: 0, y: 1.12 },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+
+  Demo.renderLines("statLines", [
+    `Highlighted index: ${idx}`,
+    `Latent point z = (${z[0].toFixed(3)}, ${z[1].toFixed(3)})`,
+    `Output point x = (${x[0].toFixed(3)}, ${x[1].toFixed(3)})`,
+    "The same highlighted sample is shown in gold on the left and red on the right.",
+  ]);
+}
+
+function render() {
+  Demo.setText("sampleCountValue", sampleCountRange.value);
+  highlightRange.max = String(Math.max(0, state.zSamples.length - 1));
+  if (Number(highlightRange.value) > state.zSamples.length - 1) {
+    highlightRange.value = String(state.zSamples.length - 1);
+  }
+  Demo.setText("highlightValue", highlightRange.value);
+  renderExplanation();
+  renderPlots();
+}
+
+function resample() {
+  sampleLatent(Number(sampleCountRange.value));
+  highlightRange.value = "0";
+  render();
+}
+
+function init() {
+  mapSelect.addEventListener("change", () => {
+    state.mapKey = mapSelect.value;
+    render();
+  });
+  sampleCountRange.addEventListener("input", resample);
+  highlightRange.addEventListener("input", render);
+  resampleBtn.addEventListener("click", resample);
+  nextPointBtn.addEventListener("click", () => {
+    const next = (Number(highlightRange.value) + 1) % state.zSamples.length;
+    highlightRange.value = String(next);
+    render();
+  });
+  resample();
+}
+
+init();
+
+    </script>
+  </body>
+</html>

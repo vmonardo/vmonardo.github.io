@@ -1,0 +1,1761 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LIME Neighborhood Builder</title>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.20.0/dist/tf.min.js"></script>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .container {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 400px;
+        gap: 14px;
+        min-height: 100vh;
+        padding: 14px;
+      }
+      .visuals {
+        display: grid;
+        grid-template-rows: minmax(430px, auto) minmax(320px, auto);
+        gap: 14px;
+      }
+      .lower-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 14px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .card-header {
+        padding: 12px 14px 0;
+      }
+      .card-header h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+      .card-header p {
+        margin: 6px 0 0;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+      .main-shell,
+      .plot-shell,
+      .panel {
+        padding: 14px;
+      }
+      .main-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+        gap: 14px;
+        align-items: start;
+      }
+      .viewer-card,
+      .gallery-card {
+        display: grid;
+        gap: 10px;
+      }
+      .viewer-title,
+      .gallery-title {
+        font-size: 13px;
+        font-weight: 700;
+        color: #334155;
+      }
+      .image-frame {
+        position: relative;
+        width: 100%;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #e2e8f0;
+      }
+      .image-frame canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .viewer-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .legend-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 9px;
+        border-radius: 999px;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        font-size: 12px;
+        color: #334155;
+      }
+      .legend-chip {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+      }
+      .legend-chip.pos {
+        background: #2563eb;
+      }
+      .legend-chip.neg {
+        background: #ef4444;
+      }
+      .legend-chip.budget {
+        background: #0f172a;
+      }
+      .summary-box,
+      .note-box,
+      .stat-box {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: #f8fafc;
+        padding: 12px;
+      }
+      .summary-box h3,
+      .note-box h3,
+      .stat-box h3 {
+        margin: 0 0 8px 0;
+        font-size: 15px;
+      }
+      .summary-line,
+      .note-line,
+      .stat-line {
+        font-size: 13px;
+        color: #334155;
+        line-height: 1.5;
+      }
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+      .sample-tile {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 10px;
+        background: #fff;
+        display: grid;
+        gap: 8px;
+      }
+      .sample-thumb {
+        width: 100%;
+        border-radius: 10px;
+        background: #eef2f7;
+        border: 1px solid var(--border);
+      }
+      .sample-label {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        align-items: baseline;
+        font-size: 12px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .sample-meta {
+        font-size: 12px;
+        color: #475569;
+        line-height: 1.45;
+      }
+      .sample-badge {
+        display: inline-flex;
+        width: fit-content;
+        padding: 3px 7px;
+        border-radius: 999px;
+        background: #eff6ff;
+        color: #1d4ed8;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .plot {
+        width: 100%;
+        height: 100%;
+        min-height: 260px;
+      }
+      .panel {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        align-self: start;
+      }
+      .panel h1 {
+        margin: 0 0 8px 0;
+        font-size: 24px;
+      }
+      .howto {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.55;
+        margin-bottom: 12px;
+      }
+      .control {
+        margin-bottom: 12px;
+      }
+      .control label {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 4px;
+        font-size: 13px;
+      }
+      .control select,
+      .control input[type="file"] {
+        width: 100%;
+        padding: 7px 8px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 13px;
+        background: #fff;
+      }
+      .slider-value {
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .button-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .prediction-wrap,
+      .status-wrap {
+        margin-top: 12px;
+      }
+      .prediction-list {
+        display: grid;
+        gap: 10px;
+      }
+      .prediction-row {
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        background: #fff;
+        padding: 10px;
+        display: grid;
+        gap: 8px;
+        cursor: pointer;
+        transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+      }
+      .prediction-row:hover {
+        transform: translateY(-1px);
+      }
+      .prediction-row.active {
+        border-color: #0f172a;
+        box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.06);
+        background: #f8fafc;
+      }
+      .prediction-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: baseline;
+      }
+      .prediction-label {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .prediction-prob {
+        font-size: 13px;
+        color: #334155;
+        font-variant-numeric: tabular-nums;
+      }
+      .prediction-track {
+        height: 8px;
+        border-radius: 999px;
+        background: #e2e8f0;
+        overflow: hidden;
+      }
+      .prediction-fill {
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #60a5fa, #2563eb);
+      }
+      .prediction-note {
+        font-size: 12px;
+        color: #64748b;
+        line-height: 1.45;
+      }
+      .status-line {
+        font-size: 13px;
+        color: #334155;
+        line-height: 1.5;
+      }
+      .status-line.strong {
+        font-weight: 700;
+        color: #0f172a;
+      }
+      .status-line.warn {
+        color: #b45309;
+      }
+      .helper-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .helper-pill {
+        font-size: 12px;
+        border-radius: 999px;
+        padding: 4px 8px;
+        background: #eff6ff;
+        color: #1d4ed8;
+      }
+      .hidden-image {
+        display: none;
+      }
+      @media (max-width: 1120px) {
+        .container {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 900px) {
+        .main-grid,
+        .lower-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 640px) {
+        .button-row,
+        .gallery-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+<section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>Which image regions most increased the selected animal score, and which regions pushed against it?</li>
+<li>Why does LIME need many masked versions of the image rather than just one highlighted heatmap?</li>
+<li>How do kernel width and sample count change how trustworthy this local surrogate feels?</li>
+<li>What would likely change if the image were segmented more finely or more coarsely than this grid?</li>
+<li>Why can a locally useful surrogate still fail to describe the classifier everywhere else in the image space?</li>
+    </ul>
+  </div>
+</section>
+
+    <img id="sourceImage" class="hidden-image" alt="">
+
+    <div class="container">
+      <div class="visuals">
+        <section class="card">
+          <div class="card-header">
+            <h2>Real Image Regions And The Local Explanation</h2>
+            <p>
+              LIME treats the classifier as a black box. It hides different regions of the
+              image, watches how the selected animal score changes, and fits a simple local
+              linear surrogate around the original example.
+            </p>
+          </div>
+          <div class="main-shell">
+            <div class="main-grid">
+              <div class="viewer-card">
+                <div class="viewer-title">Original image with region-level LIME explanation</div>
+                <div id="viewerFrame" class="image-frame" style="aspect-ratio: 3 / 2;">
+                  <canvas id="viewerCanvas"></canvas>
+                </div>
+                <div class="viewer-legend">
+                  <div class="legend-pill"><span class="legend-chip pos"></span>supports selected label</div>
+                  <div class="legend-pill"><span class="legend-chip neg"></span>pushes against selected label</div>
+                  <div class="legend-pill"><span class="legend-chip budget"></span>inside current explanation budget</div>
+                </div>
+                <div class="summary-box">
+                  <h3>Current Local Surrogate</h3>
+                  <div id="summaryLines"></div>
+                </div>
+              </div>
+
+              <div class="gallery-card">
+                <div class="gallery-title">Masked samples from the neighborhood</div>
+                <div id="galleryGrid" class="gallery-grid"></div>
+                <div class="note-box">
+                  <h3>What To Notice</h3>
+                  <div id="noteLines"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="lower-grid">
+          <section class="card">
+            <div class="card-header">
+              <h2>Learned Surrogate Weights</h2>
+              <p>
+                Positive weights raise the selected animal score in this local neighborhood.
+                Negative weights lower it. The explanation budget only emphasizes the top few.
+              </p>
+            </div>
+            <div class="plot-shell">
+              <div id="weightsPlot" class="plot"></div>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-header">
+              <h2>Neighborhood Fidelity</h2>
+              <p>
+                Each point is one masked image. The surrogate should match the black-box model
+                best on points that stay closest to the original image.
+              </p>
+            </div>
+            <div class="plot-shell">
+              <div id="neighborhoodPlot" class="plot"></div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <h1>LIME Neighborhood Builder</h1>
+        <div class="howto">
+          Choose a sample or upload a clear animal photo. The image is divided into a visible
+          4x4 grid so you can see exactly what gets masked. LIME then queries the classifier on
+          many masked versions of that image and explains one selected animal score locally.
+        </div>
+
+        <div class="control">
+          <label for="sampleSelect">Sample image</label>
+          <select id="sampleSelect"></select>
+        </div>
+
+        <div class="control">
+          <label for="uploadInput">Upload image</label>
+          <input id="uploadInput" type="file" accept="image/*">
+        </div>
+
+        <div class="control">
+          <label for="classSelect">Explain animal label</label>
+          <select id="classSelect"></select>
+        </div>
+
+        <div class="control">
+          <label for="sampleRange">
+            <span>Number of perturbations</span>
+            <span id="sampleValue" class="slider-value"></span>
+          </label>
+          <input id="sampleRange" type="range" min="32" max="160" step="8" value="88">
+        </div>
+
+        <div class="control">
+          <label for="kernelRange">
+            <span>Kernel width</span>
+            <span id="kernelValue" class="slider-value"></span>
+          </label>
+          <input id="kernelRange" type="range" min="1.2" max="6.2" step="0.1" value="3.0">
+        </div>
+
+        <div class="control">
+          <label for="budgetRange">
+            <span>Explanation budget k</span>
+            <span id="budgetValue" class="slider-value"></span>
+          </label>
+          <input id="budgetRange" type="range" min="1" max="16" step="1" value="6">
+        </div>
+
+        <div class="button-row">
+          <button id="analyzeBtn" type="button">Run LIME</button>
+          <button id="topClassBtn" type="button">Explain top animal</button>
+          <button id="tightBtn" type="button">Tighter locality</button>
+          <button id="wideBtn" type="button">Wider locality</button>
+        </div>
+
+        <div class="status-wrap note-box">
+          <h3>Status</h3>
+          <div id="statusLines"></div>
+        </div>
+
+        <div class="prediction-wrap note-box">
+          <h3>Animal Predictions</h3>
+          <div id="predictionList" class="prediction-list"></div>
+        </div>
+
+        <div class="stat-box">
+          <h3>Fidelity Summary</h3>
+          <div id="statLines"></div>
+          <div class="helper-pills">
+            <div class="helper-pill">Visible 4x4 region grid</div>
+            <div class="helper-pill">Real black-box animal score</div>
+            <div class="helper-pill">Local weighted surrogate</div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      const SAMPLE_IMAGES = [{"id":"dogcar_ride","label":"Dog riding in a car","path":"assets/cam_cam_dogcar_scene.png","hint":"This sample has one dominant dog spread across several neighboring regions, so masking those regions should change the dog score sharply."},{"id":"catdog_room","label":"Cat and dog by a window","path":"assets/cam_gradcam_catdog_scene.png","hint":"This sample has two competing animals, so the local explanation can shift depending on which animal label you ask LIME to explain."}];
+      const ANIMAL_GROUP_SPECS = [{"id":"dog","label":"Dog","summary":"Many dog breeds are merged into one simple dog label.","ranges":[[151,268]],"exact":[],"contains":[]},{"id":"cat","label":"Cat","summary":"Domestic cat subtypes are merged into one cat label.","ranges":[],"exact":["tabby","tiger_cat","persian_cat","siamese_cat","egyptian_cat"],"contains":[]},{"id":"rabbit","label":"Rabbit","summary":"Rabbit- and hare-like labels are merged into rabbit.","ranges":[],"exact":["wood_rabbit","hare","angora"],"contains":[]},{"id":"hamster","label":"Hamster","summary":"Hamster predictions are shown with a basic animal name.","ranges":[],"exact":["hamster"],"contains":[]},{"id":"guinea_pig","label":"Guinea pig","summary":"Guinea pig predictions are shown with a basic animal name.","ranges":[],"exact":["guinea_pig"],"contains":[]},{"id":"horse","label":"Horse","summary":"Horse-like labels are merged into horse.","ranges":[],"exact":["sorrel"],"contains":[]},{"id":"zebra","label":"Zebra","summary":"Zebra predictions are shown with a basic animal name.","ranges":[],"exact":["zebra"],"contains":[]},{"id":"pig","label":"Pig","summary":"Pig-like labels are merged into pig.","ranges":[],"exact":["hog","wild_boar"],"contains":[]},{"id":"cow","label":"Cow","summary":"Cow- and ox-like labels are merged into cow.","ranges":[],"exact":["ox","water_buffalo","bison"],"contains":[]},{"id":"sheep","label":"Sheep","summary":"Sheep-like labels are merged into sheep.","ranges":[],"exact":["ram","bighorn"],"contains":[]},{"id":"goat","label":"Goat","summary":"Goat-like labels are merged into goat.","ranges":[],"exact":["ibex"],"contains":[]},{"id":"camel","label":"Camel","summary":"Camel predictions are shown with a basic animal name.","ranges":[],"exact":["arabian_camel"],"contains":[]},{"id":"llama","label":"Llama","summary":"Llama predictions are shown with a basic animal name.","ranges":[],"exact":["llama"],"contains":[]},{"id":"elephant","label":"Elephant","summary":"Elephant subtypes are merged into elephant.","ranges":[],"exact":["indian_elephant","african_elephant","tusker"],"contains":[]},{"id":"panda","label":"Panda","summary":"Panda-like labels are merged into panda.","ranges":[],"exact":["giant_panda","lesser_panda"],"contains":["panda"]},{"id":"bear","label":"Bear","summary":"Bear subtypes are merged into bear.","ranges":[],"exact":[],"contains":["bear"]},{"id":"fox","label":"Fox","summary":"Fox subtypes are merged into fox.","ranges":[],"exact":[],"contains":["fox"]},{"id":"wolf","label":"Wolf","summary":"Wolf-like labels are merged into wolf.","ranges":[],"exact":["timber_wolf","white_wolf","red_wolf","coyote"],"contains":["wolf"]},{"id":"raccoon","label":"Raccoon","summary":"Raccoon predictions are shown with a basic animal name.","ranges":[],"exact":["raccoon"],"contains":[]},{"id":"badger","label":"Badger","summary":"Badger predictions are shown with a basic animal name.","ranges":[],"exact":["badger"],"contains":[]},{"id":"skunk","label":"Skunk","summary":"Skunk predictions are shown with a basic animal name.","ranges":[],"exact":["skunk"],"contains":[]},{"id":"otter","label":"Otter","summary":"Otter predictions are shown with a basic animal name.","ranges":[],"exact":["otter"],"contains":[]},{"id":"monkey","label":"Monkey","summary":"Many monkey subtypes are merged into monkey.","ranges":[],"exact":["baboon","macaque","langur","colobus","proboscis_monkey","marmoset","capuchin","howler_monkey","patas","guenon"],"contains":["monkey"]},{"id":"ape","label":"Ape","summary":"Great apes and close relatives are merged into ape.","ranges":[],"exact":["chimpanzee","gorilla","orangutan","siamang","gibbon"],"contains":[]},{"id":"koala","label":"Koala","summary":"Koala predictions are shown with a basic animal name.","ranges":[],"exact":["koala"],"contains":[]},{"id":"wombat","label":"Wombat","summary":"Wombat predictions are shown with a basic animal name.","ranges":[],"exact":["wombat"],"contains":[]},{"id":"wallaby","label":"Wallaby","summary":"Wallaby predictions are shown with a basic animal name.","ranges":[],"exact":["wallaby"],"contains":[]},{"id":"echidna","label":"Echidna","summary":"Echidna predictions are shown with a basic animal name.","ranges":[],"exact":["echidna"],"contains":[]},{"id":"platypus","label":"Platypus","summary":"Platypus predictions are shown with a basic animal name.","ranges":[],"exact":["platypus"],"contains":[]},{"id":"porcupine","label":"Porcupine","summary":"Porcupine predictions are shown with a basic animal name.","ranges":[],"exact":["porcupine"],"contains":[]},{"id":"beaver","label":"Beaver","summary":"Beaver predictions are shown with a basic animal name.","ranges":[],"exact":["beaver"],"contains":[]},{"id":"squirrel","label":"Squirrel","summary":"Squirrel-like labels are merged into squirrel.","ranges":[],"exact":["fox_squirrel"],"contains":["squirrel"]},{"id":"lion","label":"Lion","summary":"Lion predictions are shown with a basic animal name.","ranges":[],"exact":["lion"],"contains":[]},{"id":"tiger","label":"Tiger","summary":"Tiger predictions are shown with a basic animal name.","ranges":[],"exact":["tiger"],"contains":[]},{"id":"leopard","label":"Leopard","summary":"Leopard-like labels are merged into leopard.","ranges":[],"exact":["leopard","snow_leopard"],"contains":[]},{"id":"jaguar","label":"Jaguar","summary":"Jaguar predictions are shown with a basic animal name.","ranges":[],"exact":["jaguar"],"contains":[]},{"id":"cheetah","label":"Cheetah","summary":"Cheetah predictions are shown with a basic animal name.","ranges":[],"exact":["cheetah"],"contains":[]},{"id":"giraffe","label":"Giraffe","summary":"Giraffe predictions are shown with a basic animal name.","ranges":[],"exact":["giraffe"],"contains":[]},{"id":"hippo","label":"Hippo","summary":"Hippopotamus predictions are shown with a basic animal name.","ranges":[],"exact":["hippopotamus"],"contains":[]},{"id":"rhino","label":"Rhino","summary":"Rhinoceros predictions are shown with a basic animal name.","ranges":[],"exact":["rhinoceros"],"contains":[]},{"id":"eagle","label":"Eagle","summary":"Eagle predictions are shown with a basic animal name.","ranges":[],"exact":["bald_eagle"],"contains":[]},{"id":"owl","label":"Owl","summary":"Owl predictions are shown with a basic animal name.","ranges":[],"exact":["great_grey_owl"],"contains":[]},{"id":"parrot","label":"Parrot","summary":"Parrot-like labels are merged into parrot.","ranges":[],"exact":["african_grey","macaw","sulphur_crested_cockatoo","lorikeet"],"contains":[]},{"id":"hummingbird","label":"Hummingbird","summary":"Hummingbird predictions are shown with a basic animal name.","ranges":[],"exact":["hummingbird"],"contains":[]},{"id":"duck","label":"Duck","summary":"Duck-like labels are merged into duck.","ranges":[],"exact":["drake","red_breasted_merganser"],"contains":[]},{"id":"goose","label":"Goose","summary":"Goose predictions are shown with a basic animal name.","ranges":[],"exact":["goose"],"contains":[]},{"id":"swan","label":"Swan","summary":"Swan predictions are shown with a basic animal name.","ranges":[],"exact":["black_swan"],"contains":[]},{"id":"penguin","label":"Penguin","summary":"Penguin predictions are shown with a basic animal name.","ranges":[],"exact":["king_penguin"],"contains":[]},{"id":"flamingo","label":"Flamingo","summary":"Flamingo predictions are shown with a basic animal name.","ranges":[],"exact":["flamingo"],"contains":[]},{"id":"pelican","label":"Pelican","summary":"Pelican predictions are shown with a basic animal name.","ranges":[],"exact":["pelican"],"contains":[]},{"id":"chicken","label":"Chicken","summary":"Rooster and hen labels are merged into chicken.","ranges":[],"exact":["rooster","hen"],"contains":[]},{"id":"peacock","label":"Peacock","summary":"Peacock predictions are shown with a basic animal name.","ranges":[],"exact":["peacock"],"contains":[]},{"id":"ostrich","label":"Ostrich","summary":"Ostrich predictions are shown with a basic animal name.","ranges":[],"exact":["ostrich"],"contains":[]},{"id":"shark","label":"Shark","summary":"Shark subtypes are merged into shark.","ranges":[],"exact":["great_white_shark","tiger_shark","hammerhead"],"contains":[]},{"id":"ray","label":"Ray","summary":"Ray subtypes are merged into ray.","ranges":[],"exact":["electric_ray","stingray"],"contains":[]},{"id":"whale","label":"Whale","summary":"Whale-like labels are merged into whale.","ranges":[],"exact":["grey_whale","killer_whale"],"contains":[]},{"id":"turtle","label":"Turtle","summary":"Turtle subtypes are merged into turtle.","ranges":[],"exact":["loggerhead","leatherback_turtle","mud_turtle","terrapin","box_turtle"],"contains":[]},{"id":"lizard","label":"Lizard","summary":"Many lizard subtypes are merged into lizard.","ranges":[],"exact":["banded_gecko","common_iguana","american_chameleon","whiptail","agama","frilled_lizard","alligator_lizard","gila_monster","green_lizard","african_chameleon","komodo_dragon"],"contains":[]},{"id":"crocodile","label":"Crocodile","summary":"Crocodile and alligator labels are merged into crocodile.","ranges":[],"exact":["african_crocodile","american_alligator"],"contains":[]},{"id":"snake","label":"Snake","summary":"Many snake subtypes are merged into snake.","ranges":[[52,68]],"exact":[],"contains":[]},{"id":"frog","label":"Frog","summary":"Frog subtypes are merged into frog.","ranges":[],"exact":["bullfrog","tree_frog","tailed_frog"],"contains":[]},{"id":"salamander","label":"Salamander","summary":"Salamander-like labels are merged into salamander.","ranges":[],"exact":["fire_salamander","smooth_newt","newt","spotted_salamander","axolotl"],"contains":[]},{"id":"crab","label":"Crab","summary":"Crab subtypes are merged into crab.","ranges":[],"exact":["dungeness_crab","rock_crab","fiddler_crab","king_crab"],"contains":[]},{"id":"lobster","label":"Lobster","summary":"Lobster-like labels are merged into lobster.","ranges":[],"exact":["american_lobster","spiny_lobster","crayfish"],"contains":[]},{"id":"butterfly","label":"Butterfly","summary":"Butterfly subtypes are merged into butterfly.","ranges":[],"exact":["admiral","ringlet","monarch","cabbage_butterfly","sulphur_butterfly","lycaenid"],"contains":[]},{"id":"spider","label":"Spider","summary":"Spider subtypes are merged into spider.","ranges":[],"exact":["black_and_gold_garden_spider","barn_spider","garden_spider","black_widow","tarantula","wolf_spider"],"contains":[]},{"id":"scorpion","label":"Scorpion","summary":"Scorpion predictions are shown with a basic animal name.","ranges":[],"exact":["scorpion"],"contains":[]}];
+      const REMOTE_MODEL_URL = "https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json";
+      const REMOTE_LABELS_URL = "https://storage.googleapis.com/download.tensorflow.org/data/imagenet_class_index.json";
+      const IMAGE_SIZE = 224;
+      const GRID_ROWS = 4;
+      const GRID_COLS = 4;
+      const KEEP_PROBABILITY = 0.72;
+      const REGION_NAMES = [
+        "Top left",
+        "Top center-left",
+        "Top center-right",
+        "Top right",
+        "Upper left",
+        "Upper center-left",
+        "Upper center-right",
+        "Upper right",
+        "Lower left",
+        "Lower center-left",
+        "Lower center-right",
+        "Lower right",
+        "Bottom left",
+        "Bottom center-left",
+        "Bottom center-right",
+        "Bottom right"
+      ];
+
+      const sourceImage = document.getElementById("sourceImage");
+      const viewerFrame = document.getElementById("viewerFrame");
+      const viewerCanvas = document.getElementById("viewerCanvas");
+      const summaryLines = document.getElementById("summaryLines");
+      const galleryGrid = document.getElementById("galleryGrid");
+      const noteLines = document.getElementById("noteLines");
+      const weightsPlot = document.getElementById("weightsPlot");
+      const neighborhoodPlot = document.getElementById("neighborhoodPlot");
+
+      const sampleSelect = document.getElementById("sampleSelect");
+      const uploadInput = document.getElementById("uploadInput");
+      const classSelect = document.getElementById("classSelect");
+      const sampleRange = document.getElementById("sampleRange");
+      const kernelRange = document.getElementById("kernelRange");
+      const budgetRange = document.getElementById("budgetRange");
+      const sampleValue = document.getElementById("sampleValue");
+      const kernelValue = document.getElementById("kernelValue");
+      const budgetValue = document.getElementById("budgetValue");
+      const analyzeBtn = document.getElementById("analyzeBtn");
+      const topClassBtn = document.getElementById("topClassBtn");
+      const tightBtn = document.getElementById("tightBtn");
+      const wideBtn = document.getElementById("wideBtn");
+      const predictionList = document.getElementById("predictionList");
+      const statusLines = document.getElementById("statusLines");
+      const statLines = document.getElementById("statLines");
+
+      const state = {
+        model: null,
+        labels: [],
+        animalGroups: [],
+        classIndexOffset: 0,
+        outputsAreProbabilities: null,
+        backend: "",
+        sampleId: SAMPLE_IMAGES[0].id,
+        currentImageLabel: SAMPLE_IMAGES[0].label,
+        currentImageHint: SAMPLE_IMAGES[0].hint,
+        uploaded: false,
+        modelReady: false,
+        imageReady: false,
+        busy: false,
+        originalRow: null,
+        predictions: [],
+        targetClassIndex: null,
+        targetProbability: null,
+        seed: 0,
+        baseCanvas: null,
+        averageColor: [214, 221, 230],
+        regions: [],
+        samples: [],
+        beta: null,
+        weightedMae: null,
+        weightedMse: null,
+        analysisMs: null
+      };
+
+      function getSampleById(sampleId) {
+        return SAMPLE_IMAGES.find((sample) => sample.id === sampleId) || SAMPLE_IMAGES[0];
+      }
+
+      function formatPercent(value) {
+        return `${(value * 100).toFixed(1)}%`;
+      }
+
+      function asTensor(output) {
+        return Array.isArray(output) ? output[0] : output;
+      }
+
+      function normalizeLabel(label) {
+        return label.toLowerCase().replaceAll(" ", "_").replaceAll("-", "_");
+      }
+
+      function readableRawLabel(label) {
+        return String(label).replaceAll("_", " ");
+      }
+
+      function matchesGroupToken(normalized, token) {
+        return normalized === token
+          || normalized.startsWith(`${token}_`)
+          || normalized.endsWith(`_${token}`)
+          || normalized.includes(`_${token}_`);
+      }
+
+      function buildAnimalGroups(labels) {
+        return ANIMAL_GROUP_SPECS.map((spec) => {
+          const members = new Set();
+          (spec.ranges || []).forEach(([start, end]) => {
+            for (let idx = start; idx <= end && idx < labels.length; idx += 1) {
+              members.add(idx);
+            }
+          });
+          labels.forEach((label, idx) => {
+            const normalized = normalizeLabel(label);
+            if ((spec.exact || []).includes(normalized)) {
+              members.add(idx);
+            }
+            if ((spec.contains || []).some((token) => matchesGroupToken(normalized, token))) {
+              members.add(idx);
+            }
+          });
+          return {
+            ...spec,
+            memberIndices: Array.from(members).sort((a, b) => a - b)
+          };
+        })
+          .filter((group) => group.memberIndices.length > 0)
+          .map((group, groupIndex) => ({
+            ...group,
+            groupIndex
+          }));
+      }
+
+      function groupForIndex(index) {
+        return state.animalGroups.find((group) => group.groupIndex === index) || null;
+      }
+
+      function labelForIndex(index) {
+        return groupForIndex(index)?.label || `animal label ${index}`;
+      }
+
+      function outputIndicesForGroup(group) {
+        return group.memberIndices.map((index) => index + state.classIndexOffset);
+      }
+
+      function probabilityForGroup(row, group) {
+        return outputIndicesForGroup(group).reduce((total, idx) => total + (row[idx] || 0), 0);
+      }
+
+      function rawMembersForGroup(row, group) {
+        return outputIndicesForGroup(group)
+          .map((outputIndex) => {
+            const labelIndex = outputIndex - state.classIndexOffset;
+            return {
+              label: state.labels[labelIndex] || `class ${labelIndex}`,
+              prob: row[outputIndex] || 0
+            };
+          })
+          .sort((a, b) => b.prob - a.prob);
+      }
+
+      function contributorText(contributors, limit = 3) {
+        const shown = contributors
+          .filter((entry) => entry.prob > 0)
+          .slice(0, limit);
+        if (!shown.length) {
+          return "No single raw ImageNet class contributes much probability on this image.";
+        }
+        return shown
+          .map((entry) => `${readableRawLabel(entry.label)} ${formatPercent(entry.prob)}`)
+          .join(", ");
+      }
+
+      function groupProbabilities(row) {
+        return state.animalGroups.map((group) => {
+          const rawMembers = rawMembersForGroup(row, group);
+          return {
+            index: group.groupIndex,
+            label: group.label,
+            summary: group.summary,
+            prob: rawMembers.reduce((total, entry) => total + entry.prob, 0),
+            memberCount: group.memberIndices.length,
+            topContributors: rawMembers.slice(0, 5),
+            contributorText: contributorText(rawMembers)
+          };
+        });
+      }
+
+      function topAnimalGroups(row, k) {
+        return groupProbabilities(row)
+          .sort((a, b) => b.prob - a.prob)
+          .slice(0, k);
+      }
+
+      function predictionForIndex(index) {
+        return state.predictions.find((entry) => entry.index === index) || null;
+      }
+
+      function setBusy(isBusy) {
+        state.busy = isBusy;
+        sampleSelect.disabled = isBusy;
+        uploadInput.disabled = isBusy;
+        classSelect.disabled = isBusy || state.predictions.length === 0;
+        analyzeBtn.disabled = isBusy || !state.modelReady || !state.imageReady;
+        topClassBtn.disabled = isBusy || !state.modelReady || !state.imageReady || state.predictions.length === 0;
+        tightBtn.disabled = isBusy || !state.modelReady || !state.imageReady;
+        wideBtn.disabled = isBusy || !state.modelReady || !state.imageReady;
+      }
+
+      function setStatus(lines) {
+        statusLines.innerHTML = lines
+          .map((line) => {
+            const className = line.kind ? `status-line ${line.kind}` : "status-line";
+            return `<div class="${className}">${line.text}</div>`;
+          })
+          .join("");
+      }
+
+      function renderStaticControls() {
+        sampleSelect.innerHTML = SAMPLE_IMAGES.map(
+          (sample) => `<option value="${sample.id}">${sample.label}</option>`
+        ).join("");
+        sampleSelect.value = state.sampleId;
+        sampleValue.textContent = sampleRange.value;
+        kernelValue.textContent = Number(kernelRange.value).toFixed(1);
+        budgetValue.textContent = budgetRange.value;
+      }
+
+      function looksLikeProbabilities(row) {
+        const sum = row.reduce((acc, value) => acc + value, 0);
+        return row.every((value) => value >= 0) && sum > 0.99 && sum < 1.01;
+      }
+
+      async function chooseBackend() {
+        const preferred = ["webgl", "cpu"];
+        for (const name of preferred) {
+          try {
+            const ok = await tf.setBackend(name);
+            if (ok) {
+              await tf.ready();
+              return name;
+            }
+          } catch (error) {
+            console.warn(`Could not activate backend ${name}`, error);
+          }
+        }
+        await tf.ready();
+        return tf.getBackend();
+      }
+
+      async function loadRemoteLabels() {
+        const response = await fetch(REMOTE_LABELS_URL);
+        if (!response.ok) {
+          throw new Error(`label fetch failed with status ${response.status}`);
+        }
+        const data = await response.json();
+        return Object.keys(data)
+          .sort((a, b) => Number(a) - Number(b))
+          .map((key) => data[key][1]);
+      }
+
+      async function loadModel() {
+        setStatus([
+          { text: "Loading the image classifier...", kind: "strong" },
+          { text: "This demo should be opened over http://, not file://, so the browser can fetch the model files." }
+        ]);
+        if (location.protocol === "file:") {
+          setStatus([
+            { text: "The page is running via file://, so model loading may fail.", kind: "warn" },
+            { text: "Use `python3 interpretability/lime_neighborhood_demo.py --serve` and open the localhost URL instead." }
+          ]);
+        }
+        try {
+          state.backend = await chooseBackend();
+          state.labels = await loadRemoteLabels();
+          state.animalGroups = buildAnimalGroups(state.labels);
+          if (!state.animalGroups.length) {
+            throw new Error("Could not build the available animal labels.");
+          }
+          state.model = await tf.loadLayersModel(REMOTE_MODEL_URL);
+          state.modelReady = true;
+          renderStats();
+          setBusy(false);
+          setStatus([
+            { text: "Model loaded successfully.", kind: "strong" },
+            { text: "Choose a sample or upload a clear animal photo, then run LIME on one animal label." },
+            { text: "The displayed animal labels are classroom groupings built from the model's raw ImageNet outputs." },
+            { text: "The explanation is local: it only tries to mimic the classifier near this particular image." }
+          ]);
+          if (state.imageReady) {
+            await analyzeCurrentImage();
+          }
+        } catch (error) {
+          console.error(error);
+          setBusy(false);
+          renderStats();
+          setStatus([
+            { text: "Model loading failed.", kind: "strong" },
+            { text: String(error), kind: "warn" },
+            { text: "If you opened the page directly from disk, serve it over localhost first." }
+          ]);
+        }
+      }
+
+      function buildBaseCanvas() {
+        const canvas = document.createElement("canvas");
+        canvas.width = sourceImage.naturalWidth;
+        canvas.height = sourceImage.naturalHeight;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(sourceImage, 0, 0, canvas.width, canvas.height);
+        return canvas;
+      }
+
+      function updateImageGeometry() {
+        if (!sourceImage.naturalWidth || !sourceImage.naturalHeight) {
+          return;
+        }
+        const ratio = `${sourceImage.naturalWidth} / ${sourceImage.naturalHeight}`;
+        viewerFrame.style.aspectRatio = ratio;
+        state.baseCanvas = buildBaseCanvas();
+        state.averageColor = computeAverageColor(state.baseCanvas);
+        state.regions = buildRegions(sourceImage.naturalWidth, sourceImage.naturalHeight);
+      }
+
+      function buildRegions(width, height) {
+        const cellWidth = width / GRID_COLS;
+        const cellHeight = height / GRID_ROWS;
+        const regions = [];
+        for (let row = 0; row < GRID_ROWS; row += 1) {
+          for (let col = 0; col < GRID_COLS; col += 1) {
+            const index = row * GRID_COLS + col;
+            regions.push({
+              index,
+              code: `R${index + 1}`,
+              name: REGION_NAMES[index],
+              x: col * cellWidth,
+              y: row * cellHeight,
+              w: cellWidth,
+              h: cellHeight
+            });
+          }
+        }
+        return regions;
+      }
+
+      function computeAverageColor(canvas) {
+        const tiny = document.createElement("canvas");
+        tiny.width = 16;
+        tiny.height = 16;
+        const ctx = tiny.getContext("2d");
+        ctx.drawImage(canvas, 0, 0, tiny.width, tiny.height);
+        const data = ctx.getImageData(0, 0, tiny.width, tiny.height).data;
+        let r = 0;
+        let g = 0;
+        let b = 0;
+        const count = data.length / 4;
+        for (let idx = 0; idx < data.length; idx += 4) {
+          r += data[idx];
+          g += data[idx + 1];
+          b += data[idx + 2];
+        }
+        return [
+          Math.round(r / count),
+          Math.round(g / count),
+          Math.round(b / count)
+        ];
+      }
+
+      function mulberry32(seed) {
+        let t = seed >>> 0;
+        return () => {
+          t += 0x6d2b79f5;
+          let x = Math.imul(t ^ (t >>> 15), 1 | t);
+          x ^= x + Math.imul(x ^ (x >>> 7), 61 | x);
+          return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function sampleNeighborhood(regionCount, n, kernelWidth, seed) {
+        const rand = mulberry32(seed);
+        const original = Array(regionCount).fill(1);
+        const samples = [];
+        for (let idx = 0; idx < n; idx += 1) {
+          const z = idx === 0 ? [...original] : original.map(() => (rand() < KEEP_PROBABILITY ? 1 : 0));
+          if (z.every((value) => value === 0)) {
+            z[Math.floor(rand() * z.length)] = 1;
+          }
+          const distance = z.reduce((acc, value) => acc + (1 - value), 0);
+          const similarity = Math.exp(-(distance * distance) / (kernelWidth * kernelWidth));
+          samples.push({
+            z,
+            distance,
+            similarity,
+            activeCount: z.reduce((acc, value) => acc + value, 0)
+          });
+        }
+        return samples;
+      }
+
+      function resizeCanvasToDisplay(canvas) {
+        const dpr = window.devicePixelRatio || 1;
+        const width = canvas.clientWidth || 1;
+        const height = canvas.clientHeight || 1;
+        canvas.width = Math.max(1, Math.round(width * dpr));
+        canvas.height = Math.max(1, Math.round(height * dpr));
+        const ctx = canvas.getContext("2d");
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, width, height);
+        return { ctx, width, height };
+      }
+
+      function createMaskedCanvas(mask) {
+        const canvas = document.createElement("canvas");
+        canvas.width = sourceImage.naturalWidth;
+        canvas.height = sourceImage.naturalHeight;
+        const ctx = canvas.getContext("2d");
+        paintMaskedScene(ctx, canvas.width, canvas.height, mask, {});
+        return canvas;
+      }
+
+      function drawRegionLabel(ctx, region, widthScale, heightScale, selected) {
+        const label = region.code;
+        const x = region.x * widthScale + 8;
+        const y = region.y * heightScale + 8;
+        const boxWidth = label.length > 2 ? 34 : 28;
+        const boxHeight = 20;
+        ctx.save();
+        ctx.fillStyle = selected ? "rgba(15, 23, 42, 0.88)" : "rgba(15, 23, 42, 0.62)";
+        ctx.beginPath();
+        ctx.roundRect(x, y, boxWidth, boxHeight, 8);
+        ctx.fill();
+        ctx.fillStyle = "#ffffff";
+        ctx.font = "12px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(label, x + boxWidth / 2, y + boxHeight / 2 + 0.5);
+        ctx.restore();
+      }
+
+      function paintHatch(ctx, x, y, w, h) {
+        ctx.save();
+        ctx.strokeStyle = "rgba(71, 85, 105, 0.34)";
+        ctx.lineWidth = 1;
+        const step = 12;
+        for (let offset = -h; offset < w; offset += step) {
+          ctx.beginPath();
+          ctx.moveTo(x + offset, y + h);
+          ctx.lineTo(x + offset + h, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function paintMaskedScene(ctx, width, height, mask, options = {}) {
+        const {
+          weights = null,
+          topSet = new Set(),
+          showNumbers = true
+        } = options;
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.drawImage(sourceImage, 0, 0, width, height);
+
+        const widthScale = width / sourceImage.naturalWidth;
+        const heightScale = height / sourceImage.naturalHeight;
+        const maxAbsWeight = weights
+          ? Math.max(...weights.map((value) => Math.abs(value)), 1e-6)
+          : 1;
+
+        state.regions.forEach((region, index) => {
+          const x = region.x * widthScale;
+          const y = region.y * heightScale;
+          const w = region.w * widthScale;
+          const h = region.h * heightScale;
+
+          if (!mask[index]) {
+            ctx.save();
+            ctx.fillStyle = `rgba(${state.averageColor[0]}, ${state.averageColor[1]}, ${state.averageColor[2]}, 0.92)`;
+            ctx.fillRect(x, y, w, h);
+            paintHatch(ctx, x, y, w, h);
+            ctx.restore();
+          }
+
+          if (weights) {
+            const weight = weights[index];
+            const strength = Math.abs(weight) / maxAbsWeight;
+            if (strength > 0.04) {
+              const alpha = 0.10 + strength * 0.26;
+              const fill = weight >= 0
+                ? `rgba(37, 99, 235, ${alpha.toFixed(3)})`
+                : `rgba(239, 68, 68, ${alpha.toFixed(3)})`;
+              ctx.save();
+              ctx.fillStyle = fill;
+              ctx.fillRect(x, y, w, h);
+              ctx.restore();
+            }
+          }
+
+          ctx.save();
+          ctx.strokeStyle = topSet.has(index) ? "rgba(15, 23, 42, 0.96)" : "rgba(15, 23, 42, 0.25)";
+          ctx.lineWidth = topSet.has(index) ? 2.5 : 1;
+          ctx.strokeRect(x, y, w, h);
+          if (showNumbers) {
+            drawRegionLabel(ctx, region, widthScale, heightScale, topSet.has(index));
+          }
+          ctx.restore();
+        });
+      }
+
+      function renderViewer() {
+        const { ctx, width, height } = resizeCanvasToDisplay(viewerCanvas);
+        const topSet = new Set(topRegionIndices(Number(budgetRange.value)));
+        const mask = Array(state.regions.length).fill(1);
+        paintMaskedScene(ctx, width, height, mask, {
+          weights: state.beta ? state.beta.weights : null,
+          topSet,
+          showNumbers: true
+        });
+      }
+
+      function identityMatrix(n) {
+        return Array.from({ length: n }, (_, i) =>
+          Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))
+        );
+      }
+
+      function invertMatrix(matrix) {
+        const n = matrix.length;
+        const a = matrix.map((row) => [...row]);
+        const inv = identityMatrix(n);
+        for (let col = 0; col < n; col += 1) {
+          let pivot = col;
+          for (let row = col + 1; row < n; row += 1) {
+            if (Math.abs(a[row][col]) > Math.abs(a[pivot][col])) {
+              pivot = row;
+            }
+          }
+          if (Math.abs(a[pivot][col]) < 1e-10) {
+            return identityMatrix(n);
+          }
+          [a[col], a[pivot]] = [a[pivot], a[col]];
+          [inv[col], inv[pivot]] = [inv[pivot], inv[col]];
+          const scale = a[col][col];
+          for (let j = 0; j < n; j += 1) {
+            a[col][j] /= scale;
+            inv[col][j] /= scale;
+          }
+          for (let row = 0; row < n; row += 1) {
+            if (row === col) {
+              continue;
+            }
+            const factor = a[row][col];
+            for (let j = 0; j < n; j += 1) {
+              a[row][j] -= factor * a[col][j];
+              inv[row][j] -= factor * inv[col][j];
+            }
+          }
+        }
+        return inv;
+      }
+
+      function multiplyMatrixVector(matrix, vector) {
+        return matrix.map((row) => row.reduce((acc, value, idx) => acc + value * vector[idx], 0));
+      }
+
+      function fitWeightedLinearSurrogate(samples) {
+        const p = samples[0].z.length + 1;
+        const xtwx = Array.from({ length: p }, () => Array(p).fill(0));
+        const xtwy = Array(p).fill(0);
+        for (const sample of samples) {
+          const x = [1, ...sample.z];
+          const w = sample.similarity;
+          for (let i = 0; i < p; i += 1) {
+            xtwy[i] += x[i] * w * sample.prediction;
+            for (let j = 0; j < p; j += 1) {
+              xtwx[i][j] += x[i] * w * x[j];
+            }
+          }
+        }
+        const lambda = 0.05;
+        for (let i = 1; i < p; i += 1) {
+          xtwx[i][i] += lambda;
+        }
+        const beta = multiplyMatrixVector(invertMatrix(xtwx), xtwy);
+        return {
+          intercept: beta[0],
+          weights: beta.slice(1)
+        };
+      }
+
+      function surrogatePrediction(beta, z) {
+        let value = beta.intercept;
+        for (let idx = 0; idx < z.length; idx += 1) {
+          value += beta.weights[idx] * z[idx];
+        }
+        return value;
+      }
+
+      async function predictCanvases(canvases, detectFormat = false) {
+        const rows = [];
+        const chunkSize = 8;
+        for (let start = 0; start < canvases.length; start += chunkSize) {
+          const chunk = canvases.slice(start, start + chunkSize);
+          const batch = tf.tidy(() => tf.stack(
+            chunk.map((canvas) => {
+              const pixels = tf.browser.fromPixels(canvas).toFloat();
+              const resized = tf.image.resizeBilinear(pixels, [IMAGE_SIZE, IMAGE_SIZE], true);
+              return resized.div(127.5).sub(1);
+            })
+          ));
+          const outputTensor = asTensor(state.model.predict(batch));
+          const rawRows = await outputTensor.array();
+          let normalizedRows = rawRows;
+          if (detectFormat || state.outputsAreProbabilities === null) {
+            state.outputsAreProbabilities = looksLikeProbabilities(rawRows[0]);
+          }
+          if (!state.outputsAreProbabilities) {
+            const probsTensor = tf.softmax(outputTensor);
+            normalizedRows = await probsTensor.array();
+            probsTensor.dispose();
+          }
+          if (!state.classIndexOffset && normalizedRows[0]) {
+            state.classIndexOffset = normalizedRows[0].length === state.labels.length + 1 ? 1 : 0;
+          }
+          rows.push(...normalizedRows);
+          outputTensor.dispose();
+          batch.dispose();
+          await tf.nextFrame();
+        }
+        return rows;
+      }
+
+      async function analyzeOriginalImage() {
+        if (!state.baseCanvas) {
+          return;
+        }
+        const rows = await predictCanvases([state.baseCanvas], true);
+        state.originalRow = rows[0];
+        state.predictions = topAnimalGroups(state.originalRow, Math.min(8, state.animalGroups.length));
+        const topPrediction = state.predictions[0];
+        state.targetClassIndex = topPrediction ? topPrediction.index : 0;
+        state.targetProbability = topPrediction ? topPrediction.prob : null;
+        renderPredictions();
+        renderClassOptions();
+      }
+
+      function renderClassOptions() {
+        classSelect.innerHTML = "";
+        state.predictions.forEach((entry) => {
+          const option = document.createElement("option");
+          option.value = String(entry.index);
+          option.textContent = `${entry.label} (${formatPercent(entry.prob)})`;
+          if (entry.index === state.targetClassIndex) {
+            option.selected = true;
+          }
+          classSelect.appendChild(option);
+        });
+      }
+
+      function renderPredictions() {
+        predictionList.innerHTML = "";
+        if (!state.predictions.length) {
+          predictionList.innerHTML = '<div class="prediction-note">Predictions will appear after the model finishes loading and the current image is analyzed.</div>';
+          return;
+        }
+
+        predictionList.innerHTML = state.predictions.map((entry) => `
+          <button class="prediction-row ${entry.index === state.targetClassIndex ? "active" : ""}" type="button" data-class-index="${entry.index}">
+            <div class="prediction-top">
+              <div class="prediction-label">${entry.label}</div>
+              <div class="prediction-prob">${formatPercent(entry.prob)}</div>
+            </div>
+            <div class="prediction-track">
+              <div class="prediction-fill" style="width: ${Math.max(2, entry.prob * 100)}%;"></div>
+            </div>
+            <div class="prediction-note">${entry.summary}</div>
+            <div class="prediction-note">Built by summing ${entry.memberCount} raw ImageNet classes. Largest contributors here: ${entry.contributorText}.</div>
+          </button>
+        `).join("");
+
+        predictionList.querySelectorAll(".prediction-row").forEach((button) => {
+          button.addEventListener("click", async () => {
+            const classIndex = Number(button.dataset.classIndex);
+            classSelect.value = String(classIndex);
+            await analyzeCurrentImage(classIndex, false);
+          });
+        });
+      }
+
+      function topRegionIndices(budget) {
+        if (!state.beta) {
+          return [];
+        }
+        return state.beta.weights
+          .map((weight, index) => ({ index, weight, absWeight: Math.abs(weight) }))
+          .sort((a, b) => b.absWeight - a.absWeight)
+          .slice(0, budget)
+          .map((entry) => entry.index);
+      }
+
+      function summarizeRegion(index) {
+        const region = state.regions[index];
+        return `${region.code} (${region.name.toLowerCase()})`;
+      }
+
+      function renderSummary(targetGroup) {
+        if (!state.beta || !state.samples.length) {
+          summaryLines.innerHTML = "";
+          return;
+        }
+        const currentPrediction = predictionForIndex(targetGroup.groupIndex);
+        const originalMask = Array(state.regions.length).fill(1);
+        const surrogateOnOriginal = surrogatePrediction(state.beta, originalMask);
+        const ranked = state.beta.weights
+          .map((weight, index) => ({ index, weight, absWeight: Math.abs(weight) }))
+          .sort((a, b) => b.absWeight - a.absWeight);
+        const topPositive = ranked.find((entry) => entry.weight > 0);
+        const topNegative = ranked.find((entry) => entry.weight < 0);
+        const shown = ranked
+          .slice(0, Number(budgetRange.value))
+          .map((entry) => summarizeRegion(entry.index))
+          .join(", ");
+        summaryLines.innerHTML = [
+          `Selected animal label: ${targetGroup.label}`,
+          `Original black-box score: ${formatPercent(state.targetProbability ?? 0)}`,
+          `Displayed label rule: sum ${currentPrediction ? currentPrediction.memberCount : "—"} related ImageNet classes. Top contributors here: ${currentPrediction ? currentPrediction.contributorText : "—"}`,
+          `Original surrogate score: ${formatPercent(Math.max(0, Math.min(1, surrogateOnOriginal)))}`,
+          `Weighted local MSE: ${(state.weightedMse ?? 0).toFixed(4)}`,
+          `Top supporting region: ${topPositive ? `${summarizeRegion(topPositive.index)} with weight ${formatSigned(topPositive.weight)}` : "none"}`,
+          `Top opposing region: ${topNegative ? `${summarizeRegion(topNegative.index)} with weight ${formatSigned(topNegative.weight)}` : "none"}`,
+          `Explanation budget highlights: ${shown || "none"}`,
+          state.currentImageHint
+        ].map((line) => `<div class="summary-line">${line}</div>`).join("");
+      }
+
+      function pickGallerySamples() {
+        if (!state.samples.length) {
+          return [];
+        }
+        const sorted = state.samples.slice().sort((a, b) => b.similarity - a.similarity);
+        const picks = [0, 1, Math.floor(sorted.length * 0.20), Math.floor(sorted.length * 0.42), Math.floor(sorted.length * 0.68), sorted.length - 1];
+        const unique = [];
+        picks.forEach((position) => {
+          const clamped = Math.max(0, Math.min(sorted.length - 1, position));
+          if (!unique.includes(clamped)) {
+            unique.push(clamped);
+          }
+        });
+        return unique.map((index) => sorted[index]);
+      }
+
+      function renderGallery() {
+        galleryGrid.innerHTML = "";
+        const chosen = pickGallerySamples();
+        if (!chosen.length) {
+          galleryGrid.innerHTML = '<div class="prediction-note">Masked neighborhood samples will appear after LIME runs on the current image.</div>';
+          return;
+        }
+        chosen.forEach((sample) => {
+          const tile = document.createElement("div");
+          tile.className = "sample-tile";
+
+          const header = document.createElement("div");
+          header.className = "sample-label";
+          header.innerHTML = `
+            <span>${sample.isOriginal ? "Original image" : `${sample.activeCount} of ${state.regions.length} regions kept`}</span>
+            <span>${formatPercent(sample.prediction)}</span>
+          `;
+          tile.appendChild(header);
+
+          if (sample.isOriginal) {
+            const badge = document.createElement("div");
+            badge.className = "sample-badge";
+            badge.textContent = "reference point";
+            tile.appendChild(badge);
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.className = "sample-thumb";
+          canvas.style.aspectRatio = `${sourceImage.naturalWidth} / ${sourceImage.naturalHeight}`;
+          tile.appendChild(canvas);
+
+          const meta = document.createElement("div");
+          meta.className = "sample-meta";
+          meta.innerHTML = `
+            Similarity to original: ${sample.similarity.toFixed(3)}<br>
+            Surrogate score: ${formatPercent(Math.max(0, Math.min(1, sample.surrogate)))}<br>
+            Regions hidden: ${sample.distance}
+          `;
+          tile.appendChild(meta);
+
+          galleryGrid.appendChild(tile);
+          paintThumbnail(canvas, sample.canvas);
+        });
+      }
+
+      function paintThumbnail(canvas, sourceCanvas) {
+        const { ctx, width, height } = resizeCanvasToDisplay(canvas);
+        ctx.drawImage(sourceCanvas, 0, 0, width, height);
+        const cellWidth = width / GRID_COLS;
+        const cellHeight = height / GRID_ROWS;
+        ctx.save();
+        ctx.strokeStyle = "rgba(15, 23, 42, 0.22)";
+        ctx.lineWidth = 1;
+        for (let col = 1; col < GRID_COLS; col += 1) {
+          const x = col * cellWidth;
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, height);
+          ctx.stroke();
+        }
+        for (let row = 1; row < GRID_ROWS; row += 1) {
+          const y = row * cellHeight;
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      function renderWeightsPlot() {
+        if (!state.beta) {
+          return;
+        }
+        const budget = Number(budgetRange.value);
+        const topSet = new Set(topRegionIndices(budget));
+        const ranked = state.beta.weights
+          .map((weight, index) => ({
+            code: state.regions[index].code,
+            name: summarizeRegion(index),
+            weight
+          }))
+          .sort((a, b) => Math.abs(b.weight) - Math.abs(a.weight));
+
+        Plotly.react(
+          weightsPlot,
+          [
+            {
+              type: "bar",
+              x: ranked.map((entry) => entry.code),
+              y: ranked.map((entry) => entry.weight),
+              marker: {
+                color: ranked.map((entry) => {
+                  const regionIndex = Number(entry.code.slice(1)) - 1;
+                  const inBudget = topSet.has(regionIndex);
+                  if (entry.weight >= 0) {
+                    return inBudget ? "#2563eb" : "#93c5fd";
+                  }
+                  return inBudget ? "#ef4444" : "#fca5a5";
+                })
+              },
+              hovertemplate: "%{x}<br>%{customdata}<br>surrogate weight=%{y:.4f}<extra></extra>",
+              customdata: ranked.map((entry) => entry.name)
+            }
+          ],
+          {
+            margin: { l: 52, r: 16, t: 18, b: 50 },
+            paper_bgcolor: "#ffffff",
+            plot_bgcolor: "#ffffff",
+            xaxis: { title: "image region" },
+            yaxis: { title: "linear surrogate weight", zerolinecolor: "#c7d2e0" }
+          },
+          { responsive: true, displayModeBar: false }
+        );
+      }
+
+      function renderNeighborhoodPlot() {
+        if (!state.beta || !state.samples.length) {
+          return;
+        }
+        Plotly.react(
+          neighborhoodPlot,
+          [
+            {
+              type: "scatter",
+              mode: "markers",
+              x: state.samples.map((sample) => sample.similarity),
+              y: state.samples.map((sample) => sample.prediction),
+              marker: {
+                size: state.samples.map((sample) => 7 + 0.7 * sample.activeCount),
+                color: "#2563eb",
+                opacity: 0.68
+              },
+              name: "Black-box output",
+              hovertemplate: "similarity=%{x:.3f}<br>black-box=%{y:.3f}<extra></extra>"
+            },
+            {
+              type: "scatter",
+              mode: "markers",
+              x: state.samples.map((sample) => sample.similarity),
+              y: state.samples.map((sample) => sample.surrogate),
+              marker: {
+                size: 7,
+                color: "#f97316",
+                opacity: 0.78,
+                symbol: "diamond"
+              },
+              name: "Surrogate output",
+              hovertemplate: "similarity=%{x:.3f}<br>surrogate=%{y:.3f}<extra></extra>"
+            }
+          ],
+          {
+            margin: { l: 52, r: 16, t: 18, b: 44 },
+            paper_bgcolor: "#ffffff",
+            plot_bgcolor: "#ffffff",
+            xaxis: { title: "similarity to original image", range: [0, 1.02] },
+            yaxis: { title: "selected animal score", range: [0, 1.02] },
+            legend: { orientation: "h", x: 0, y: 1.12 }
+          },
+          { responsive: true, displayModeBar: false }
+        );
+      }
+
+      function renderNotes(targetGroup) {
+        if (!state.beta || !state.samples.length) {
+          noteLines.innerHTML = "";
+          return;
+        }
+        const currentPrediction = predictionForIndex(targetGroup.groupIndex);
+        const ranked = state.beta.weights
+          .map((weight, index) => ({ index, weight, absWeight: Math.abs(weight) }))
+          .sort((a, b) => b.absWeight - a.absWeight);
+        const localSamples = state.samples.filter((sample) => sample.similarity > 0.6);
+        const localError = localSamples.reduce((acc, sample) => {
+          return acc + Math.abs(sample.surrogate - sample.prediction);
+        }, 0) / Math.max(localSamples.length, 1);
+        noteLines.innerHTML = [
+          `LIME is currently explaining the animal label ${targetGroup.label}.`,
+          `That displayed label is built from related raw ImageNet classes: ${currentPrediction ? currentPrediction.contributorText : "contributors unavailable"}.`,
+          `The strongest local evidence comes from ${summarizeRegion(ranked[0].index)} with weight ${formatSigned(ranked[0].weight)}.`,
+          `Average absolute surrogate error among close neighbors is ${localError.toFixed(4)}.`,
+          `If you tighten the kernel, the explanation becomes more local but can become less stable.`,
+          `Real LIME often uses automatic superpixels; this demo uses a visible 4x4 grid so every perturbation is easy to inspect.`
+        ].map((line) => `<div class="note-line">${line}</div>`).join("");
+      }
+
+      function renderStats() {
+        const lines = [];
+        lines.push("LIME only queries the model's outputs; it does not inspect internal feature maps.");
+        lines.push("The current classifier is MobileNet trained on the 1,000 ImageNet classes.");
+        lines.push("The animal labels shown here are display labels built by summing related raw ImageNet classes.");
+        lines.push(`Visible region grid: ${GRID_ROWS} x ${GRID_COLS}`);
+        lines.push(`Image classifier input size: ${IMAGE_SIZE} x ${IMAGE_SIZE}`);
+        if (state.targetClassIndex != null) {
+          lines.push(`Selected animal label: ${labelForIndex(state.targetClassIndex)}`);
+        }
+        if (state.weightedMae != null) {
+          lines.push(`Weighted local MAE: ${state.weightedMae.toFixed(4)}`);
+        }
+        if (state.analysisMs != null) {
+          lines.push(`Latest LIME run time: ${(state.analysisMs / 1000).toFixed(2)} s`);
+        }
+        statLines.innerHTML = lines.map((line) => `<div class="stat-line">${line}</div>`).join("");
+      }
+
+      function formatSigned(value) {
+        return `${value >= 0 ? "+" : ""}${value.toFixed(3)}`;
+      }
+
+      function updateSliderLabels() {
+        sampleValue.textContent = sampleRange.value;
+        kernelValue.textContent = Number(kernelRange.value).toFixed(1);
+        budgetValue.textContent = budgetRange.value;
+      }
+
+      function setImageSource(src, label, hint, uploaded) {
+        state.currentImageLabel = label;
+        state.currentImageHint = hint;
+        state.uploaded = uploaded;
+        state.imageReady = false;
+        state.originalRow = null;
+        state.predictions = [];
+        state.samples = [];
+        state.beta = null;
+        state.weightedMae = null;
+        state.weightedMse = null;
+        state.analysisMs = null;
+        renderPredictions();
+        renderGallery();
+        renderStats();
+        summaryLines.innerHTML = "";
+        noteLines.innerHTML = "";
+        sourceImage.src = src;
+      }
+
+      async function runLimeForTarget(targetClassIndex) {
+        const start = performance.now();
+        const sampleCount = Number(sampleRange.value);
+        const kernelWidth = Number(kernelRange.value);
+        const targetGroup = groupForIndex(targetClassIndex);
+        if (!targetGroup) {
+          throw new Error("Could not find the selected animal label.");
+        }
+
+        setStatus([
+          { text: "Running LIME on the current image...", kind: "strong" },
+          { text: `Querying the classifier on ${sampleCount} masked images for ${targetGroup.label}.` },
+          { text: "The first run can take longer while the browser warms up TensorFlow.js." }
+        ]);
+
+        const neighborhood = sampleNeighborhood(state.regions.length, sampleCount, kernelWidth, state.seed);
+        const canvases = neighborhood.map((sample) => createMaskedCanvas(sample.z));
+        const rows = await predictCanvases(canvases, false);
+        const targetScores = rows.map((row) => probabilityForGroup(row, targetGroup));
+
+        state.samples = neighborhood.map((sample, index) => ({
+          ...sample,
+          canvas: canvases[index],
+          prediction: targetScores[index],
+          isOriginal: index === 0
+        }));
+
+        state.beta = fitWeightedLinearSurrogate(state.samples);
+        state.samples = state.samples.map((sample) => ({
+          ...sample,
+          surrogate: surrogatePrediction(state.beta, sample.z)
+        }));
+
+        state.weightedMae = state.samples.reduce((acc, sample) => {
+          const diff = Math.abs(sample.surrogate - sample.prediction);
+          return acc + sample.similarity * diff;
+        }, 0) / state.samples.reduce((acc, sample) => acc + sample.similarity, 0);
+
+        state.weightedMse = state.samples.reduce((acc, sample) => {
+          const diff = sample.surrogate - sample.prediction;
+          return acc + sample.similarity * diff * diff;
+        }, 0) / state.samples.reduce((acc, sample) => acc + sample.similarity, 0);
+
+        state.analysisMs = performance.now() - start;
+        state.targetClassIndex = targetClassIndex;
+        state.targetProbability = probabilityForGroup(state.originalRow, targetGroup);
+
+        renderPredictions();
+        renderClassOptions();
+        renderViewer();
+        renderSummary(targetGroup);
+        renderGallery();
+        renderWeightsPlot();
+        renderNeighborhoodPlot();
+        renderNotes(targetGroup);
+        renderStats();
+
+        setStatus([
+          { text: "LIME explanation updated.", kind: "strong" },
+          { text: `Explaining ${targetGroup.label} on ${state.uploaded ? "the uploaded image" : state.currentImageLabel}.` },
+          { text: `The classifier score on the original image is ${formatPercent(state.targetProbability ?? 0)} and the weighted local MAE is ${(state.weightedMae ?? 0).toFixed(4)}.` }
+        ]);
+      }
+
+      async function analyzeCurrentImage(requestedClassIndex = null, bumpSeed = false) {
+        if (!state.modelReady || !state.imageReady || !state.baseCanvas) {
+          return;
+        }
+        if (bumpSeed) {
+          state.seed += 1;
+        }
+        setBusy(true);
+        try {
+          await analyzeOriginalImage();
+          const targetClassIndex = requestedClassIndex != null
+            ? requestedClassIndex
+            : (state.predictions[0] ? state.predictions[0].index : 0);
+          await runLimeForTarget(targetClassIndex);
+        } catch (error) {
+          console.error(error);
+          setStatus([
+            { text: "LIME analysis failed.", kind: "strong" },
+            { text: String(error), kind: "warn" },
+            { text: "Try a clearer animal photo with one dominant subject, or reload the page." }
+          ]);
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      function loadCurrentSample() {
+        const sample = getSampleById(sampleSelect.value);
+        state.sampleId = sample.id;
+        setImageSource(sample.path, sample.label, sample.hint, false);
+      }
+
+      sourceImage.addEventListener("load", async () => {
+        state.imageReady = true;
+        updateImageGeometry();
+        renderViewer();
+        if (state.modelReady) {
+          await analyzeCurrentImage();
+        }
+      });
+
+      sampleSelect.addEventListener("change", () => {
+        loadCurrentSample();
+      });
+
+      uploadInput.addEventListener("change", (event) => {
+        const file = event.target.files && event.target.files[0];
+        if (!file) {
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          setImageSource(
+            String(reader.result),
+            "Uploaded image",
+            "Uploaded images work best when they show one clear animal against a relatively simple background.",
+            true
+          );
+        };
+        reader.readAsDataURL(file);
+      });
+
+      classSelect.addEventListener("change", async () => {
+        const classIndex = Number(classSelect.value);
+        if (!Number.isNaN(classIndex)) {
+          await analyzeCurrentImage(classIndex, false);
+        }
+      });
+
+      sampleRange.addEventListener("input", updateSliderLabels);
+      kernelRange.addEventListener("input", updateSliderLabels);
+      budgetRange.addEventListener("input", () => {
+        updateSliderLabels();
+        if (state.beta) {
+          renderViewer();
+          renderSummary(groupForIndex(state.targetClassIndex));
+          renderWeightsPlot();
+        }
+      });
+
+      analyzeBtn.addEventListener("click", async () => {
+        const requested = classSelect.value ? Number(classSelect.value) : null;
+        await analyzeCurrentImage(requested, true);
+      });
+
+      topClassBtn.addEventListener("click", async () => {
+        if (!state.predictions.length) {
+          return;
+        }
+        const topIndex = state.predictions[0].index;
+        classSelect.value = String(topIndex);
+        await analyzeCurrentImage(topIndex, true);
+      });
+
+      tightBtn.addEventListener("click", async () => {
+        kernelRange.value = "1.8";
+        updateSliderLabels();
+        const requested = classSelect.value ? Number(classSelect.value) : null;
+        await analyzeCurrentImage(requested, true);
+      });
+
+      wideBtn.addEventListener("click", async () => {
+        kernelRange.value = "5.0";
+        updateSliderLabels();
+        const requested = classSelect.value ? Number(classSelect.value) : null;
+        await analyzeCurrentImage(requested, true);
+      });
+
+      window.addEventListener("resize", () => {
+        if (state.imageReady) {
+          renderViewer();
+          galleryGrid.querySelectorAll("canvas").forEach((canvas, index) => {
+            const sample = pickGallerySamples()[index];
+            if (sample) {
+              paintThumbnail(canvas, sample.canvas);
+            }
+          });
+        }
+      });
+
+      function init() {
+        renderStaticControls();
+        renderPredictions();
+        renderGallery();
+        renderStats();
+        loadCurrentSample();
+        setBusy(true);
+        loadModel();
+      }
+
+      init();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1306 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Training Example Attribution</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .demo-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 14px;
+}
+
+.demo-stage,
+.demo-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.demo-stage {
+  overflow: hidden;
+}
+
+.demo-panel {
+  padding: 14px;
+}
+
+.demo-panel h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.demo-howto {
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.demo-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1020px) {
+  .demo-shell {
+    grid-template-columns: 1fr;
+  }
+}
+      .demo-controls {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-control-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.demo-control,
+.demo-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-control-label,
+.demo-field label {
+  display: block;
+  font-size: 13px;
+}
+
+.demo-slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.demo-slider-value {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.demo-control input,
+.demo-control select,
+.demo-control textarea,
+.demo-field input,
+.demo-field select,
+.demo-field textarea {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-button-row {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-button-columns, 4), minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demo-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-card {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-callout {
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.demo-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.demo-card-body {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.demo-lines,
+.demo-list {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.demo-list-item {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.demo-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
+.demo-plot-grid {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-plot-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-plot-frame {
+  width: 100%;
+  height: 100%;
+  min-height: var(--demo-plot-min-height, 280px);
+}
+
+.demo-inspector-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-inspector-main-plot {
+  min-height: var(--demo-inspector-main-height, 560px);
+}
+
+.demo-inspector-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-inspector-support-plot {
+  min-height: var(--demo-inspector-support-height, 280px);
+}
+
+.demo-stage-pad {
+  padding: 12px;
+}
+
+.demo-single-plot {
+  min-height: var(--demo-single-plot-height, 620px);
+}
+
+.demo-pre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #334155;
+}
+
+.demo-visual-stack {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-surface-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-surface-head {
+  padding: 12px 14px 0;
+}
+
+.demo-surface-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.demo-surface-copy {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-surface-body {
+  padding: 14px;
+}
+
+.demo-gridworld {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-grid-cell {
+  min-height: 120px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 6px;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.demo-grid-cell:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+}
+
+.demo-grid-cell.selected {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.demo-grid-cell.wall {
+  background: #1f2937;
+  color: #fff;
+  cursor: default;
+}
+
+.demo-grid-cell.terminal.good {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.demo-grid-cell.terminal.bad {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.demo-grid-coord {
+  font-size: 11px;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.demo-grid-cell.wall .demo-grid-coord {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.demo-grid-value {
+  font-size: 24px;
+  font-weight: 700;
+  align-self: center;
+}
+
+.demo-grid-policy {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.demo-grid-meta {
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.demo-grid-cell.wall .demo-grid-meta {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.demo-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.demo-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.84);
+  color: #1f2937;
+}
+
+.demo-route-chip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-legend-item {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid var(--border);
+}
+
+.demo-action-summary {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.demo-action-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 72px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.demo-action-label {
+  font-weight: 700;
+  color: #0f172a;
+  text-align: center;
+}
+
+.demo-bar-track {
+  height: 12px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.demo-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.demo-bar-value {
+  font-size: 12px;
+  color: #475569;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .demo-button-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demo-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 920px) {
+  .demo-inspector-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .demo-gridworld {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+      .attribution-stage {
+  --demo-inspector-main-height: 460px;
+  --demo-inspector-support-height: 280px;
+}
+
+    </style>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <div class="demo-shell">
+  <section class="demo-stage attribution-stage">
+
+    <div class="demo-inspector-stage">
+      <section class="demo-surface-card">
+        <div class="demo-surface-head">
+          <h2>Current Model And Decision Boundary</h2>
+          <p class="demo-surface-copy">
+            The contour shows the probability of class 1 under the current active training set.
+            The star is the selected test point. Click a training point to inspect how removing it would change the test prediction.
+          </p>
+        </div>
+        <div id="boundaryPlot" class="demo-plot-frame demo-inspector-main-plot"></div>
+      </section>
+      <div class="demo-inspector-support-grid">
+        <section class="demo-surface-card">
+          <div class="demo-surface-head">
+            <h2>Helpful And Harmful Training Examples</h2>
+            <p class="demo-surface-copy">
+              Bars to the right are helpful under the selected metric. Bars to the left are harmful.
+              Click a bar to inspect that training point.
+            </p>
+          </div>
+          <div id="influencePlot" class="demo-plot-frame demo-inspector-support-plot"></div>
+        </section>
+        <section class="demo-surface-card">
+          <div class="demo-surface-head">
+            <h2>Selected Removal Effect</h2>
+            <p class="demo-surface-copy">
+              Compare the selected test point under the full current model and the leave-one-out retraining that removes the inspected training example.
+            </p>
+          </div>
+          <div id="effectPlot" class="demo-plot-frame demo-inspector-support-plot"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+  <aside class="demo-panel">
+    <h1>Training Example Attribution</h1>
+    <div class="demo-howto">This inspector answers a training-data question: <strong>which training example most changes one test prediction?</strong> Pick a scenario and a test point, then click a training point in the boundary plot or an attribution bar to inspect it.</div>
+    <div class="demo-controls" style="--demo-control-columns: 2;">
+      <div class="demo-control demo-field">
+        <label class="demo-control-label" for="scenarioSelect">Dataset scenario</label>
+        <select id="scenarioSelect">
+          <option value="boundary_outlier" selected="selected">Boundary outlier</option>
+          <option value="redundant_support">Redundant support</option>
+        </select>
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label" for="testSelect">Test point</label>
+        <select id="testSelect">
+        </select>
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label" for="metricSelect">Attribution metric</label>
+        <select id="metricSelect">
+          <option value="loss" selected="selected">Test loss change</option>
+          <option value="prob">Correct-class probability change</option>
+        </select>
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label" for="removeSelect">Training point to inspect</label>
+        <select id="removeSelect">
+        </select>
+      </div>
+    </div>
+    <div class="demo-button-row" style="--demo-button-columns: 3;">
+      <button id="removeBtn" type="button">Remove selected</button>
+      <button id="harmfulBtn" type="button">Remove most harmful</button>
+      <button id="restoreBtn" type="button">Restore all</button>
+    </div>
+    <div class="demo-card">
+      <h3>Selected Training Point</h3>
+      <div id="selectedLines" class="demo-lines"></div>
+    </div>
+    <div class="demo-card">
+      <h3>Current Prediction</h3>
+      <div id="statLines" class="demo-lines"></div>
+    </div>
+    <div class="demo-card">
+      <h3>Interpretation</h3>
+      <div id="noteLines" class="demo-lines"></div>
+    </div>
+  </aside>
+</div>
+    <section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>Why can a training example be harmful for one test prediction even if it looks locally plausible in the dataset?</li>
+<li>What is the difference between helpful support examples, redundant examples, and harmful mislabeled or ambiguous examples?</li>
+<li>Why does data attribution answer a different question from saliency or feature attribution?</li>
+<li>How would exact leave-one-out retraining scale if the dataset were large or the model were expensive?</li>
+<li>What information do you gain by knowing that one specific training point is harmful that a feature heatmap would not tell you?</li>
+    </ul>
+  </div>
+</section>
+    <script>
+      window.DEMO_PAYLOAD = {"scenarios":{"boundary_outlier":{"name":"Boundary outlier","train":[{"id":"T1","x":-2.2,"y":-1.4,"label":0},{"id":"T2","x":-1.8,"y":-0.9,"label":0},{"id":"T3","x":-1.6,"y":-1.7,"label":0},{"id":"T4","x":-1.1,"y":-0.6,"label":0},{"id":"T5","x":1.0,"y":1.2,"label":1},{"id":"T6","x":1.5,"y":1.6,"label":1},{"id":"T7","x":2.0,"y":1.1,"label":1},{"id":"T8","x":1.4,"y":2.0,"label":1},{"id":"T9","x":-0.2,"y":0.25,"label":1},{"id":"T10","x":0.25,"y":0.05,"label":0},{"id":"T11","x":0.55,"y":0.38,"label":1},{"id":"T12","x":-0.45,"y":-0.2,"label":0}],"tests":[{"id":"borderline_blue","x":-0.15,"y":-0.05,"label":0},{"id":"borderline_orange","x":0.55,"y":0.5,"label":1},{"id":"safe_orange","x":1.55,"y":1.3,"label":1}]},"redundant_support":{"name":"Redundant support","train":[{"id":"T1","x":-2.0,"y":-1.7,"label":0},{"id":"T2","x":-1.7,"y":-1.0,"label":0},{"id":"T3","x":-1.4,"y":-1.5,"label":0},{"id":"T4","x":-0.8,"y":-0.8,"label":0},{"id":"T5","x":1.2,"y":1.0,"label":1},{"id":"T6","x":1.5,"y":1.5,"label":1},{"id":"T7","x":1.8,"y":0.9,"label":1},{"id":"T8","x":1.7,"y":1.9,"label":1},{"id":"T9","x":0.3,"y":0.2,"label":1},{"id":"T10","x":0.05,"y":0.1,"label":1},{"id":"T11","x":-0.15,"y":-0.1,"label":0},{"id":"T12","x":-0.35,"y":0.2,"label":0}],"tests":[{"id":"fragile_orange","x":0.2,"y":0.18,"label":1},{"id":"fragile_blue","x":-0.2,"y":0.0,"label":0},{"id":"safe_blue","x":-1.4,"y":-1.0,"label":0}]}}};
+    </script>
+    <script>
+      (() => {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  function resolve(target) {
+    if (typeof target === "string") {
+      return document.getElementById(target);
+    }
+    return target;
+  }
+
+  function setAttrs(node, attrs = {}) {
+    Object.entries(attrs).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
+        node.removeAttribute(key);
+        return;
+      }
+      node.setAttribute(key, String(value));
+    });
+    return node;
+  }
+
+  function setText(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.textContent = value;
+    }
+    return node;
+  }
+
+  function setHTML(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.innerHTML = value;
+    }
+    return node;
+  }
+
+  function create(tagName, attrs = {}, textContent = null) {
+    const node = document.createElementNS(SVG_NS, tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function append(parent, tagName, attrs = {}, textContent = null) {
+    const node = create(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function createHtml(tagName, attrs = {}, textContent = null) {
+    const node = document.createElement(tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function appendHtml(parent, tagName, attrs = {}, textContent = null) {
+    const node = createHtml(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function clear(target) {
+    const node = resolve(target);
+    while (node && node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+    return node;
+  }
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function query(selector, root = document) {
+    const node = resolve(root);
+    return node ? node.querySelector(selector) : null;
+  }
+
+  function queryAll(selector, root = document) {
+    const node = resolve(root);
+    return node ? [...node.querySelectorAll(selector)] : [];
+  }
+
+  function formatNumber(value, digits = 4) {
+    return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
+  }
+
+  function formatFixed(value, digits = 2) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(digits) : "?";
+  }
+
+  function readNumber(input, fallback = 0) {
+    const node = resolve(input);
+    if (!node) {
+      return fallback;
+    }
+    const value = Number(node.value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function clamp(value, minValue, maxValue) {
+    return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function renderItems(target, items, options = {}) {
+    const {
+      className = "demo-line",
+      tagName = "div",
+      html = false,
+    } = options;
+    const node = clear(target);
+    if (!node) {
+      return null;
+    }
+    items.forEach((item) => {
+      const row = createHtml(tagName, className ? { class: className } : {});
+      if (html) {
+        row.innerHTML = item;
+      } else {
+        row.textContent = item;
+      }
+      node.appendChild(row);
+    });
+    return node;
+  }
+
+  function renderLines(target, lines, className = "demo-line", html = false) {
+    return renderItems(target, lines, { className, html });
+  }
+
+  function renderList(target, items, className = "demo-list-item", html = false) {
+    return renderItems(target, items, { className, html });
+  }
+
+  function bindRangeDisplay(rangeInput, valueNode, formatter = (value) => value) {
+    const input = resolve(rangeInput);
+    const output = resolve(valueNode);
+    if (!input || !output) {
+      return () => {};
+    }
+    const update = () => {
+      output.textContent = formatter(input.value, input);
+    };
+    input.addEventListener("input", update);
+    update();
+    return update;
+  }
+
+  function bindRangeDisplays(bindings) {
+    return bindings.map((binding) =>
+      bindRangeDisplay(binding.range, binding.output, binding.formatter)
+    );
+  }
+
+  const runtime = {
+    SVG_NS,
+    append,
+    appendHtml,
+    byId,
+    bindRangeDisplay,
+    bindRangeDisplays,
+    clamp,
+    clear,
+    create,
+    createHtml,
+    formatFixed,
+    formatNumber,
+    query,
+    queryAll,
+    readNumber,
+    renderItems,
+    renderLines,
+    renderList,
+    resolve,
+    setAttrs,
+    setHTML,
+    setText,
+  };
+
+  window.SvgDemoRuntime = runtime;
+  window.DemoRuntime = runtime;
+})();
+
+    </script>
+    <script>
+      const Demo = window.DemoRuntime;
+const payload = window.DEMO_PAYLOAD;
+
+const boundaryPlot = Demo.byId("boundaryPlot");
+const influencePlot = Demo.byId("influencePlot");
+const effectPlot = Demo.byId("effectPlot");
+const scenarioSelect = Demo.byId("scenarioSelect");
+const testSelect = Demo.byId("testSelect");
+const metricSelect = Demo.byId("metricSelect");
+const removeSelect = Demo.byId("removeSelect");
+
+const state = {
+  removedIds: new Set(),
+  listenersBound: false,
+};
+
+function scenario() {
+  return payload.scenarios[scenarioSelect.value];
+}
+
+function activeTrainPoints() {
+  return scenario().train.filter((point) => !state.removedIds.has(point.id));
+}
+
+function currentTestPoint() {
+  return scenario().tests.find((point) => point.id === testSelect.value);
+}
+
+function selectedTrainPoint() {
+  return activeTrainPoints().find((point) => point.id === removeSelect.value) || null;
+}
+
+function sigmoid(value) {
+  return 1 / (1 + Math.exp(-value));
+}
+
+function predictProb(weights, point) {
+  return sigmoid(weights[0] + weights[1] * point.x + weights[2] * point.y);
+}
+
+function crossEntropy(prob, label) {
+  const clipped = Math.max(1e-6, Math.min(1 - 1e-6, prob));
+  return -(label * Math.log(clipped) + (1 - label) * Math.log(1 - clipped));
+}
+
+function correctProb(prob, label) {
+  return label === 1 ? prob : 1 - prob;
+}
+
+function trainLogistic(points) {
+  const weights = [0, 0, 0];
+  const learningRate = 0.35;
+  const lambda = 0.02;
+  for (let step = 0; step < 420; step += 1) {
+    const grad = [0, 0, 0];
+    points.forEach((point) => {
+      const z = weights[0] + weights[1] * point.x + weights[2] * point.y;
+      const prob = sigmoid(z);
+      const error = prob - point.label;
+      grad[0] += error;
+      grad[1] += error * point.x;
+      grad[2] += error * point.y;
+    });
+    grad[1] += lambda * weights[1];
+    grad[2] += lambda * weights[2];
+    weights[0] -= learningRate * grad[0] / points.length;
+    weights[1] -= learningRate * grad[1] / points.length;
+    weights[2] -= learningRate * grad[2] / points.length;
+  }
+  return weights;
+}
+
+function populateTestSelect() {
+  const current = testSelect.value;
+  testSelect.innerHTML = scenario().tests
+    .map((point) => `<option value="${point.id}">${point.id.replaceAll("_", " ")}</option>`)
+    .join("");
+  if (scenario().tests.some((point) => point.id === current)) {
+    testSelect.value = current;
+    return;
+  }
+  testSelect.value = scenario().tests[0].id;
+}
+
+function populateRemoveSelect() {
+  const current = removeSelect.value;
+  const points = activeTrainPoints();
+  removeSelect.innerHTML = points.map((point) => `<option value="${point.id}">${point.id}</option>`).join("");
+  if (points.some((point) => point.id === current)) {
+    removeSelect.value = current;
+    return;
+  }
+  if (points.length) {
+    removeSelect.value = points[0].id;
+  }
+}
+
+function computeInfluences(weights, testPoint) {
+  const points = activeTrainPoints();
+  const fullProb = predictProb(weights, testPoint);
+  const fullLoss = crossEntropy(fullProb, testPoint.label);
+  const fullCorrectProb = correctProb(fullProb, testPoint.label);
+  return points.map((point) => {
+    const reducedPoints = points.filter((candidate) => candidate.id !== point.id);
+    const reducedWeights = trainLogistic(reducedPoints);
+    const reducedProb = predictProb(reducedWeights, testPoint);
+    const reducedLoss = crossEntropy(reducedProb, testPoint.label);
+    const reducedCorrectProb = correctProb(reducedProb, testPoint.label);
+    return {
+      point,
+      reducedWeights,
+      reducedProb,
+      reducedLoss,
+      reducedCorrectProb,
+      helpfulByLoss: reducedLoss - fullLoss,
+      helpfulByProb: fullCorrectProb - reducedCorrectProb,
+    };
+  });
+}
+
+function decisionSurface(weights) {
+  const xs = [];
+  const ys = [];
+  const zs = [];
+  for (let x = -2.8; x <= 2.8 + 1e-9; x += 0.14) {
+    xs.push(Number(x.toFixed(2)));
+  }
+  for (let y = -2.6; y <= 2.6 + 1e-9; y += 0.14) {
+    ys.push(Number(y.toFixed(2)));
+  }
+  ys.forEach((y) => {
+    const row = [];
+    xs.forEach((x) => {
+      row.push(predictProb(weights, { x, y, label: 1 }));
+    });
+    zs.push(row);
+  });
+  return { xs, ys, zs };
+}
+
+function influenceKey() {
+  return metricSelect.value === "loss" ? "helpfulByLoss" : "helpfulByProb";
+}
+
+function mostHelpful(influences) {
+  const key = influenceKey();
+  return [...influences].sort((left, right) => right[key] - left[key])[0];
+}
+
+function mostHarmful(influences) {
+  const key = influenceKey();
+  return [...influences].sort((left, right) => left[key] - right[key])[0];
+}
+
+function renderBoundaryPlot(weights, testPoint) {
+  const surface = decisionSurface(weights);
+  const activePoints = activeTrainPoints();
+  const inactivePoints = scenario().train.filter((point) => state.removedIds.has(point.id));
+  const negative = activePoints.filter((point) => point.label === 0);
+  const positive = activePoints.filter((point) => point.label === 1);
+
+  Plotly.react(
+    boundaryPlot,
+    [
+      {
+        type: "contour",
+        x: surface.xs,
+        y: surface.ys,
+        z: surface.zs,
+        colorscale: [
+          [0.0, "rgba(59,130,246,0.12)"],
+          [0.49, "rgba(59,130,246,0.28)"],
+          [0.5, "rgba(255,255,255,0.95)"],
+          [0.51, "rgba(249,115,22,0.28)"],
+          [1.0, "rgba(249,115,22,0.12)"],
+        ],
+        showscale: false,
+        contours: { start: 0, end: 1, size: 0.1, coloring: "heatmap" },
+        hovertemplate: "x=%{x:.2f}<br>y=%{y:.2f}<br>p(class 1)=%{z:.3f}<extra></extra>",
+      },
+      {
+        type: "scatter",
+        mode: "markers+text",
+        name: "Class 0 train",
+        x: negative.map((point) => point.x),
+        y: negative.map((point) => point.y),
+        text: negative.map((point) => point.id),
+        textposition: "top center",
+        customdata: negative.map((point) => [point.id]),
+        hovertemplate: "%{text}<br>class 0 train<extra></extra>",
+        marker: {
+          size: negative.map((point) => (point.id === removeSelect.value ? 13 : 10)),
+          color: "#2563eb",
+          line: { width: negative.map((point) => (point.id === removeSelect.value ? 2 : 1)), color: "#1e3a8a" },
+        },
+      },
+      {
+        type: "scatter",
+        mode: "markers+text",
+        name: "Class 1 train",
+        x: positive.map((point) => point.x),
+        y: positive.map((point) => point.y),
+        text: positive.map((point) => point.id),
+        textposition: "top center",
+        customdata: positive.map((point) => [point.id]),
+        hovertemplate: "%{text}<br>class 1 train<extra></extra>",
+        marker: {
+          size: positive.map((point) => (point.id === removeSelect.value ? 13 : 10)),
+          color: "#f97316",
+          line: { width: positive.map((point) => (point.id === removeSelect.value ? 2 : 1)), color: "#9a3412" },
+        },
+      },
+      {
+        type: "scatter",
+        mode: "markers+text",
+        name: "Removed train",
+        x: inactivePoints.map((point) => point.x),
+        y: inactivePoints.map((point) => point.y),
+        text: inactivePoints.map((point) => point.id),
+        textposition: "bottom center",
+        hovertemplate: "%{text}<br>removed from active set<extra></extra>",
+        marker: {
+          size: 11,
+          color: "#cbd5e1",
+          symbol: "x",
+          line: { width: 1, color: "#64748b" },
+        },
+      },
+      {
+        type: "scatter",
+        mode: "markers+text",
+        name: "Selected test point",
+        x: [testPoint.x],
+        y: [testPoint.y],
+        text: ["test"],
+        textposition: "bottom right",
+        hovertemplate: `${testPoint.id.replaceAll("_", " ")}<br>test point<extra></extra>`,
+        marker: {
+          size: 16,
+          color: "#111827",
+          symbol: "star",
+          line: { width: 1, color: "#000000" },
+        },
+      },
+    ],
+    {
+      margin: { l: 52, r: 20, t: 20, b: 42 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "feature x1", range: [-2.8, 2.8] },
+      yaxis: { title: "feature x2", range: [-2.6, 2.6] },
+      legend: { orientation: "h", x: 0, y: 1.12 },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+}
+
+function renderInfluencePlot(influences) {
+  const key = influenceKey();
+  const ranked = [...influences].sort((left, right) => left[key] - right[key]);
+  const display = ranked.length <= 10 ? ranked : [...ranked.slice(0, 5), ...ranked.slice(-5)];
+  Plotly.react(
+    influencePlot,
+    [
+      {
+        type: "bar",
+        orientation: "h",
+        y: display.map((entry) => entry.point.id),
+        x: display.map((entry) => entry[key]),
+        customdata: display.map((entry) => [entry.point.id]),
+        marker: {
+          color: display.map((entry) => (entry[key] >= 0 ? "#10b981" : "#ef4444")),
+        },
+        hovertemplate: "%{y}<br>helpfulness=%{x:.4f}<extra></extra>",
+      },
+    ],
+    {
+      margin: { l: 72, r: 18, t: 18, b: 42 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: {
+        title:
+          metricSelect.value === "loss"
+            ? "change in test loss after removal"
+            : "change in correct-class probability after removal",
+        zerolinecolor: "#c7d2e0",
+      },
+      yaxis: { title: "training point" },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+}
+
+function renderEffectPlot(weights, influenceEntry, testPoint) {
+  const fullProb = predictProb(weights, testPoint);
+  const fullLoss = crossEntropy(fullProb, testPoint.label);
+  Plotly.react(
+    effectPlot,
+    [
+      {
+        type: "bar",
+        x: ["Full model", `Without ${influenceEntry.point.id}`],
+        y: [correctProb(fullProb, testPoint.label), influenceEntry.reducedCorrectProb],
+        marker: { color: ["#2563eb", "#f97316"] },
+        name: "Correct-class probability",
+        yaxis: "y1",
+        hovertemplate: "%{x}<br>correct prob=%{y:.3f}<extra></extra>",
+      },
+      {
+        type: "scatter",
+        mode: "lines+markers",
+        x: ["Full model", `Without ${influenceEntry.point.id}`],
+        y: [fullLoss, influenceEntry.reducedLoss],
+        line: { color: "#111827", width: 3 },
+        marker: { size: 9, color: "#111827" },
+        name: "Test loss",
+        yaxis: "y2",
+        hovertemplate: "%{x}<br>loss=%{y:.3f}<extra></extra>",
+      },
+    ],
+    {
+      margin: { l: 52, r: 52, t: 18, b: 54 },
+      paper_bgcolor: "#ffffff",
+      plot_bgcolor: "#ffffff",
+      xaxis: { title: "model variant" },
+      yaxis: { title: "correct-class probability", range: [0, 1] },
+      yaxis2: { title: "test loss", overlaying: "y", side: "right" },
+      legend: { orientation: "h", x: 0, y: 1.12 },
+    },
+    { responsive: true, displayModeBar: false }
+  );
+}
+
+function renderSelectedLines(selectedEntry, harmfulEntry, helpfulEntry) {
+  if (!selectedEntry) {
+    Demo.renderLines("selectedLines", ["No active training point is selected."]);
+    return;
+  }
+  const key = influenceKey();
+  const status =
+    selectedEntry.point.id === harmfulEntry.point.id
+      ? "Currently the most harmful point under the selected metric."
+      : selectedEntry.point.id === helpfulEntry.point.id
+        ? "Currently the most helpful support point under the selected metric."
+        : "Neither the most helpful nor the most harmful point right now.";
+  Demo.renderLines("selectedLines", [
+    `Point: ${selectedEntry.point.id}`,
+    `Label: class ${selectedEntry.point.label}`,
+    `Coordinates: (${Demo.formatFixed(selectedEntry.point.x, 2)}, ${Demo.formatFixed(selectedEntry.point.y, 2)})`,
+    `Selected metric value: ${Demo.formatNumber(selectedEntry[key], 4)}`,
+    `Correct-class probability after removal: ${Demo.formatNumber(selectedEntry.reducedCorrectProb, 3)}`,
+    status,
+  ]);
+}
+
+function renderStatLines(weights, influences, testPoint) {
+  const prob = predictProb(weights, testPoint);
+  const predictedLabel = prob >= 0.5 ? 1 : 0;
+  const harmfulEntry = mostHarmful(influences);
+  const helpfulEntry = mostHelpful(influences);
+  Demo.renderLines("statLines", [
+    `Scenario: ${scenario().name}`,
+    `Selected test point: ${testPoint.id.replaceAll("_", " ")}`,
+    `True label: ${testPoint.label}, predicted label: ${predictedLabel}`,
+    `Predicted probability of class 1: ${Demo.formatNumber(prob, 3)}`,
+    `Test loss on the selected point: ${Demo.formatNumber(crossEntropy(prob, testPoint.label), 3)}`,
+    `Most harmful point: ${harmfulEntry.point.id} (${Demo.formatNumber(harmfulEntry[influenceKey()], 4)})`,
+    `Most helpful point: ${helpfulEntry.point.id} (${Demo.formatNumber(helpfulEntry[influenceKey()], 4)})`,
+    `Active training set size: ${activeTrainPoints().length}`,
+  ]);
+}
+
+function renderNoteLines(selectedEntry, harmfulEntry, helpfulEntry) {
+  const lines = [
+    `${harmfulEntry.point.id} is currently the most harmful point for the selected test example under the chosen metric.`,
+    `${helpfulEntry.point.id} is currently the most helpful support example for that same test example.`,
+    "Removing one training example matters because the classifier is retrained on the remaining dataset, so the whole decision boundary can move.",
+    "That is why data attribution answers a different question from saliency: it identifies which training experience produced a behavior, not which input feature lit up at test time.",
+  ];
+  if (selectedEntry) {
+    lines.splice(
+      2,
+      0,
+      `The inspected point ${selectedEntry.point.id} would change the selected prediction by ${Demo.formatNumber(selectedEntry[influenceKey()], 4)} under the current metric.`,
+    );
+  }
+  Demo.renderLines("noteLines", lines);
+}
+
+function renderAll() {
+  populateTestSelect();
+  populateRemoveSelect();
+  const weights = trainLogistic(activeTrainPoints());
+  const testPoint = currentTestPoint();
+  const influences = computeInfluences(weights, testPoint);
+  const selectedEntry = influences.find((entry) => entry.point.id === removeSelect.value) || influences[0];
+  const harmfulEntry = mostHarmful(influences);
+  const helpfulEntry = mostHelpful(influences);
+
+  renderBoundaryPlot(weights, testPoint);
+  renderInfluencePlot(influences);
+  renderEffectPlot(weights, selectedEntry, testPoint);
+  renderSelectedLines(selectedEntry, harmfulEntry, helpfulEntry);
+  renderStatLines(weights, influences, testPoint);
+  renderNoteLines(selectedEntry, harmfulEntry, helpfulEntry);
+}
+
+function bindPlotListeners() {
+  if (state.listenersBound) {
+    return;
+  }
+  boundaryPlot.on("plotly_click", (event) => {
+    const point = event.points && event.points[0];
+    const pointId = point && point.customdata ? point.customdata[0] : null;
+    if (!pointId) {
+      return;
+    }
+    removeSelect.value = pointId;
+    renderAll();
+  });
+  influencePlot.on("plotly_click", (event) => {
+    const point = event.points && event.points[0];
+    const pointId = point && point.customdata ? point.customdata[0] : null;
+    if (!pointId) {
+      return;
+    }
+    removeSelect.value = pointId;
+    renderAll();
+  });
+  state.listenersBound = true;
+}
+
+function resetScenario() {
+  state.removedIds = new Set();
+  populateTestSelect();
+  testSelect.value = scenario().tests[0].id;
+  populateRemoveSelect();
+  renderAll();
+}
+
+function removeMostHarmful() {
+  const weights = trainLogistic(activeTrainPoints());
+  const testPoint = currentTestPoint();
+  const influences = computeInfluences(weights, testPoint);
+  const harmfulEntry = mostHarmful(influences);
+  if (!harmfulEntry) {
+    return;
+  }
+  state.removedIds.add(harmfulEntry.point.id);
+  renderAll();
+}
+
+function init() {
+  scenarioSelect.addEventListener("change", resetScenario);
+  testSelect.addEventListener("change", renderAll);
+  metricSelect.addEventListener("change", renderAll);
+  removeSelect.addEventListener("change", renderAll);
+  Demo.byId("removeBtn").addEventListener("click", () => {
+    if (!removeSelect.value) {
+      return;
+    }
+    state.removedIds.add(removeSelect.value);
+    renderAll();
+  });
+  Demo.byId("harmfulBtn").addEventListener("click", removeMostHarmful);
+  Demo.byId("restoreBtn").addEventListener("click", resetScenario);
+
+  resetScenario();
+  bindPlotListeners();
+}
+
+init();
+
+    </script>
+  </body>
+</html>

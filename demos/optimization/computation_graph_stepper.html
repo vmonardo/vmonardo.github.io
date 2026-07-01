@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Computation Graph Stepper</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .demo-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 14px;
+}
+
+.demo-stage,
+.demo-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.demo-stage {
+  overflow: hidden;
+}
+
+.demo-panel {
+  padding: 14px;
+}
+
+.demo-panel h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.demo-howto {
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.demo-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1020px) {
+  .demo-shell {
+    grid-template-columns: 1fr;
+  }
+}
+      .demo-controls {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-control-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.demo-control,
+.demo-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-control-label,
+.demo-field label {
+  display: block;
+  font-size: 13px;
+}
+
+.demo-slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.demo-slider-value {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.demo-control input,
+.demo-control select,
+.demo-control textarea,
+.demo-field input,
+.demo-field select,
+.demo-field textarea {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-button-row {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-button-columns, 4), minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demo-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-card {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.demo-card-body {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.demo-lines,
+.demo-list {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.demo-list-item {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.demo-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
+@media (max-width: 640px) {
+  .demo-button-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demo-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+      .graph-stage {
+  min-height: 560px;
+  padding: 12px;
+}
+
+.formula-card {
+  margin-top: 0;
+}
+
+.formula-copy {
+  font-size: 14px;
+  color: #1e293b;
+}
+
+#graphScene {
+  min-height: 520px;
+}
+
+.node rect {
+  fill: #f8fafc;
+  stroke: #cbd5e1;
+  stroke-width: 2;
+}
+
+.node.done rect {
+  fill: #ecfeff;
+  stroke: #0891b2;
+}
+
+.node.active rect {
+  fill: #eff6ff;
+  stroke: #2563eb;
+  stroke-width: 3;
+}
+
+.node text.label {
+  font-size: 16px;
+  font-weight: 700;
+  fill: #0f172a;
+}
+
+.node text.meta {
+  font-size: 12px;
+  fill: #475569;
+}
+
+.node text.grad {
+  font-size: 12px;
+  fill: #b91c1c;
+}
+
+.edge {
+  fill: none;
+  stroke: #94a3b8;
+  stroke-width: 2.5;
+  marker-end: url(#arrow);
+}
+
+.edge.active {
+  stroke: #2563eb;
+  stroke-width: 4;
+}
+
+    </style>
+    
+  </head>
+  <body>
+    <div class="demo-shell">
+  <section class="demo-stage graph-stage">
+    <svg id="graphScene" class="demo-svg" aria-label="Computation graph stepper"></svg>
+  </section>
+  <aside class="demo-panel">
+    <h1>Computation Graph Stepper</h1>
+    <div class="demo-howto">This graph represents the function <strong>f(x, y) = (sin(x) + x y)^2</strong>. Step forward to compute values. Then step backward to propagate gradients from the output back to the inputs.</div>
+    <div class="demo-controls" style="--demo-control-columns: 2;">
+      <div class="demo-control demo-field">
+        <label class="demo-control-label" for="xInput">Input x</label>
+        <input id="xInput" type="number" value="1.2" step="0.1">
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label" for="yInput">Input y</label>
+        <input id="yInput" type="number" value="-0.7" step="0.1">
+      </div>
+    </div>
+    <div class="demo-button-row" style="--demo-button-columns: 4;">
+      <button id="resetValuesBtn" type="button">Reset values</button>
+      <button id="prevBtn" type="button">Previous</button>
+      <button id="nextBtn" type="button">Next</button>
+      <button id="playAllBtn" type="button">Run all</button>
+    </div>
+    <div class="demo-card formula-card">
+
+      <div class="demo-card-body formula-copy">Forward order: <span id="forwardOrder"></span><br>Backward order: <span id="backwardOrder"></span></div>
+    </div>
+    <div class="demo-card">
+      <h3>Current Step</h3>
+      <div id="stepStatus" class="demo-card-body"></div>
+    </div>
+    <div class="demo-card">
+      <h3>Highlighted Node</h3>
+      <div id="stepInfo" class="demo-card-body"></div>
+    </div>
+    <div class="demo-card">
+      <h3>Saved Tape For Backward</h3>
+      <div id="cacheTape" class="demo-list"></div>
+    </div>
+  </aside>
+</div>
+    <section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>What values are created during the forward pass, and which of them are useful to keep for the backward pass?</li>
+<li>What is the difference between a local derivative like d(sin x)/dx and a full gradient like df/dx?</li>
+<li>Why does the backward pass move from the output node back toward the inputs?</li>
+<li>Which pieces of this process do modern libraries automate for us?</li>
+<li>If the function changed but stayed differentiable, what parts of the optimization workflow would stay the same?</li>
+    </ul>
+  </div>
+</section>
+    <script>
+      window.DEMO_PAYLOAD = {"viewBox":[0,0,860,540],"defaults":{"x":1.2,"y":-0.7},"forwardOrder":"x, y, a = sin(x), b = x y, c = a + b, f = c^2","backwardOrder":"f, c, a and b, then x and y","nodes":[{"id":"x","label":"x","gradLabel":"df/dx","x":40,"y":90,"width":120,"height":100},{"id":"y","label":"y","gradLabel":"df/dy","x":40,"y":270,"width":120,"height":100},{"id":"a","label":"a = sin(x)","gradLabel":"df/da","x":250,"y":90,"width":140,"height":100},{"id":"b","label":"b = x * y","gradLabel":"df/db","x":250,"y":270,"width":140,"height":100},{"id":"c","label":"c = a + b","gradLabel":"df/dc","x":520,"y":180,"width":130,"height":100},{"id":"f","label":"f = c^2","gradLabel":"df/df","x":720,"y":180,"width":120,"height":100}],"edges":[{"id":"edge-x-a","d":"M160 140 C 200 140, 220 140, 250 140"},{"id":"edge-x-b","d":"M160 140 C 205 170, 215 280, 250 300"},{"id":"edge-y-b","d":"M160 320 C 205 320, 220 320, 250 320"},{"id":"edge-a-c","d":"M390 140 C 470 140, 480 220, 520 230"},{"id":"edge-b-c","d":"M390 320 C 470 320, 480 240, 520 230"},{"id":"edge-c-f","d":"M650 230 C 690 230, 700 230, 720 230"}],"steps":[{"title":"Forward 1/6: load x","activeNodes":["x"],"activeEdges":[],"showValues":["x"],"showGrads":[],"info":"The forward pass starts by placing x into the graph as an input value.","tape":["x = input kept for sin(x) and x*y"]},{"title":"Forward 2/6: load y","activeNodes":["y"],"activeEdges":[],"showValues":["x","y"],"showGrads":[],"info":"Now y enters the graph. Inputs are available for later operations.","tape":["x = input kept for sin(x) and x*y","y = input kept for x*y"]},{"title":"Forward 3/6: compute a = sin(x)","activeNodes":["a"],"activeEdges":["edge-x-a"],"showValues":["x","y","a"],"showGrads":[],"info":"The graph applies sin to x. During backward, it is enough to remember x so we can evaluate cos(x).","tape":["x = input kept for sin(x) and x*y","y = input kept for x*y","a = sin(x) available for the next add"]},{"title":"Forward 4/6: compute b = x * y","activeNodes":["b"],"activeEdges":["edge-x-b","edge-y-b"],"showValues":["x","y","a","b"],"showGrads":[],"info":"The multiply node combines x and y. During backward, it sends one gradient copy times y to x and another times x to y.","tape":["x = input kept for sin(x) and x*y","y = input kept for x*y","a = sin(x) available for the next add","b = x*y available for the next add"]},{"title":"Forward 5/6: compute c = a + b","activeNodes":["c"],"activeEdges":["edge-a-c","edge-b-c"],"showValues":["x","y","a","b","c"],"showGrads":[],"info":"The add node combines the two branches. Its local derivative with respect to each input is 1.","tape":["x = input kept for sin(x) and x*y","y = input kept for x*y","c = a + b kept because f = c^2 needs c during backward"]},{"title":"Forward 6/6: compute f = c^2","activeNodes":["f"],"activeEdges":["edge-c-f"],"showValues":["x","y","a","b","c","f"],"showGrads":[],"info":"The output is now known. The forward pass has created both the final value and the intermediate states needed for backpropagation.","tape":["x = input kept for sin(x) and x*y","y = input kept for x*y","c = a + b kept because df/dc = 2c"]},{"title":"Backward 1/4: start with df/df = 1","activeNodes":["f"],"activeEdges":["edge-c-f"],"showValues":["x","y","a","b","c","f"],"showGrads":["f"],"info":"Backpropagation starts at the output. The derivative of f with respect to itself is 1.","tape":["Need c to compute df/dc = 2c","Need x for d(sin x)/dx = cos(x)","Need x and y for d(x*y)/dx and d(x*y)/dy"]},{"title":"Backward 2/4: propagate to c","activeNodes":["c"],"activeEdges":["edge-c-f"],"showValues":["x","y","a","b","c","f"],"showGrads":["f","c"],"info":"The square node sends the gradient df/dc = 2c back to c.","tape":["At c we now know the upstream gradient that will be split to both inputs of the add node."]},{"title":"Backward 3/4: split to a and b","activeNodes":["a","b"],"activeEdges":["edge-a-c","edge-b-c"],"showValues":["x","y","a","b","c","f"],"showGrads":["f","c","a","b"],"info":"Because c = a + b, both branches receive the same upstream gradient. So df/da = df/dc and df/db = df/dc.","tape":["The add node does not change the gradient magnitude because each local derivative is 1."]},{"title":"Backward 4/4: send gradients to x and y","activeNodes":["x","y"],"activeEdges":["edge-x-a","edge-x-b","edge-y-b"],"showValues":["x","y","a","b","c","f"],"showGrads":["f","c","a","b","x","y"],"info":"The input gradients accumulate contributions from every path: x receives one term through sin(x) and another through x*y, while y only receives the multiply-path contribution.","tape":["df/dx = df/da * cos(x) + df/db * y","df/dy = df/db * x"]}]};
+    </script>
+    <script>
+      (() => {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  function resolve(target) {
+    if (typeof target === "string") {
+      return document.getElementById(target);
+    }
+    return target;
+  }
+
+  function setAttrs(node, attrs = {}) {
+    Object.entries(attrs).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
+        node.removeAttribute(key);
+        return;
+      }
+      node.setAttribute(key, String(value));
+    });
+    return node;
+  }
+
+  function setText(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.textContent = value;
+    }
+    return node;
+  }
+
+  function setHTML(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.innerHTML = value;
+    }
+    return node;
+  }
+
+  function create(tagName, attrs = {}, textContent = null) {
+    const node = document.createElementNS(SVG_NS, tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function append(parent, tagName, attrs = {}, textContent = null) {
+    const node = create(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function createHtml(tagName, attrs = {}, textContent = null) {
+    const node = document.createElement(tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function appendHtml(parent, tagName, attrs = {}, textContent = null) {
+    const node = createHtml(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function clear(target) {
+    const node = resolve(target);
+    while (node && node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+    return node;
+  }
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function query(selector, root = document) {
+    const node = resolve(root);
+    return node ? node.querySelector(selector) : null;
+  }
+
+  function queryAll(selector, root = document) {
+    const node = resolve(root);
+    return node ? [...node.querySelectorAll(selector)] : [];
+  }
+
+  function formatNumber(value, digits = 4) {
+    return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
+  }
+
+  function formatFixed(value, digits = 2) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(digits) : "?";
+  }
+
+  function readNumber(input, fallback = 0) {
+    const node = resolve(input);
+    if (!node) {
+      return fallback;
+    }
+    const value = Number(node.value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function clamp(value, minValue, maxValue) {
+    return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function renderItems(target, items, options = {}) {
+    const {
+      className = "demo-line",
+      tagName = "div",
+      html = false,
+    } = options;
+    const node = clear(target);
+    if (!node) {
+      return null;
+    }
+    items.forEach((item) => {
+      const row = createHtml(tagName, className ? { class: className } : {});
+      if (html) {
+        row.innerHTML = item;
+      } else {
+        row.textContent = item;
+      }
+      node.appendChild(row);
+    });
+    return node;
+  }
+
+  function renderLines(target, lines, className = "demo-line", html = false) {
+    return renderItems(target, lines, { className, html });
+  }
+
+  function renderList(target, items, className = "demo-list-item", html = false) {
+    return renderItems(target, items, { className, html });
+  }
+
+  function bindRangeDisplay(rangeInput, valueNode, formatter = (value) => value) {
+    const input = resolve(rangeInput);
+    const output = resolve(valueNode);
+    if (!input || !output) {
+      return () => {};
+    }
+    const update = () => {
+      output.textContent = formatter(input.value, input);
+    };
+    input.addEventListener("input", update);
+    update();
+    return update;
+  }
+
+  function bindRangeDisplays(bindings) {
+    return bindings.map((binding) =>
+      bindRangeDisplay(binding.range, binding.output, binding.formatter)
+    );
+  }
+
+  const runtime = {
+    SVG_NS,
+    append,
+    appendHtml,
+    byId,
+    bindRangeDisplay,
+    bindRangeDisplays,
+    clamp,
+    clear,
+    create,
+    createHtml,
+    formatFixed,
+    formatNumber,
+    query,
+    queryAll,
+    readNumber,
+    renderItems,
+    renderLines,
+    renderList,
+    resolve,
+    setAttrs,
+    setHTML,
+    setText,
+  };
+
+  window.SvgDemoRuntime = runtime;
+  window.DemoRuntime = runtime;
+})();
+
+    </script>
+    <script>
+      const Demo = window.DemoRuntime;
+
+function computeGraphState(x, y) {
+  const a = Math.sin(x);
+  const b = x * y;
+  const c = a + b;
+  const f = c * c;
+  const gradF = 1.0;
+  const gradC = 2 * c;
+  const gradA = gradC;
+  const gradB = gradC;
+  const gradX = gradA * Math.cos(x) + gradB * y;
+  const gradY = gradB * x;
+
+  return {
+    values: { x, y, a, b, c, f },
+    grads: { f: gradF, c: gradC, a: gradA, b: gradB, x: gradX, y: gradY },
+  };
+}
+
+function createScene(svg, payload) {
+  Demo.clear(svg);
+  Demo.setAttrs(svg, { viewBox: payload.viewBox.join(" ") });
+
+  const refs = {
+    nodes: {},
+    values: {},
+    grads: {},
+    edges: {},
+  };
+
+  const defs = Demo.append(svg, "defs");
+  const marker = Demo.append(defs, "marker", {
+    id: "arrow",
+    markerWidth: 8,
+    markerHeight: 8,
+    refX: 7,
+    refY: 4,
+    orient: "auto",
+  });
+  Demo.append(marker, "path", { d: "M0,0 L8,4 L0,8 z", fill: "#94a3b8" });
+
+  payload.edges.forEach((edge) => {
+    refs.edges[edge.id] = Demo.append(svg, "path", {
+      id: edge.id,
+      d: edge.d,
+      class: "edge",
+    });
+  });
+
+  payload.nodes.forEach((node) => {
+    const group = Demo.append(svg, "g", {
+      id: `node-${node.id}`,
+      class: "node",
+      transform: `translate(${node.x} ${node.y})`,
+    });
+    Demo.append(group, "rect", {
+      width: node.width,
+      height: node.height,
+      rx: 14,
+    });
+    Demo.append(group, "text", { class: "label", x: 18, y: 28 }, node.label);
+    refs.values[node.id] = Demo.append(group, "text", { class: "meta", x: 18, y: 56 }, "value: ?");
+    refs.grads[node.id] = Demo.append(
+      group,
+      "text",
+      { class: "grad", x: 18, y: 80 },
+      `${node.gradLabel}: -`,
+    );
+    refs.nodes[node.id] = group;
+  });
+
+  return refs;
+}
+
+function readInputs(state, payload) {
+  return {
+    x: Demo.readNumber(state.xInput, payload.defaults.x),
+    y: Demo.readNumber(state.yInput, payload.defaults.y),
+  };
+}
+
+function fillTape(state, items) {
+  Demo.renderList(state.cacheTape, items);
+}
+
+function render(state, payload) {
+  const inputs = readInputs(state, payload);
+  const graph = computeGraphState(inputs.x, inputs.y);
+  const step = payload.steps[state.currentStep];
+
+  payload.edges.forEach((edge) => {
+    const edgeEl = state.scene.edges[edge.id];
+    edgeEl.classList.toggle("active", step.activeEdges.includes(edge.id));
+  });
+
+  payload.nodes.forEach((node) => {
+    const nodeEl = state.scene.nodes[node.id];
+    const valueEl = state.scene.values[node.id];
+    const gradEl = state.scene.grads[node.id];
+    const isProcessed = step.showValues.includes(node.id) || step.showGrads.includes(node.id);
+    const isActive = step.activeNodes.includes(node.id);
+
+    nodeEl.classList.toggle("done", isProcessed);
+    nodeEl.classList.toggle("active", isActive);
+    valueEl.textContent = step.showValues.includes(node.id)
+      ? `value: ${Demo.formatNumber(graph.values[node.id])}`
+      : "value: ?";
+    gradEl.textContent = step.showGrads.includes(node.id)
+      ? `${node.gradLabel}: ${Demo.formatNumber(graph.grads[node.id])}`
+      : `${node.gradLabel}: -`;
+  });
+
+  state.stepStatus.innerHTML =
+    `<strong>${step.title}</strong><br>` +
+    `Step ${state.currentStep + 1} of ${payload.steps.length}. ` +
+    `Current output value: <strong>${Demo.formatNumber(graph.values.f)}</strong>`;
+  state.stepInfo.textContent = step.info;
+  fillTape(state, step.tape);
+}
+
+function setDefaults(state, payload) {
+  state.xInput.value = payload.defaults.x.toFixed(1);
+  state.yInput.value = payload.defaults.y.toFixed(1);
+}
+
+function bindControls(state, payload) {
+  state.resetValuesBtn.addEventListener("click", () => {
+    setDefaults(state, payload);
+    state.currentStep = 0;
+    render(state, payload);
+  });
+
+  state.prevBtn.addEventListener("click", () => {
+    state.currentStep = Math.max(0, state.currentStep - 1);
+    render(state, payload);
+  });
+
+  state.nextBtn.addEventListener("click", () => {
+    state.currentStep = Math.min(payload.steps.length - 1, state.currentStep + 1);
+    render(state, payload);
+  });
+
+  state.playAllBtn.addEventListener("click", () => {
+    state.currentStep = payload.steps.length - 1;
+    render(state, payload);
+  });
+
+  [state.xInput, state.yInput].forEach((input) => {
+    input.addEventListener("change", () => {
+      state.currentStep = 0;
+      render(state, payload);
+    });
+  });
+}
+
+function init() {
+  const payload = window.DEMO_PAYLOAD;
+  const state = {
+    currentStep: 0,
+    xInput: Demo.byId("xInput"),
+    yInput: Demo.byId("yInput"),
+    resetValuesBtn: Demo.byId("resetValuesBtn"),
+    prevBtn: Demo.byId("prevBtn"),
+    nextBtn: Demo.byId("nextBtn"),
+    playAllBtn: Demo.byId("playAllBtn"),
+    stepStatus: Demo.byId("stepStatus"),
+    stepInfo: Demo.byId("stepInfo"),
+    cacheTape: Demo.byId("cacheTape"),
+    forwardOrder: Demo.byId("forwardOrder"),
+    backwardOrder: Demo.byId("backwardOrder"),
+  };
+
+  state.forwardOrder.textContent = payload.forwardOrder;
+  state.backwardOrder.textContent = payload.backwardOrder;
+  setDefaults(state, payload);
+  state.scene = createScene(Demo.byId("graphScene"), payload);
+  bindControls(state, payload);
+  render(state, payload);
+}
+
+init();
+
+    </script>
+  </body>
+</html>
