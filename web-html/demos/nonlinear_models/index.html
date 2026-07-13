@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Nonlinear_Models Demos</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <a href="/web-html/demos.html" class="back-link">← Back to Demos</a>
+            <h2>Nonlinear_Models Demos</h2>
+            
+            <div class="resource-grid" style="margin-top: 2rem;">
+                
+                <div class="resource-card">
+                    <h3>Ames Housing Mlp Demo</h3>
+                    <p>Interactive visualization for nonlinear_models concepts.</p>
+                    <a href="ames_housing_mlp_demo.html">View Demo</a>
+                </div>
+            
+                <div class="resource-card">
+                    <h3>Mlp Depth Demo</h3>
+                    <p>Interactive visualization for nonlinear_models concepts.</p>
+                    <a href="mlp_depth_demo.html">View Demo</a>
+                </div>
+            
+                <div class="resource-card">
+                    <h3>Mlp Fixed Xor Transform Demo</h3>
+                    <p>Interactive visualization for nonlinear_models concepts.</p>
+                    <a href="mlp_fixed_xor_transform_demo.html">View Demo</a>
+                </div>
+            
+                <div class="resource-card">
+                    <h3>Mlp Layer Transform Demo</h3>
+                    <p>Interactive visualization for nonlinear_models concepts.</p>
+                    <a href="mlp_layer_transform_demo.html">View Demo</a>
+                </div>
+            
+                <div class="resource-card">
+                    <h3>Mlp Width Demo</h3>
+                    <p>Interactive visualization for nonlinear_models concepts.</p>
+                    <a href="mlp_width_demo.html">View Demo</a>
+                </div>
+            
+                <div class="resource-card">
+                    <h3>Nn Vis Demo</h3>
+                    <p>Interactive visualization for nonlinear_models concepts.</p>
+                    <a href="nn_vis_demo.html">View Demo</a>
+                </div>
+            
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

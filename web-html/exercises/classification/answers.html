@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Classification Answers</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <style>
+                ul {
+                list-style: none;
+                padding-left: 0;
+                }
+            </style>
+            <a href="/web-html/exercises.html" class="back-link">← Back to Exercises</a>
+            <a href="index.html" class="back-link">← Back to Classification</a>
+            <h2>Classification - Answers</h2>
+            
+            <div class="markdown-content">
+                <ol>
+<li>What distinguishes classification from regression?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Regression predicts continuous value, while classification predicts discrete value</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Regression is a supervised learning problem, while classification is not</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Prediction from classification has to be one of {-1, +1}</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Classification and regression are same</li>
+</ul>
+<p><strong>Explanation</strong>: Classification is also a supervised learning problem. Classification does not have to predict one of {-1, +1}, it could be {0, 1} or any other labeling system that distinguishes two or more classes.</p>
+<hr />
+<p><img src="./assets/decision.png" alt="Dataset" /></p>
+<ol start="2">
+<li>What is a good decision boundary for the given dataset?</li>
+</ol>
+<p>(b) <span class="math">\(x_1 = 1\)</span></p>
+<p><strong>Explanation</strong>: Line  <span class="math">\(x_1 = 1\)</span> perfectly separates blue points from orange points, so it is a good decision boundary.</p>
+<ol start="3">
+<li>Given the same data points and decision boundary <span class="math">\(x_2 = 3\)</span>, how would the point <span class="math">\((1, 1)\)</span> be classified?<br />
+(c) Need more information</li>
+</ol>
+<p><strong>Explanation</strong>: Decision boundary alone does not give us information about which side of the boundary would be classified as orange vs blue.</p>
+<ol start="4">
+<li>What does the learning algorithm for finding a decision boundary need to decide?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Position of the decision boundary for training data</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Shape of the decision boundary for testing data</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Whether to contort the decision boundary to classify training data better</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Whether to contort the decision boundary to classify testing data</li>
+</ul>
+<p><strong>Explanation</strong>: Learning algorithm needs to decide shape and position of the decision boundary for the training data. It also needs to decide how much to contort the decision boundary to classify the training data better.</p>
+<hr />
+<ol start="5">
+<li>For the data points <span class="math">\([(1, 1), (2, 1), (0, 1), (-1, -1), (-2, -1)]\)</span>, calculate the error of classifier</li>
+</ol>
+<div class="math">$$
+h(x) = \begin{cases}
+  \text{1} &amp; \text{if } x \geq 1 \\
+  \text{-1} &amp; \text{otherwise }
+\end{cases}
+$$</div>
+<p><strong>Answer</strong>: 0.2</p>
+<p><strong>Explanation</strong>:<br />
+Given the classifier description, the data points are classified as the following h(1) = 1, h(2) = 1, h(0) = -1, h(-1) = -1, h(-2) = -1.<br />
+To evaluate the error, we need to calculate the following formula. <span class="math">\(\varepsilon(h; \mathcal{D}) = \frac{1}{|\mathcal{D}|} \sum_{(x, y) \in \mathcal{D}} \llbracket h(x) \neq y \rrbracket\)</span>.<br />
+Since we have 5 datapoints, <span class="math">\(|\mathcal{D}|\)</span> = 5.<br />
+Plugging everything in, we get<br />
+<span class="math">\(\varepsilon(h; \mathcal{D}) = \frac{1}{|\mathcal{D}|} \sum_{(x, y) \in \mathcal{D}} \llbracket h(x) \neq y \rrbracket \\ = \frac{1}{5} (\llbracket 1 \neq 1 \rrbracket + \llbracket 1 \neq 1 \rrbracket + \llbracket -1 \neq 1 \rrbracket + \llbracket -1 \neq -1 \rrbracket + \llbracket -1 \neq -1 \rrbracket) \\ = \frac{1}{5} (0 + 0 + 1 + 0 + 0) = 0.2\)</span>. So one fifth of the data is misclassified by this classifier.</p>
+<p>Note: Calculating the error for the classifier is equivalent to finding fraction of misclassified points.</p>
+<p><img src="./assets/error_pairs.png" alt="Error on training and withheld data for different models" /></p>
+<ol start="6">
+<li>Given the above bar graph pairs for <span class="math">\(\varepsilon_{train}\)</span> and <span class="math">\(\varepsilon_{withheld}\)</span>, which model should you choose?<br />
+(b) b</li>
+</ol>
+<p><strong>Explanation</strong>: The model that achieves pair <span class="math">\(b\)</span> achieves both small training and testing error, meaning it is not overfitting or underfitting compared to the other models.</p>
+<ol start="7">
+<li>If loss is defined as <span class="math">\(-\varepsilon(h; \mathcal{D}) = - \frac{1}{|\mathcal{D}|} \sum_{(x, y) \in \mathcal{D}} \llbracket h(x) \neq y \rrbracket\)</span>, which of the following describes loss for the datapoints <span class="math">\([(1, 1), (2, 1), (-1, -1)]\)</span> and model</li>
+</ol>
+<div class="math">$$
+h(x) = \begin{cases}
+  \text{1} &amp; \text{if } ax \geq 0 \\
+  \text{-1} &amp; \text{otherwise }
+\end{cases}
+$$</div>
+<p>?</p>
+<p>(a) <span class="math">\(-\frac{1}{3} (\llbracket a < 0 \rrbracket + \llbracket 2a < 0 \rrbracket + \llbracket -a \geq 0 \rrbracket)\)</span></p>
+<p><strong>Explanation</strong>:<br />
+We need to evaluate <span class="math">\(- \frac{1}{|\mathcal{D}|} \sum_{(x, y) \in \mathcal{D}} \llbracket h(x) \neq y \rrbracket\)</span> for the datapoints <span class="math">\([(1, 1), (2, 1), (-1, -1)]\)</span>.<br />
+There are 3 datapoints so <span class="math">\(|\mathcal{D}|\)</span> = 3.<br />
+<strong>If y = 1:</strong> <span class="math">\(\llbracket h(x) \neq y \rrbracket\)</span> is equivalent to <span class="math">\(\llbracket h(x) \neq 1 \rrbracket = \llbracket h(x) = -1 \rrbracket = \llbracket ax < 0 \rrbracket\)</span>.<br />
+<strong>If y = -1:</strong> <span class="math">\(\llbracket h(x) \neq y \rrbracket\)</span> is equivalent to <span class="math">\(\llbracket h(x) \neq -1 \rrbracket = \llbracket h(x) = 1 \rrbracket = \llbracket ax \geq 0 \rrbracket\)</span>.<br />
+So for the datapoints <span class="math">\([(1, 1), (2, 1), (-1, -1)]\)</span> the loss would be <span class="math">\(-\frac{1}{3} (\llbracket a < 0 \rrbracket + \llbracket 2a < 0 \rrbracket + \llbracket -a \geq 0 \rrbracket)\)</span></p>
+<ol start="8">
+<li>Is this loss differentiable?<br />
+(b) No, indicator function <span class="math">\(\llbracket a < 0 \rrbracket\)</span> is not differentiable</li>
+</ol>
+<p><strong>Explanation</strong>: For the indication function <span class="math">\(\llbracket a < 0 \rrbracket\)</span>, there is a jump at a = 0, so it is not differentiable, making the loss also not differentiable.</p>
+<p>Note: Non-differentiability is why it is hard to use the error as a proxy for training a model - gradient descent will struggle!</p>
+<hr />
+<ol start="9">
+<li>What is relation between a hypothesis class and a model?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Can find a hypothesis class of size bigger than 1 from a model through training</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Can find a particular model from a hypothesis class through training</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Model is a collection of hypothesis classes</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Hypothesis class is a set of models</li>
+</ul>
+<!-- TODO: double check the slides -->
+
+<p><strong>Explanation</strong>: Hypothesis class is a set of potential models, while a model is a particular function chosen from the hypothesis class.</p>
+<ol start="10">
+<li>Which of the following are hypothesis classes?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\mathcal{H} = \{ f_{\theta}(x) = \theta x | \theta \in \mathbb{R}^d \}\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\mathcal{H} = \{ f_{\theta}(x) = 3x^2 + 2x \}\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\mathcal{H} = \{ h_{\theta}(x) = \begin{cases} \text{1} & \text{if } \theta x \geq 0 \\ \text{-1} & \text{otherwise } \end{cases} | \theta \in \mathbb{R}^d \}\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\mathcal{H} = \{ h(x) = \begin{cases} \text{1} & \text{if } 2x \geq 0 \\ \text{-1} & \text{otherwise } \end{cases} \}\)</span></li>
+</ul>
+<p><strong>Explanation</strong>: All of the options are hypothesis classes because all of them define a set of possible models (classifier or regression models).</p>
+<ol start="11">
+<li>How does hypothesis class <span class="math">\(\mathcal{H}\)</span> affect whether learned model is over/underfitting?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If hypothesis class is too flexible, can lead to the model underfitting</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If hypothesis class is too inflexible, can lead to the model overfitting</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>If hypothesis class is too flexible, can lead to the model overfitting</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>If hypothesis class is too inflexible, can lead to the model underfitting</li>
+</ul>
+<p><strong>Explanation</strong>: If a hypothesis class is too inflexible, then it might not contain the right model to perform a task (e.g. cannot classify points with a line, but could've if circles were also considered as an option). On the other hand if hypothesis class is too flexible, can choose a very complicated model that overfits to the training data.</p>
+<hr />
+<ol start="12">
+<li>For the classifier <span class="math">\(h_{\theta}(x) = sign(ax+b) = \begin{cases} \text{1} & \text{if } ax+b \geq 0 \\ \text{-1} & \text{otherwise } \end{cases}\)</span>, what is the decision boundary?</li>
+</ol>
+<p>(b) <span class="math">\(ax + b = 0\)</span></p>
+<p><strong>Explanation</strong>: <span class="math">\(h_{\theta}(x)\)</span> decides whether to assign +1 or -1 class based on if <span class="math">\(ax+b \geq 0\)</span>. Therefore, <span class="math">\(ax+b = 0\)</span> is the decision boundary.</p>
+<ol start="13">
+<li>If <span class="math">\(h_{\theta}(x) = sign(x+2)\)</span>, how is -1 classified?</li>
+</ol>
+<p><strong>Answer</strong>: 1</p>
+<p><strong>Explanation</strong>: <span class="math">\(h_{\theta}(x) = sign(x+2) = sign(-1+2) = sign(1) = 1\)</span></p>
+<ol start="14">
+<li>If <span class="math">\(h_{\theta}(x) = sign(x+2)\)</span>, how is -4 classified?</li>
+</ol>
+<p><strong>Answer</strong>: -1</p>
+<p><strong>Explanation</strong>: <span class="math">\(h_{\theta}(x) = sign(x+2) = sign(-4+2) = sign(-2) = -1\)</span></p>
+<ol start="15">
+<li>What is decision boundary for this classifier (<span class="math">\(h_{\theta}(x) = sign(x+2)\)</span>)?</li>
+</ol>
+<p>(b) <span class="math">\(x+2 = 0\)</span></p>
+<p><strong>Explanation</strong>: For <span class="math">\(h_{\theta}(x) = sign(x+2)\)</span>, the classifier assigns class +1 or -1 based on if <span class="math">\(x+2 \geq 0\)</span> (as discussed in problem 12). Therefore, <span class="math">\(x+2 = 0\)</span> is the decision boundary.</p>
+<ol start="16">
+<li>If <span class="math">\(h'_{\theta}(x) = sign(2x+4)\)</span>, how is -1 classified?</li>
+</ol>
+<p><strong>Answer</strong>: 1</p>
+<p><strong>Explanation</strong>: <span class="math">\(h_{\theta}(x) = sign(2x+4) = sign(-2+4) = sign(2) = 1\)</span></p>
+<ol start="17">
+<li>If <span class="math">\(h'_{\theta}(x) = sign(2x+4)\)</span>, how is -4 classified?</li>
+</ol>
+<p><strong>Answer</strong>: -1</p>
+<p><strong>Explanation</strong>: <span class="math">\(h_{\theta}(x) = sign(2x+4) = sign(-8+4) = sign(-4) = -1\)</span></p>
+<ol start="18">
+<li>What is decision boundary for the new classifier (<span class="math">\(h'_{\theta}(x) = sign(2x+4)\)</span>)?</li>
+</ol>
+<p>(b) <span class="math">\(2x+4 = 0\)</span></p>
+<p><strong>Explanation</strong>: Similar to problem 15, for <span class="math">\(h'_{\theta}(x) = sign(2x+4)\)</span>, the classifier assigns class +1 or -1 based on if <span class="math">\(2x+4 \geq 0\)</span> (as discussed in problem 12). Therefore, <span class="math">\(2x+4 = 0\)</span> is the decision boundary.</p>
+<ol start="19">
+<li>Are decision boundaries distinct for classifiers <span class="math">\(h_{\theta}(x)\)</span> and <span class="math">\(h'_{\theta}(x)\)</span>?</li>
+</ol>
+<p>(b) No</p>
+<p><strong>Explanation</strong>: The decision boundaries are exactly same! Decision boundary for <span class="math">\(h'_{\theta}(x)\)</span> is <span class="math">\(2x+4 = 0\)</span>. This is same as <span class="math">\(2(x+2) = 0\)</span>, so the decision boundary for <span class="math">\(h'_{\theta}(x)\)</span> can also be written as <span class="math">\(x+2=0\)</span>, which is same as the decision boundary for <span class="math">\(h_{\theta}(x)\)</span>!<br />
+Note: This is an example of how scaling <span class="math">\(f_\theta\)</span> does not change the decision boundary for the classifier sign(<span class="math">\(f_\theta\)</span>).</p>
+<hr />
+<p><img src="./assets/separability.png" alt="Linear separability dataset" /></p>
+<ol start="20">
+<li>Is the following dataset <span class="math">\([(-4, -1), (-3, -1), (-2, 1), (-1, 1), (0, 1), (1, 1), (2, 1), (3, -1), (4, -1)]\)</span> linearly separable, i.e. can you draw a line such that all orange points are on one side and all blue are on another?</li>
+</ol>
+<p>(b) No</p>
+<p><strong>Explanation</strong>: There is no one line that can separate the blue and orange points.</p>
+<ol start="21">
+<li>What shape can help you separate these points?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>two lines</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>square around blue points</li>
+</ul>
+<p>Bonus: How can you transform the points to make them linearly separable?</p>
+<p><strong>Answer</strong>: Take the square of the datapoints. This gives you transformed dataset <span class="math">\([(16, -1), (9, -1), (4, 1), (1, 1), (0, 1), (1, 1), (4, 1), (9, -1), (16, -1)]\)</span> (see image below). Now it's clear that any line between 4 and 9 will separate the orange points from blue points!</p>
+<p><img src="./assets/transformed_points.png" alt="Transformed separable dataset" /></p>
+<hr />
+<ol start="22">
+<li>For data point <span class="math">\(\begin{bmatrix} 2 \\ 3 \end{bmatrix}\)</span> with actual label -1 and decision boundary <span class="math">\(f_{\theta}(\begin{bmatrix} x_1 \\ x_2 \end{bmatrix}) = 2x_1 + x_2 = 0\)</span>, what is <em>hinge loss</em> for this data point?</li>
+</ol>
+<p><strong>Answer</strong>: 8</p>
+<p><strong>Explanation</strong>: To calculate the loss for the data point, we need to calculate <span class="math">\(l(y \cdot f_\theta(x))\)</span>.<br />
+Here <span class="math">\(l\)</span> is Hinge loss which is defined as <span class="math">\(l(t) = max(0, 1-t)\)</span>.<br />
+<span class="math">\(y\)</span> is the actual label, so it is -1.<br />
+<span class="math">\(f_\theta(\begin{bmatrix} 2 \\ 3 \end{bmatrix}) = 2*2+3 = 7\)</span>.<br />
+Plugging in the values we get <span class="math">\(l(y \cdot f_\theta(x)) = l(-1 \cdot 7) = max(0, 1+7) = 8\)</span>. Therefore, the hinge loss for the data point is 8.</p>
+<ol start="23">
+<li>For the following data points <span class="math">\([(1, 1), (2, 1), (0, 1), (-1, -1), (-2, -1)]\)</span> and decision boundary <span class="math">\(f_{\theta}(x) = x + 1.5 = 0\)</span>, calculate the loss <span class="math">\(\mathcal{L}_l(\theta) = \frac{1}{|\mathcal{D}|} \sum_{(x,y) \in \mathcal{D}} l(y \cdot f_{\theta}(x))\)</span> - where <span class="math">\(l\)</span> is shifted hinge loss.</li>
+</ol>
+<p><strong>Answer</strong>: 0.1</p>
+<p><strong>Explanation</strong>:<br />
+Shifted hinge loss is defined as <span class="math">\(l(t) = max(0, -t)\)</span>.<br />
+We have 5 datapoints, so  <span class="math">\(|\mathcal{D}|\)</span> = 5.<br />
+<span class="math">\(\mathcal{L}_l(\theta) = \frac{1}{|\mathcal{D}|} \sum_{(x,y) \in \mathcal{D}} l(y \cdot f_{\theta}(x)) \\ = \frac{1}{5} (l(1 \cdot f_{\theta}(1)) + l(1 \cdot f_{\theta}(2)) + l(1 \cdot f_{\theta}(0)) + l(-1 \cdot f_{\theta}(-1)) + l(-1 \cdot f_{\theta}(-2))) \\ = \frac{1}{5} (l(1 \cdot (1+1.5)) + l(1 \cdot (2+1.5)) + l(1 \cdot (0 + 1.5)) + l(-1 \cdot (-1 + 1.5)) + l(-1 \cdot (-2 + 1.5))) \\ = \frac{1}{5} (l(2.5) + l(3.5) + l(1.5) + l(-0.5) + l(0.5)) \\ = \frac{1}{5} (max(0, -2.5) + max(0, -3.5) + max(0, -1.5) + max(0, 0.5) + max(0, -0.5)) \\ = \frac{1}{5} (0 + 0 + 0 + 0.5 + 0) = 0.1\)</span>.</p>
+<p>Note: If we take a look at the values we calculated
+| <span class="math">\(x\)</span> | <span class="math">\(y\)</span> | <span class="math">\(f_\theta(x)\)</span> | <span class="math">\(y \cdot f_\theta(x)\)</span> | <span class="math">\(max(0, -y \cdot f_\theta(x))\)</span> |
+|---|---|---| ---| ---|
+| 1 | 1 | 2.5 | 2.5 | 0 |
+| 2 | 1 | 3.5 | 3.5 | 0 |
+| 0 | 1 | 1.5 | 1.5 | 0 |
+| -1 | -1 | 0.5 | -0.5 | 0.5 |
+| -2 | -1 | -0.5 | 0.5 | 0 |</p>
+<p>we can see that shifted loss is always 0 if the prediction is correct.</p>
+<ol start="24">
+<li>How can you update this loss to make the resulting model more confident?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Use hinge loss</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Add a margin so <span class="math">\(l(t) = max(0, 2-t)\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Add a negative margin so <span class="math">\(l(t) = max(0, -1-t)\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Multiply the loss by 2$</li>
+</ul>
+<p><strong>Explanation</strong>:<br />
+Adding a negative margin is likely to result in a less confident model. Take the example from problem 23, now the loss will be 0 because loss for misclassified point <span class="math">\((-1, -1)\)</span> is now <span class="math">\(max(0, -1 - (-1 * (-1+1.5))) = max(0, -1 + 0.5) = 0\)</span>. So it will seem like this model is good when it is actually less confident in the output.<br />
+Multiplying the loss by 2 does not modify the type of model we will find because it is equivalent to multiplying the sum by 2, so it will be disregarded during gradient descent.</p>
+<ol start="25">
+<li>If loss is defined as <span class="math">\(\mathcal{L}_l(\theta) = \frac{1}{|\mathcal{D}|} \sum_{(x,y) \in \mathcal{D}} l(y \cdot f_{\theta}(x))\)</span> where <span class="math">\(l\)</span> is <strong>exponential loss</strong>, which of the following describes loss for the datapoints <span class="math">\([(1, 1), (2, 1), (-1, -1)]\)</span> and decision boundary <span class="math">\(f_{\theta}(x) = \theta \cdot x = 0\)</span></li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\frac{1}{3} (2*e^{-\theta} + e^{-2\theta})\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\frac{1}{3} (e^{-\theta} + e^{-2\theta} + e^{-\theta})\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\frac{1}{3} (3 + 2*e^{-\theta} + e^{-2\theta})\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\frac{1}{3} (e^{-\theta} + e^{-2\theta} + e^{\theta})\)</span></li>
+</ul>
+<p><strong>Explanation</strong>:<br />
+Exponential loss is defined as <span class="math">\(l(t) = e^{-t}\)</span>.<br />
+We have 3 datapoints, so  <span class="math">\(|\mathcal{D}|\)</span> = 3.<br />
+<span class="math">\(\mathcal{L}_l(\theta) = \frac{1}{|\mathcal{D}|} \sum_{(x,y) \in \mathcal{D}} l(y \cdot f_{\theta}(x)) \\ = \frac{1}{3} (l(1 \cdot f_{\theta}(1)) + l(1 \cdot f_{\theta}(2)) + l(-1 \cdot f_{\theta}(-1))) \\ = \frac{1}{3} (l(1 \cdot (\theta \cdot 1)) + l(1 \cdot (\theta \cdot 2)) + l(-1 \cdot (\theta \cdot -1))) \\ = \frac{1}{3} (l(\theta) + l(2 \cdot \theta) + l(\theta)) \\ = \frac{1}{3} (e^{-\theta} + e^{-2\theta} + e^{-\theta}) \\\)</span> which is also equal to $  \frac{1}{3} (2 e^{-\theta} + e^{-2\theta})$.</p>
+<ol start="26">
+<li>Is this loss differentiable?</li>
+</ol>
+<p>(a) Yes, it is continuous</p>
+<p><strong>Explanation</strong>: Yes, this loss is differentiable! <span class="math">\(e^{-\theta}\)</span> and <span class="math">\(e^{-2\theta}\)</span> are continuous and differentiable, so their sum is also differentiable.</p>
+<p>Bonus: what is the derivative?</p>
+<p><span class="math">\(\frac{1}{3} (-2\theta*\theta'*e^{-\theta} -2\theta*\theta'*e^{-2\theta}) = \frac{-2 \theta * \theta' e^{-\theta}}{3} (1 + e^{-\theta})\)</span>.</p>
+<p>Note: Notice that this loss is now differentiable, compared to the error we talked about at the beginning of the lecture.</p>
+<hr />
+<ol start="27">
+<li>If want to classify between 3 animals, what is the preferred shape for the parametric function <span class="math">\(f_{\theta}\)</span>?</li>
+</ol>
+<p>(c) <span class="math">\(\mathbb{R}^3\)</span>: three numbers</p>
+<p><strong>Explnation</strong>: Since there are 3 classes that we need to distinguish, preferred shape of <span class="math">\(f_{\theta}\)</span> is <span class="math">\(\mathbb{R}^3\)</span>.</p>
+<!-- TODO: how to phrase it better? -->
+
+<ol start="28">
+<li>We are trying to classify an object as cat, dog, lion, bird, or muffin (defined in given order). If the output of the parametric function is <span class="math">\(f_\theta(x) = \begin{bmatrix} 2 \\ 1 \\ 5 \\ 2 \\ 0 \end{bmatrix}\)</span> which class is x predicted to be?</li>
+</ol>
+<p>(c) lion</p>
+<p><strong>Explanation</strong>: The predicted class from <span class="math">\(f_\theta\)</span> is <span class="math">\(\argmax_k f_\theta(x)_k\)</span> which is equivalent to getting index such that value of vector <span class="math">\(f_\theta(x)\)</span> at that index is maximum. Maximum value in the vector <span class="math">\(f_\theta(x) = \begin{bmatrix} 2 \\ 1 \\ 5 \\ 2 \\ 0 \end{bmatrix}\)</span> is 5 at <strong>index 3</strong>. So the predicted class is the 3rd object: <strong>lion</strong>!</p>
+<ol start="29">
+<li>Calculate softmax(<span class="math">\(\begin{bmatrix} 2 \\ 1 \\ 5 \\ 2 \\ 0 \end{bmatrix}\)</span>)?</li>
+</ol>
+<p><strong>Answer</strong>: <span class="math">\(\begin{bmatrix} 0.044 \\ 0.016 \\ 0.889 \\ 0.044 \\ 0.006 \end{bmatrix}\)</span></p>
+<p><strong>Explanation</strong>: Remember that <span class="math">\(softmax(z)_i = \frac{e^{z_i}}{\sum_{j=1}^m e^{z_j}}. \\\)</span>
+So <span class="math">\(softmax(\)</span>\begin{bmatrix} 2 \ 1 \ 5 \ 2 \ 0 \end{bmatrix}<span class="math">\() = \begin{bmatrix} \frac{e^2}{e^2 + e^1 + e^5 + e^2 + e^0} \\ \frac{e^1}{e^2 + e^1 + e^5 + e^2 + e^0} \\ \frac{e^5}{e^2 + e^1 + e^5 + e^2 + e^0} \\ \frac{e^2}{e^2 + e^1 + e^5 + e^2 + e^0} \\ \frac{e^0}{e^2 + e^1 + e^5 + e^2 + e^0} \end{bmatrix} \approx \begin{bmatrix} 0.044 \\ 0.016 \\ 0.889 \\ 0.044 \\ 0.006 \end{bmatrix}\)</span></p>
+<ol start="30">
+<li>Which value is biggest in the vector softmax(<span class="math">\(\begin{bmatrix} 2 \\ 1 \\ 5 \\ 2 \\ 0 \end{bmatrix}\)</span>)?</li>
+</ol>
+<p><strong>Answer</strong>: 0.889.</p>
+<p><strong>Explanation</strong>: maximum of <span class="math">\(\begin{bmatrix} 0.044 \\ 0.016 \\ 0.889 \\ 0.044 \\ 0.006 \end{bmatrix}\)</span> is 0.889</p>
+<ol start="31">
+<li>Which class is x predicted to be based on softmax(<span class="math">\(\begin{bmatrix} 2 \\ 1 \\ 5 \\ 2 \\ 0 \end{bmatrix}\)</span>)?</li>
+</ol>
+<p>(c) lion</p>
+<p><strong>Explanation</strong>: The maximum of softmax(<span class="math">\(\begin{bmatrix} 2 \\ 1 \\ 5 \\ 2 \\ 0 \end{bmatrix}\)</span>) is 0.889 at index 3, so the predicted class will be 3rd object which is lion.</p>
+<p>Note: Prediction based on softmax(<span class="math">\(f_\theta(x)\)</span>) is equal to the prediction based on <span class="math">\(f_\theta(x)\)</span>.</p>
+<hr />
+<ol start="32">
+<li>What is cross-entropy loss for the following data points <span class="math">\([(\begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}, 1), (\begin{bmatrix} 2 \\ 0 \\ 1 \end{bmatrix}, 1), (\begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix}, 2), (\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}, 3)]\)</span> and <span class="math">\(f_{\theta}(x) = 2x\)</span>?</li>
+</ol>
+<p><strong>Answer</strong>: 0.21575.</p>
+<p><strong>Explanation</strong>:<br />
+Cross-entropy loss is defined as <span class="math">\(\mathcal{L}_{cross\_entropy} (\theta) = -\frac{1}{|\mathcal{D}|} \sum_{(x, y) \in \mathcal{D}} [log \, softmax(f_\theta(x))]_y\)</span>.<br />
+We have 4 datapoints so <span class="math">\(|\mathcal{D}|\)</span> = 4.</p>
+<p>| <span class="math">\(x\)</span> | <span class="math">\(y\)</span> | <span class="math">\(f_\theta(x)\)</span> | <span class="math">\(softmax(f_\theta(x))\)</span> | <span class="math">\(log \, softmax(f_\theta(x))\)</span> | <span class="math">\([log \, softmax(f_\theta(x))]_y\)</span> |
+|---|---|---| ---| ---| ---|
+| <span class="math">\(\begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}\)</span> | 1 | <span class="math">\(\begin{bmatrix} 2 \\ 0 \\ 0 \end{bmatrix}\)</span> | <span class="math">\(\begin{bmatrix} \frac{e^2}{e^2+e^0+e^0} \\ \frac{e^0}{e^2+e^0+e^0} \\ \frac{e^0}{e^2+e^0+e^0} \end{bmatrix} = \begin{bmatrix} 0.787 \\ 0.1065 \\ 0.1065 \end{bmatrix}\)</span> | <span class="math">\(\begin{bmatrix} -0.24 \\ -2.24 \\ -2.24 \end{bmatrix}\)</span> | -0.24 |
+| <span class="math">\(\begin{bmatrix} 2 \\ 0 \\ 1 \end{bmatrix}\)</span> | 1 | <span class="math">\(\begin{bmatrix} 4 \\ 0 \\ 2 \end{bmatrix}\)</span> | <span class="math">\(\begin{bmatrix} \frac{e^4}{e^4+e^0+e^2} \\ \frac{e^0}{e^4+e^0+e^2} \\ \frac{e^2}{e^4+e^0+e^2} \end{bmatrix} = \begin{bmatrix} 0.867 \\ 0.016 \\ 0.117 \end{bmatrix}\)</span> | <span class="math">\(\begin{bmatrix} -0.143 \\ -4.135 \\ -2.145 \end{bmatrix}\)</span> | -0.143 |
+| <span class="math">\(\begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix}\)</span> | 2 | <span class="math">\(\begin{bmatrix} 0 \\ 2 \\ 0 \end{bmatrix}\)</span> | <span class="math">\(\begin{bmatrix} \frac{e^0}{e^0+e^2+e^0} \\ \frac{e^2}{e^0+e^2+e^0} \\ \frac{e^0}{e^0+e^2+e^0} \end{bmatrix} = \begin{bmatrix} 0.1065 \\ 0.787 \\ 0.1065 \end{bmatrix}\)</span> | <span class="math">\(\begin{bmatrix} -2.24 \\ -0.24 \\ -2.24 \end{bmatrix}\)</span> | -0.24 |
+| <span class="math">\(\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}\)</span> | 3 | <span class="math">\(\begin{bmatrix} 0 \\ 0 \\ 2 \end{bmatrix}\)</span> | <span class="math">\(\begin{bmatrix} \frac{e^0}{e^0+e^0+e^2} \\ \frac{e^0}{e^0+e^0+e^2} \\ \frac{e^2}{e^0+e^0+e^2} \end{bmatrix} = \begin{bmatrix} 0.1065 \\ 0.1065 \\ 0.787 \end{bmatrix}\)</span> | <span class="math">\(\begin{bmatrix}  -2.24 \\ -2.24 \\ -0.24 \end{bmatrix}\)</span> | -0.24 |</p>
+<p>So <span class="math">\(\mathcal{L}_{cross\_entropy} (\theta) = -\frac{1}{4} ([log \, softmax(f_\theta(\begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}))]_1 + [log \, softmax(f_\theta(\begin{bmatrix} 2 \\ 0 \\ 1 \end{bmatrix}))]_1 + [log \, softmax(f_\theta(\begin{bmatrix} 0 \\ 1 \\ 0 \end{bmatrix}))]_2 + [log \, softmax(f_\theta(\begin{bmatrix} 0 \\ 0 \\ 1 \end{bmatrix}))]_3) \\ = -\frac{1}{4} ( -0.24 -0.143 -0.24 -0.24) = 0.21575\)</span></p>
+<ol start="33">
+<li>How can you regularize a classifier?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Add sparse regularizer to the loss used for training</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Use early stopping during training</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Add weight-decay regularizer to the loss used for testing</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Use more constrained hypothesis class</li>
+</ul>
+<p><strong>Explanation</strong>: As discussed earlier in the lecture flexibility of the hypothesis class affects whether learned algorithm will under/overfit to the training data. Moreover, regularizes we learned for regression can also be used for classifiers.</p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

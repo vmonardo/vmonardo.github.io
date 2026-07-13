@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Gen Conceptual Questions</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <a href="/web-html/in-class-problems.html" class="back-link">← Back to Conceptual Questions</a>
+            <h2>Gen</h2>
+
+            <div class="markdown-content">
+                <h1><strong>Problem 1</strong> Autoencoders</h1>
+<p>A research team is developing an image compression system using autoencoders
+for medical imaging. Consider the following autoencoder with input <span class="math">\(x \in \mathbb{R}^d\)</span> (a flattened medical image) and output <span class="math">\(y^{pred} \in \mathbb{R}^d\)</span> (the reconstructed image).
+The goal is to drive the prediction <span class="math">\(y^{pred}\)</span> close to the input features <span class="math">\(x\)</span> by
+compression and reconstruction while minimizing storage requirements.</p>
+<p>The autoencoder has one hidden layer with <span class="math">\(m\)</span> hidden units representing the compressed image: <span class="math">\(z^{(1)}\)</span>,
+<span class="math">\(a^{(1)} \in \mathbb{R}^m\)</span>.</p>
+<div class="inline_imgs">
+<center>
+<img src="assets/gen/autoencoder.png" width=60%>
+</center>
+</div>
+
+<div class="math">$$
+\begin{align*}
+    z^{(1)} &amp;= W^{(1)}x + b^{(1)}\\
+    a^{(1)} &amp;= f^{(1)}(z^{(1)}) ~~\text{element-wise}\\
+    z^{(2)} &amp;= W^{(2)}a^{(1)} + b^{(2)}\\
+    y^{pred} &amp;= f^{(2)}(z^{(2)}) ~~\text{element-wise}
+\end{align*}
+$$</div>
+<p>Assume <span class="math">\(x,\ z^{(2)},\)</span> and <span class="math">\(y^{pred}\)</span> have dimensions <span class="math">\(d \times 1\)</span>. Also
+let <span class="math">\(z^{(1)}\)</span> and <span class="math">\(a^{(1)}\)</span> have dimensions <span class="math">\(m \times 1\)</span>.</p>
+<p>a) What is the dimension of <span class="math">\(W^{(1)}\)</span> (the encoder weight matrix that compresses the medical image)?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>d x m</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>m x d</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>m x 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 x m</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 x d</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>d x 1</li>
+</ul>
+<p><strong>Answer</strong>: m x d.<br />
+<strong>Explanation</strong>: Since the compressed representation <span class="math">\(z^{(1)}\)</span> is m-by-1,
+and the flattened medical image <span class="math">\(x\)</span> is d-by-1, the encoder weight matrix <span class="math">\(W^{(1)}\)</span>
+needs to be m by d to perform the dimensionality reduction from d pixels to m
+compressed features.</p>
+<p>b) What is the dimension of <span class="math">\(b^{(1)}\)</span> (the encoder bias)?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>d x m</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>m x d</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>m x 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 x m</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 x d</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>d x 1</li>
+</ul>
+<p><strong>Answer</strong>: m x 1.<br />
+<strong>Explanation</strong>: Since the compressed representation <span class="math">\(z^{(1)}\)</span> is m-by-1,
+the encoder bias <span class="math">\(b^{(1)}\)</span> needs to be m by 1 to match the compressed dimension.</p>
+<p>c) What is the dimension of <span class="math">\(W^{(2)}\)</span> (the decoder weight matrix that reconstructs the image)?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>d x m</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>m x d</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>m x 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 x m</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 x d</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>d x 1</li>
+</ul>
+<p><strong>Answer</strong>: d x m.<br />
+<strong>Explanation</strong>: Since the reconstruction <span class="math">\(z^{(2)}\)</span> is d-by-1 (same size as original image),
+and the compressed representation <span class="math">\(a^{(1)}\)</span> is m-by-1, the decoder weight matrix <span class="math">\(W^{(2)}\)</span>
+needs to be d by m to expand from m compressed features back to d pixel values.</p>
+<p>d) What is the dimension of <span class="math">\(b^{(2)}\)</span> (the decoder bias)?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>d x m</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>m x d</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>m x 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 x m</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 x d</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>d x 1</li>
+</ul>
+<p><strong>Answer</strong>: d x 1.<br />
+<strong>Explanation</strong>: Since the reconstruction <span class="math">\(z^{(2)}\)</span> is d-by-1 (matching the original
+image dimension), the decoder bias <span class="math">\(b^{(2)}\)</span> needs to be d by 1.</p>
+<h2>Compression Ratio Analysis</h2>
+<p>The team trains the autoencoder with back-propagation. The loss for a
+given medical image <span class="math">\(x\)</span> is:</p>
+<div class="math">$$
+J(x, y^{pred}) = \frac{1}{2}||y^{pred} - x||^2
+                 =  \frac{1}{2}(y^{pred} - x)^T(y^{pred} - x)\; .
+$$</div>
+<p>A junior engineer proposes increasing the compression layer size significantly,
+suggesting <span class="math">\(m = 10d\)</span> hidden units (where <span class="math">\(d\)</span> is the input dimension).
+The rationale is that &quot;more capacity means better reconstruction.&quot;
+(Recall that <span class="math">\(z^{(1)}\)</span> has dimensions <span class="math">\(m \times 1\)</span>.)</p>
+<p>a) What would you expect to see with <strong>training</strong> loss using the high-capacity (<span class="math">\(m = 10d\)</span>) approach?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>increase</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>decrease</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>about the same</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>it depends/not enough information</li>
+</ul>
+<p><strong>Answer</strong>: decrease.<br />
+<strong>Explanation</strong>: The high-capacity approach effectively increases the
+hidden layer dimension, and the number of learnable weights feeding
+into the nonlinear activations. By doing so, it increases the
+expressive/fitting power of the autoencoder. Training loss will
+likely be lower, but this would likely be due to over-fitting and
+lead to worse test loss.</p>
+<p>b) What would you expect to see with <strong>test</strong> loss using the high-capacity (<span class="math">\(m = 10d\)</span>) approach?&quot;&quot;&quot;</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>increase</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>decrease</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>about the same</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>it depends/not enough information</li>
+</ul>
+<p><strong>Answer</strong>: increase.<br />
+<strong>Explanation</strong>: The high-capacity approach effectively increases the
+hidden layer dimension, and the number of learnable weights feeding
+into the nonlinear activations. By doing so, it increases the
+expressive/fitting power of the autoencoder. Training loss will
+likely be lower, but this would likely be due to over-fitting and
+lead to worse test loss.</p>
+<p>c) What are some likely drawbacks of the high-capacity (<span class="math">\(m = 10d\)</span>) approach?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>leads to overfitting</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>takes longer to train</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>makes SGD iterations less stable (i.e. parameters &quot;jump&quot; around more)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>large bottleneck defeats the purpose of compression</li>
+</ul>
+<p><strong>Answer</strong>: All true.<br />
+<strong>Explanation</strong>: The high-capacity model has more non-linear units and
+more weights/parameters to be learned. As a result, the model has
+more expressive/fitting power, and has more capacity to
+overfit. Merely due to the increased number of parameters, the
+learning might take longer, and SGD might be less stable
+(higher-dimensional space for the parameters to 'bounce
+around'). Autoencoders are motivated by the desire to find a
+lower-dimensional (latent) representation of the original data (for
+some downstream tasks like medical image storage). A large bottleneck
+defeats this compression purpose.</p>
+<h2>Network Depth Analysis</h2>
+<p>A senior researcher proposes adding network depth for better feature learning. Let <span class="math">\(m\)</span>
+be much smaller than <span class="math">\(d\)</span>. The proposal is to add 10 more hidden layers all with
+<strong>linear</strong> activation before the current hidden layer (which has
+sigmoid activation function <span class="math">\(f^{(1)}\)</span>), where each added hidden layer has
+<span class="math">\(m\)</span> units.</p>
+<p>What would you expect to see with your training and test loss compared
+to just having one hidden layer with activation <span class="math">\(f^{(1)}\)</span>?</p>
+<p>a) What would you expect to see with <strong>training</strong> loss using the deeper linear network?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>increase</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>decrease</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>about the same</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>it depends/not enough information</li>
+</ul>
+<p><strong>Answer</strong>: about the same.<br />
+<strong>Explanation</strong>: The intermediate hidden layers do not add
+substantial expressivity to the network because they are all just
+linear layers (and so equivalent to just a larger single weight
+matrix). So we would expect similar training and test loss as
+compared to the single <span class="math">\(f^{(1)}\)</span> hidden layer network. This may,
+however, require different number of training iterations with the
+same available data, in order to achieve similar loss.</p>
+<p>b) What would you expect to see with <strong>test</strong> loss using the deeper linear network?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>increase</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>decrease</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>about the same</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>it depends/not enough information</li>
+</ul>
+<p><strong>Answer</strong>: about the same.<br />
+<strong>Explanation</strong>: The intermediate hidden layers do not add
+substantial expressivity to the network because they are all just
+linear layers (and so equivalent to just a larger single weight
+matrix). So we would expect similar training and test loss as
+compared to the single <span class="math">\(f^{(1)}\)</span> hidden layer network. This may,
+however, require different number of training iterations with the
+same available data, in order to achieve similar loss.</p>
+<h1><strong>Problem 2</strong> Autoregressive CNN filters</h1>
+<p>Consider the following <em>autoregressive</em> model, which uses a <span class="math">\(2\times1\)</span> convolutional filter to compute the next element in a sequence:</p>
+<div class="inline_imgs">
+<center>
+<img src="assets/gen/autoreg.png" width=80%>
+</center>
+</div>
+
+<p>A model is autoregressive if it makes each prediction only on past values.
+In particular, it feeds its own outputs back into the input.</p>
+<p>a) Let's say the model is given <span class="math">\(x_0=1, x_1=1, w_1=1, w_2=1\)</span>. Predict the next 3 numbers of the sequence, <span class="math">\(\hat{x}_2, \hat{x}_3, \hat{x}_4\)</span>.</p>
+<p><strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align*}
+    \hat{x}_2 &amp;= 1 + 1 = 2 \\
+    \hat{x}_3 &amp;= 1 + 2 = 3 \\
+    \hat{x}_4 &amp;= 2 + 3 = 5 \\
+\end{align*}
+$$</div>
+<p>With these initial integers inputs and weights of 1,
+our model generates the Fibonacci sequence.</p>
+<p>b) Suppose that the inputs remain the same, but the weights are <span class="math">\(w_1 = 2, w_2 = -1\)</span>. Now, what are the next 3 numbers of the sequence?</p>
+<p><strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align*}
+\hat{x}_2 &amp;= 2 \cdot 1 - 1 \cdot 1 = 1 \\
+\hat{x}_3 &amp;= 2 \cdot 1 - 1 \cdot 1 = 1 \\
+\hat{x}_4 &amp;= 2 \cdot 1 - 1 \cdot 1 = 1 \\
+\hat{x}_5 &amp;= 2 \cdot 1 - 1 \cdot 1 = 1
+\end{align*}
+$$</div>
+<p>Constant sequence of 1s.</p>
+<p>c) Suppose you are given a data set of sequences <span class="math">\(\{x_t^{(i)}\}_{i=1}^n\)</span> and want to <strong>learn</strong> weights <span class="math">\(w_1, w_2\)</span> such that:
+<span class="math">\(\hat{x}_t^{(i)} = w_1 x_{t-2}^{(i)} + w_2 x_{t-1}^{(i)}\)</span>. What objective function could you minimize to find the best weights?</p>
+<p><strong>Explanation</strong>:</p>
+<p>You treat this as a regression problem.
+You can minimize the mean squared-error over all sequences:
+<span class="math">\(\min_{w_1, w_2} \sum_i \sum_{t=2}^{T} \left( x_t^{(i)} - (w_1 x_{t-2}^{(i)} + w_2 x_{t-1}^{(i)}) \right)^2\)</span>
+This encourages the model to predict each value as close as possible to the actual one, based only on previous values.</p>
+<h1><strong>Problem 3</strong> Computing Word Similarity</h1>
+<p>Now let's try <strong>quantifying</strong> how similar different words are.</p>
+<p>To measure similarity between word embeddings, two common metrics are used:</p>
+<ol>
+<li>Dot product: <span class="math">\(\vec{v}_1 \cdot \vec{v}_2\)</span> — captures both directional alignment and magnitude</li>
+<li>Cosine similarity: <span class="math">\(\frac{\vec{v}_1 \cdot \vec{v}_2}{||\vec{v}_1|| \cdot ||\vec{v}_2||}\)</span> — measures only the angle between vectors, ignoring magnitudes</li>
+</ol>
+<p>As a quick warmup, let's practice calculating these metrics for low-dimensional vectors by hand.</p>
+<p>a)  Let <span class="math">\(\vec{v}_1 = [1, 2, 3]\)</span> and <span class="math">\(\vec{v}_2 = [4, 5, 6]\)</span> be two 3D vectors. Enter a list with two values:</p>
+<ol>
+<li>The dot product <span class="math">\(\vec{v}_1 \cdot \vec{v}_2\)</span></li>
+<li>The cosine similarity between <span class="math">\(\vec{v}_1\)</span> and <span class="math">\(\vec{v}_2\)</span> (rounded to 4 decimal places).</li>
+</ol>
+<p><strong>Answer</strong>: [32, 0.9746].<br />
+<strong>Explanation</strong>: For the dot product: <span class="math">\(\vec{v}_1 \cdot \vec{v}_2 = 1 \cdot 4 + 2 \cdot 5 + 3 \cdot 6 = 4 + 10 + 18 = 32\)</span>.</p>
+<p>For cosine similarity:</p>
+<ul>
+<li><span class="math">\(||\vec{v}_1|| = \sqrt{1^2 + 2^2 + 3^2} = \sqrt{14}\)</span></li>
+<li><span class="math">\(||\vec{v}_2|| = \sqrt{4^2 + 5^2 + 6^2} = \sqrt{77}\)</span></li>
+<li>Cosine similarity <span class="math">\(= \frac{32}{\sqrt{14} \cdot \sqrt{77}} = \frac{32}{\sqrt{1078}} \approx 0.9746\)</span> (rounded to 4 decimal places).</li>
+</ul>
+<p>b) Now, let's try to generalize slightly to more high-dimensional vector space (with still contrived examples.)
+Consider <span class="math">\(\vec{v}_1 = [1, 2, 3, 1, 2, 3, \ldots]\)</span> where the triplet <span class="math">\([1, 2, 3]\)</span> repeats 100 times (so <span class="math">\(\vec{v}_1\)</span> is 300-dimensional), and <span class="math">\(\vec{v}_2 = [4, 5, 6, 4, 5, 6, \ldots]\)</span> where the triplet <span class="math">\([4, 5, 6]\)</span> repeats 100 times (so <span class="math">\(\vec{v}_2\)</span> is 300-dimensional).</p>
+<p>What happens to the dot product and cosine similarity compared to the original 3D vectors?</p>
+<p>(Hint: You can calculate without actually doing all 300 multiplications—what's the pattern?).</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>The dot product increases by a factor of 100, and cosine similarity remains the same.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>The dot product increases by a factor of 100, and cosine similarity increases by a factor of 100.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>The dot product remains the same, and cosine similarity increases by a factor of 100.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Both the dot product and cosine similarity remain the same.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>The dot product increases by a factor of <span class="math">\(\sqrt{100}\)</span>, and cosine similarity increases by a factor of <span class="math">\(\sqrt{100}\)</span>.</li>
+</ul>
+<p><strong>Answer</strong>: The dot product increases by a factor of 100, and cosine similarity remains the same.<br />
+<strong>Explanation</strong>: The dot product is the sum of 100 copies of <span class="math">\((1 \cdot 4 + 2 \cdot 5 + 3 \cdot 6) = 32\)</span>, so it's <span class="math">\(100 \times 32 = 3200\)</span>, which is 100 times larger. However, the cosine similarity divides by the norms. The norm of <span class="math">\(\vec{v}_1\)</span> is <span class="math">\(\sqrt{100 \times (1^2 + 2^2 + 3^2)} = 10\sqrt{14}\)</span>, and similarly for <span class="math">\(\vec{v}_2\)</span>. So cosine similarity <span class="math">\(= \frac{3200}{10\sqrt{14} \cdot 10\sqrt{77}} = \frac{32}{\sqrt{1078}}\)</span>, exactly the same as before! Of course this invariance is due to the very specific pattern we cooked up in the examples.</p>
+<p>As an aside: The dot product depends on both magnitude and direction, while cosine similarity depends only on direction. In practice, they give nearly identical results because embedding norms are usually similar, and with normalized embeddings they are mathematically equivalent. Moreover, in most ML systems, learnable weights or normalization layers make vector scaling largely irrelevant, so cosine similarity only matters when magnitudes vary significantly — which is rare in well-trained models.</p>
+<!-- TODO: more of a discussion-based -->
+
+<h1><strong>Problem 4</strong> The Ethics of Embedding Space</h1>
+<p>As we've explored embeddings, we should also consider their limitations and ethical implications. Embeddings capture relationships present in their training data—including human biases.</p>
+<h2>Bias in Embeddings</h2>
+<p>Word embeddings inherently depend on the context provided during training. This means they can <a href="https://arxiv.org/abs/1606.06121">exacerbate human bias</a>, especially in a world where we are increasingly dependent on AI models.</p>
+<p>One concrete example found in word vector embeddings: 'woman' clusters closer to 'nurse' while 'man' clusters closer to 'doctor'. This reflects societal biases in the training data rather than any inherent relationship between these words.</p>
+<p>Can you think of any ways to <strong>detect</strong> embedding bias? Can you think of ways to <strong>mitigate</strong> it?</p>
+<p><strong>Explanation</strong>:
+For this example, just changing the training data could help fix this. We can mask/substitute words (like female with male, or pronouns, or any gendered nouns) when we know there are contrasts in population, like female and male dominated fields. By contrast we wouldn't want this to happen with words like waiter/waitress because those should cluster accordingly.</p>
+<p>Another idea would be to fix it after embedding. Where we transform the data to keep distances between unbiased words, but adjust the distances of biased words. This is more closely described in the linked paper.</p>
+<h2>Context-Dependent Bias</h2>
+<p>Another problem that word embedding models face stems from their context-dependent nature: asking the same question in different ways may produce different outputs.</p>
+<p>A <a href="https://hai.stanford.edu/news/why-large-language-models-chatgpt-treat-black-and-white-sounding-names-differently">Stanford study on equity in AI</a> found that when asked which of two chess players—one with a female name and one with a male name—would win a match, a language model often predicted that the player with the male name would win, reflecting gender bias in the training data.</p>
+<p>Based on what we've learned about embeddings:</p>
+<ul>
+<li>How do you think gender biases affect the embedding space of words?</li>
+<li>Do you think it's possible to create representations that are robust to gendered language?</li>
+</ul>
+<p><strong>Explanation</strong>:
+You would expect the embedding space to have a region that corresponds to male-oriented language and a region that corresponds to female-oriented language.
+Maybe it's possible to have a representation that's robust to gender. One option might be to mask gendered language before embedding.</p>
+<h2>Explainability and Interpretability</h2>
+<p>In 2016, the European Union published the <a href="https://gdpr-info.eu/">General Data Protection Regulation</a> (GDPR), which governs many facets of data usage, storage, privacy, and security relating to the personal data of EU residents. One focus of the GDPR is the &quot;<a href="https://en.wikipedia.org/wiki/Right_to_explanation">right to explanation</a>&quot;—the right to be given an explanation for the output of an automated process (which may be an algorithm or model) that makes decisions about you or is based on your personal data.</p>
+<p>Learned representations of your personal information—such as your individual social media posts—can be used by organizations for various purposes, such as creating personalized advertisements.</p>
+<p>Do you think that representation learning creates representations or embeddings that are sufficiently explainable? Are you satisfied by the amount of interpretability available in the embeddings we've seen so far, or how might you work toward making them more interpretable?</p>
+<p>Below is an example of how the research community thinks about this (attention is the key mechanism that enables transformers to learn representations; we will look more closely at transformers and attention next week):</p>
+<p><a href="https://arxiv.org/abs/1908.04626"><img width=100% src="assets/gen/explain.png"></a></p>
+<p>*For more information, here is a 2020 study from the European Parliament Research Service on the
+<a href="https://www.europarl.europa.eu/RegData/etudes/STUD/2020/641530/EPRS_STU(2020">The impact of the General Data Protection Regulation (GDPR) on artificial intelligence</a>641530_EN.pdf).</p>
+<p><strong>Explanation</strong>:
+This is a very open ended question. Both yes and no answers are accepted. One potential discussion topic could be that we currently have models 'explaining' themselves, which is moving the right direction, but similar to how humans can make up explanations, there is no guarantee that this holds any weight.</p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

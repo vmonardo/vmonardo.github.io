@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Nonlinear Models Conceptual Questions</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <a href="/web-html/in-class-problems.html" class="back-link">← Back to Conceptual Questions</a>
+            <h2>Nonlinear Models</h2>
+
+            <div class="markdown-content">
+                <h1><strong>Problem 1</strong> Reminder of feature transformation</h1>
+<p>Consider the following data set:</p>
+<p><img src="assets/nonlinear_models/two_corners.png" alt="" /></p>
+<p>Assume that <span class="math">\(x^{(1)},\dots,x^{(n)}\)</span> are the feature vectors for the points shown on the figure and
+<span class="math">\(y^{(1)},\dots,y^{(n)}\)</span> are the corresponding labels (for example, <span class="math">\(y^{(i)}=1\)</span> for the &quot;<span class="math">\(\times\)</span>&quot; points,
+<span class="math">\(y^{(i)}=0\)</span> for the &quot;<span class="math">\(\circ\)</span>&quot; points).<br />
+By inspection, we can see that this training data set is not linearly separable.</p>
+<p>We would like to design non-linear transformations
+such that the training data set becomes linearly separable.</p>
+<p>a) Consider the feature transformation <span class="math">\(\phi_1 : \mathbb{R}^2 \to \mathbb{R}\)</span> defined as
+<span class="math">\(\phi_1\left(x_1, x_2\right) = x_1x_2\)</span>.
+On the line below, plot where the original data points map to in the transformed space.</p>
+<p><img src="assets/nonlinear_models/p1_1.png" alt="" /></p>
+<p>b) Define a hypothesis <span class="math">\(h_1(x; \theta, \theta_0) = \sigma(\theta \phi_1 (x) + \theta_0)\)</span> that achieves
+100% training accuracy.</p>
+<p><strong>Explanation</strong>: This transformation will differentiate between features that have the same sign (both <span class="math">\(+\)</span> or <span class="math">\(-\)</span>) vs. opposite signs. For the (red) data points in quadrants 1 and 3, <span class="math">\(x_1x_2 > 0\)</span> while in quadrants 2 and 4 <span class="math">\(x_1x_2 < 0\)</span>. The transformed data will be <strong>linearly separable</strong>.
+In particular, we can see that a hypothesis defined by <span class="math">\(h_1(x) = \sigma (1 \phi_1(x) + 0)\)</span> would achieve 100% training accuracy.
+To further minimize the negative log-likelihood function, we could increase <span class="math">\(\theta\)</span> - depending on the presence of regularization.</p>
+<p>c) On the plot below, shade the regions that would be labeled <span class="math">\(1\)</span> by the hypothesis <span class="math">\(h_1\)</span>
+from the previous part.</p>
+<p><img src="assets/nonlinear_models/p1_2.png" alt="" /></p>
+<p><strong>Answer</strong>:<br />
+<img src="assets/nonlinear_models/p1_3.png" alt="" />.</p>
+<p>The regions shaded in gray will be classified as a 1 while the rest will be classified as a 0.</p>
+<p>d) Consider a new transformation <span class="math">\(\phi_2 : \mathbb{R}^2 \to \mathbb{R}\)</span> defined as <span class="math">\(\phi_2(x) = x_1^2 + 2x_1x_2 +  x_2^2.\)</span>  Will the training data set transformed by <span class="math">\(\phi_2\)</span> be linearly separable?</p>
+<p><strong>Answer</strong>: Yes.</p>
+<p><strong>Explanation</strong>: Yes, here is what the transformed data looks like
+<img src="assets/nonlinear_models/p1_4.png" alt="" /><br />
+The same dataset can have multiple feature transformations that linearly separate it!</p>
+<p>e) Consider the following computation graph:</p>
+<p><img src="assets/nonlinear_models/p1_5.png" alt="" /></p>
+<p>Write out the definition of the hypothesis visualized in the graph given above. Then, determine activation functions <span class="math">\(f^1,f^2\)</span> and weights such that <span class="math">\(h_2(x) = \sigma(\theta \phi_2(x) + \theta_0)\)</span>, where <span class="math">\(\phi_2(x)\)</span> is the same transformation from part d.</p>
+<p><strong>Explanation</strong>: From the computation graph, we can obtain the following formula:</p>
+<div class="math">$$
+g = h(x; \{ w^1_1, w^1_2, w^1_0, w^2, w^2_0\}) = f^2(w^2 f^1(w^1_1 x_1 + w^1_2 x_2 + w^1_0) + w^2_0)
+$$</div>
+<p>In order for this model to mimic <span class="math">\(h_2(x) = \sigma(\theta \phi_2(x) + \theta_0),\)</span>
+we would need:</p>
+<ul>
+<li><span class="math">\(f^2(\cdot) = \sigma(\cdot)\)</span></li>
+<li><span class="math">\(w^2 = \theta, w^2_0 = \theta_0\)</span></li>
+<li><span class="math">\(f^1(\cdot) = (\cdot)^2\)</span></li>
+<li><span class="math">\(w^1_1 = 1, w^1_2 = 1, w^1_0 = 0\)</span></li>
+</ul>
+<p>f) Consider a new, related dataset shown below. Do the feature transformations you found previously linearly separate this dataset? If so, explain why. If not, find a new feature transformation <span class="math">\(\phi_3 : \mathbb{R}^2 \rightarrow \mathbb{R}\)</span> such that the dataset is linearly separable using this feature.</p>
+<p><img src="assets/nonlinear_models/p1_6.png" alt="" /></p>
+<p><strong>Explanation</strong>: <span class="math">\(\phi_1\)</span> and <span class="math">\(\phi_2\)</span> don't linearly separate this dataset! We can see <span class="math">\(\phi_1\)</span> doesn't separate the classes and looking at the points on the line <span class="math">\(x_2=-x_1\)</span>, we see  points from different classes can have the same <span class="math">\(\phi_2\)</span> value.</p>
+<p>Noticing the circular pattern of the data, we observe distance from the origin is a feature that linearly separates the dataset. We can use <span class="math">\(\phi_3(x_1,x_2) = x_1^2+x_2^2\)</span> as this feature (which is 1 for the negative class and 4 for the positive class).</p>
+<h1><strong>Problem 2</strong> Computation graph</h1>
+<p>Suppose you are tasked with training a model to perform regression on
+a training data set <span class="math">\(\mathcal{D}_\text{train} = \{ (x^{(i)}, y^{(i)}) \}_{i=1}^n,\)</span>
+where <span class="math">\(x^{(i)} \in \mathbb{R}^3, y^{(i)}\in\mathbb{R}\)</span> for all <span class="math">\(i=1,\ldots,n\)</span>.
+As it turns out, linear hypotheses are not yielding sufficient results.
+Therefore, you would like to learn a feature transformation.</p>
+<p>a) Draw a computation graph which meets the following specifications:</p>
+<ul>
+<li>The first layer contains 3 neurons with ReLU activation functions.</li>
+<li>The output layer contains a single neuron with the identity activation function.</li>
+</ul>
+<p>Recall that weights in neural networks are represented as <span class="math">\(w^l_{n,m}\)</span>, corresponding to the weight in the <span class="math">\(l^{th}\)</span> layer going from the <span class="math">\(n^{th}\)</span> input neuron to the <span class="math">\(m^{th}\)</span> output neuron. We represent the input to the <span class="math">\(l^{th}\)</span> layer's activation function as <span class="math">\(z^l\)</span> and the output of this activation function as <span class="math">\(a^l\)</span>.</p>
+<p><img src="assets/nonlinear_models/p2_1.png" alt="" /></p>
+<p>Here, <span class="math">\(f^1(z) = ReLU(z)\)</span> and <span class="math">\(f^2(z) = z\)</span>.</p>
+<p>b) Write out the function that defines the hypothesis from the previous part. In particular,</p>
+<ul>
+<li>The pre-activation of the first layer, <span class="math">\(z^1\)</span>, is a function of the input <span class="math">\(x\)</span> and the weights <span class="math">\(W^1,W^1_0\)</span>.</li>
+<li>The post-activation of the first layer, <span class="math">\(a^1\)</span>, is a function of <span class="math">\(z^1\)</span>.</li>
+<li>The pre-activation at the output, <span class="math">\(z^2\)</span>, is a function of <span class="math">\(a^1\)</span> and the weights <span class="math">\(W^2, W^2_0\)</span>.</li>
+<li>The output <span class="math">\(g = a^2\)</span> is a function of <span class="math">\(z^2\)</span>.</li>
+</ul>
+<p><strong>Answer</strong>: <span class="math">\(W^1 \in \mathbb{R}^{3 \times 3}, W^1_0 \in \mathbb{R}^3, W^2 \in \mathbb{R}^3, W^2_0 \in \mathbb{R}\)</span></p>
+<ul>
+<li><span class="math">\(z^1 = W^{1T} x + W^1_0\)</span></li>
+<li><span class="math">\(a^1 = ReLU(z^1)\)</span></li>
+<li><span class="math">\(z^2 = W^{2T} a^1 + W^2_0\)</span></li>
+<li><span class="math">\(g = z^2 = W^{2T} ReLU(W^{1T} x + W^1_0) + W^2_0\)</span>.</li>
+</ul>
+<p>c) Suppose that all of the weights and biases are initialized to 1.
+Consider a new data point <span class="math">\((x, y) = ([1,2,3]^T, 10).\)</span>
+For the forward pass, what is the &quot;guess,&quot; <span class="math">\(g = h([1,2,3]^T)\)</span>?
+How does the guess compare to the actual label?</p>
+<p><strong>Explanation</strong>: In the forward pass,</p>
+<ul>
+<li><span class="math">\(z^1 =  \begin{bmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1  \end{bmatrix} \begin{bmatrix} 1\\ 2 \\ 3 \end{bmatrix} + \begin{bmatrix} 1\\ 1 \\ 1 \end{bmatrix} = \begin{bmatrix} 7\\ 7 \\ 7 \end{bmatrix} \)</span></li>
+<li><span class="math">\(a^1 = ReLU(z^1) = \begin{bmatrix} 7\\7\\7 \end{bmatrix}\)</span></li>
+<li><span class="math">\(z^2 = \begin{bmatrix} 1 & 1 & 1 \end{bmatrix} \begin{bmatrix} 7 \\ 7 \\ 7 \end{bmatrix} + 1 = 22.\)</span></li>
+<li><span class="math">\(h([1,2,3]^T) = 22\)</span></li>
+</ul>
+<p>The guess currently overestimates the actual label. Next week, we will see how to use backpropagation to reduce this error (i.e. learn better weights).</p>
+<h1><strong>Problem 3</strong></h1>
+<p>We are building a system to predict whether a customer will click on an ad. Our training data is made up of different types of features and collected over multiple days from a diverse age group of users. Our base features include:</p>
+<ul>
+<li>user_age: a numerical feature</li>
+<li>product_category: a feature with 10 distinct categories encoded as integers (e.g. electronics is encoded as <code>1</code>, apparel is <code>2</code>, etc).</li>
+<li>time_of_day: a cyclical numerical feature with hour resolution (0–23).</li>
+</ul>
+<p>a) Now let's connect feature engineering to neural networks. Consider a one-node neural network (logistic regression) that takes our base features as input and produces a probability for ad click prediction.</p>
+<p>Draw a diagram of this one-node neural network for ad click prediction. Include:</p>
+<ol>
+<li>Input layer with our base features (user_age, product_category, time_of_day)</li>
+<li>The linear combination step showing weights and bias</li>
+<li>The activation function</li>
+<li>The output probability for ad click.</li>
+</ol>
+<p><strong>Answer</strong>:
+Here's how the one-node network for ad click prediction should look:</p>
+<p><br><img src="assets/nonlinear_models/base_nn.jpg" width=80%></p>
+<p><strong>Explanation</strong>:
+Important Points:</p>
+<ul>
+<li><strong>Input layer</strong>: Our base features (user_age, product_category, time_of_day)</li>
+<li><strong>Linear combination</strong>: <span class="math">\(z = w_1 \cdot \text{user\_age} + w_2 \cdot \text{product\_category} + w_3 \cdot \text{time\_of\_day} + w_0\)</span></li>
+<li><strong>Activation function</strong>: Sigmoid function <span class="math">\(\sigma(z) = \frac{1}{1 + e^{-z}}\)</span></li>
+<li><strong>Output</strong>: Probability <span class="math">\(g = \sigma(z)\)</span> for ad click prediction</li>
+</ul>
+<p>This network takes our base features and learns weights to make the best possible prediction about whether a user will click on an ad.</p>
+<p>b) We also transform the <code>time_of_day</code> feature to handle the cyclical nature of the data by mapping it onto a circle. Specifically, we transform it into two features:
+<span class="math">\(\sin(2\pi \cdot \texttt{time\_of\_day}/24)\)</span> and <span class="math">\(\cos(2\pi \cdot \texttt{time\_of\_day}/24)\)</span>.
+Using the one-hot and trigonometric features, how should we change our network drawing? How many parameters (including the offset) are we learning in the one-neuron network?</p>
+<p><strong>Answer</strong>:
+<strong>Updated Network Drawing:</strong></p>
+<p><br><img src="assets/nonlinear_models/new_nn.jpg" width=80%></p>
+<p><strong>Explanation</strong>: The network drawing should be modified to show:</p>
+<ol>
+<li><p><strong>Input layer</strong>: Now has many more features:</p>
+<ul>
+<li><strong>Age groups</strong>: 5 one-hot encoded features (age_0_18, age_19_35, age_36_50, age_51_65, age_65_plus) - created by binning the original user_age feature into 5 groups</li>
+<li><strong>Product categories</strong>: 10 one-hot encoded features (electronics, apparel, books, etc.)</li>
+<li><strong>Time features</strong>: 2 trigonometric features (sin_time, cos_time)</li>
+<li><strong>Total</strong>: 17 input features</li>
+</ul>
+</li>
+<li><p><strong>Linear combination</strong>:</p>
+</li>
+</ol>
+<div class="math">$$
+z = w_1 \cdot \text{age\_0\_18} + w_2 \cdot \text{age\_19\_35} + \ldots + w_5 \cdot \text{age\_65\_plus} +
+$$</div>
+<div class="math">$$
+w_6 \cdot \text{electronics} + w_7 \cdot \text{apparel} + \ldots + w_{15} \cdot \text{category\_10} +
+$$</div>
+<div class="math">$$
+w_{16} \cdot \text{sin\_time} + w_{17} \cdot \text{cos\_time} + w_0
+$$</div>
+<ol start="3">
+<li><p><strong>Activation function</strong>: Sigmoid function <span class="math">\(\sigma(z) = \frac{1}{1 + e^{-z}}\)</span></p>
+</li>
+<li><p><strong>Output</strong>: Probability <span class="math">\(g = \sigma(z)\)</span> for ad click prediction</p>
+</li>
+</ol>
+<p><strong>Number of Parameters:</strong></p>
+<ul>
+<li><strong>17 weights</strong> (one for each input feature)</li>
+<li><strong>1 bias term</strong> (<span class="math">\(w_0\)</span>)</li>
+<li><strong>Total: 18 parameters</strong> (including the offset)</li>
+</ul>
+<!-- TODO: might be too hard -->
+
+<h1><strong>Problem 4</strong> Vanishing gradients</h1>
+<p>Kim's friend Jim thinks that Kim's neural network is pretty cool.
+However, he wants to make it even cooler by adding more layers!
+96 more layers, to be exact.
+He uses ReLU activation functions for all hidden layers and an identity activation <span class="math">\(f(z) = z\)</span> for the output layer.</p>
+<p>Jim uses a training data <span class="math">\(\mathcal{D}_\text{train} = \{ (x^{(i)}, y^{(i)}) \}_{i=1}^n,\)</span>
+where each <span class="math">\(x^{(i)}\)</span> is a 1-dimensional feature and <span class="math">\(y^{(i)}\)</span> is a 1-dimensional label.
+He uses a squared-error loss function for training the neural network.
+All of the weights and offsets will be initialized as <span class="math">\(w^l = .1\)</span> and <span class="math">\(w^l_0 = 0.5\)</span> for every layer <span class="math">\(l=1,\ldots,100\)</span>.</p>
+<p>a) Consider computing the gradient of the mean squared-error with respect to the weight <span class="math">\(w^1\)</span>. What will we observe? What is the approximate size of the gradient?<br />
+Hint: first write the gradient w.r.t. <span class="math">\(w^{99}\)</span>, then <span class="math">\(w^{98}\)</span>, and see if you can find a pattern for the size of the gradient w.r.t. <span class="math">\(w^1\)</span>.</p>
+<p><strong>Explanation</strong>: We can see that the gradient will include multiplying by <span class="math">\((0.1)^{99}\)</span>, leading to the gradient
+essentially being zero.
+For example, consider <span class="math">\(\frac{\partial \mathcal{L}(g,y)}{\partial w^{99}}:\)</span></p>
+<div class="math">$$
+\frac{\partial \mathcal{L}}{\partial w^{99}} =
+                \frac{\partial z^{99}}{\partial w^{99}}
+                \frac{\partial a^{99}}{\partial z^{99}}
+                \frac{\partial z^{100}}{\partial a^{99}}
+                \frac{\partial g}{\partial z^{100}}
+                \frac{\partial \mathcal{L}}{\partial g} \\
+                = (a^{98}) \left( \frac{\partial \text{ReLU}(z^{99})}{\partial z^{99}}  \right) (w^{100}) (1) \frac{\partial \mathcal{L}}{\partial g}
+$$</div>
+<p>Then, for <span class="math">\(\frac{\partial \mathcal{L}(g,y)}{\partial w^{98}}\)</span>
+(recall shared factors!):</p>
+<div class="math">$$
+\frac{\partial \mathcal{L}}{\partial w^{98}} =
+                \frac{\partial z^{98}}{\partial w^{98}}
+                \frac{\partial a^{98}}{\partial z^{98}}
+                \frac{\partial z^{99}}{\partial a^{98}}
+                \left( \frac{\partial \text{ReLU}(z^{99})}{\partial z^{99}}  \right) (w^{99}) (1) \frac{\partial \mathcal{L}}{\partial g} \\ 
+                = (a^{97}) \left( \frac{\partial \text{ReLU}(z^{98})}{\partial z^{98}}  \right) (w^{99}) \left( \frac{\partial \text{ReLU}(z^{99})}{\partial z^{99}}  \right) (w^{100}) (1) \frac{\partial \mathcal{L}}{\partial g}
+$$</div>
+<p>As all of the layers are identical, the pattern continues and we can see that
+<span class="math">\(\frac{\partial \mathcal{L}(g,y)}{\partial w^{1}} = x \left(\Pi_{i=1}^{99} \frac{\partial \text{ReLU}(z^i)}{\partial z^i} w^{i+1} \right) \frac{\partial \mathcal{L}}{\partial g}\)</span></p>
+<p>This is known as the &quot;vanishing gradient&quot; problem.</p>
+<p>b) Jim decides to modify his neural network for training by including &quot;residual connections&quot;.
+A new description of the computation is
+<span class="math">\(a^0 = x,~~~z^l = w^{l}a^{l-1} + w_{0}^l,~~~a^l = f^l(z^l) \underbrace{+ a^{l-1}}_{\text{residual}},~~~g=a^{100},\)</span></p>
+<p>resulting in the computation graph below.
+<br><img src="assets/nonlinear_models/p4_1.png" width=90%></p>
+<p>How might this improve the gradient computation for updating <span class="math">\(w_1\)</span>, compared to the previous part?</p>
+<p>Hint: first write the expression of <span class="math">\(g\)</span> in terms of <span class="math">\(x\)</span> and the <span class="math">\(z^l\)</span>s. Then, consider how the gradient will be computed by backpropagation.</p>
+<p><strong>Explanation</strong>: The residual connections help forward propagate the input to the output during the forward pass as</p>
+<div class="math">$$
+a^1 = ReLU(z^1) + x \\
+                    a^2 = ReLU(z^2) + a^1 \\
+                    = ReLU(z^2) + ReLU(z^1) + x \\
+                    \vdots  \\
+                    g = a^{100} = x + \sum_{l=1}^{99} ReLU(z^l) + z^{100}.
+$$</div>
+<p>For any layer <span class="math">\(l\)</span>, the gradient <span class="math">\(\frac{\partial \mathcal{L}}{\partial w^l}\)</span> includes a term of the form <span class="math">\(\frac{\partial ReLU(z^l)}{\partial w^l}\)</span>, which is not vanishingly small. In this way, the residual connections allow gradients to be backpropagated more directly to earlier layers in the network.</p>
+<h1><strong>Problem 5</strong> Expressivity of MLP</h1>
+<p>Let's see how a neural network with only a single layer and many neurons
+can approximate the function <span class="math">\(f(x) = x^2 - 1\)</span> on the domain <span class="math">\(x \in [-1,1]\)</span>  using ReLU activation functions.
+Consider the graph on the left and a plot of the output <span class="math">\(g\)</span> on the right:</p>
+<p>|<div style="width:85%"><img src="assets/nonlinear_models/make_nn.png" width=100%></div>          |  <div style="width:85%"><img src="assets/nonlinear_models/make_relus.png" width=100%></div> |
+|-------------------------|--------------|</p>
+<p>In the first layer, each of the activation functions are <span class="math">\(f^1(z) = \text{ReLU}(z) = \max \{0, z \}\)</span>.
+The neuron in the second layer uses an identity activation function <span class="math">\(f^2(z) = z\)</span>.</p>
+<p>Note that the weights in the first layer are set to 1;
+we would like to determine values for the remaining weights and offsets
+to reconstruct <span class="math">\(g\)</span> by assessing the four different paths through the neural network.</p>
+<p>a) First, let's think about the regions <span class="math">\([-1,-0.5),[-0.5,0),[0,0.5)\)</span> and <span class="math">\([0.5,1]\)</span> individually.
+What offsets <span class="math">\(w^1_{i,0}\)</span> for <span class="math">\(i=1,2,3,4\)</span> can we use to delineate these regions?
+Assume that <span class="math">\(w^1_{1,0} > w^1_{2,0}> w^1_{3,0}> w^1_{4,0}.\)</span></p>
+<p>Hint: consider the <span class="math">\(x\)</span> gradually increasing from <span class="math">\(-1\)</span> to <span class="math">\(1\)</span>, we want to make the neurons in the first layer to be ``activated'' one by one by setting the offsets appropriately. For example, when <span class="math">\(x \in [-1, -0.5)\)</span>, only the first neuron is activated; when <span class="math">\(x \in [-0.5, 0)\)</span>, the first two neurons are activated; and so on.</p>
+<p><strong>Explanation</strong>:
+We can set the offsets as follows:</p>
+<p><span class="math">\(w^1_{1,0}=1, w^1_{2,0}=0.5, w^1_{3,0}=0, w^1_{4,0}=-0.5.\)</span></p>
+<p>Let's see why this works. Suppose that you input <span class="math">\(x=-0.75\)</span>.
+In this case, the output from the first neuron will be non-zero, as
+<span class="math">\(\text{ReLU}(-0.75 + 1) = 0.25 > 0.\)</span>
+The remaining neurons will not be activated.</p>
+<p>How about input <span class="math">\(x=-0.25\)</span>? In this case
+the first neuron will be activated:
+<span class="math">\(\text{ReLU}(-0.25 + 1) > 0\)</span>
+and the second neuron will be activated:
+<span class="math">\(\text{ReLU}(-0.25 + 0.5) > 0\)</span>.
+The remaining neurons will not be activated.</p>
+<p>This pattern of neurons activating is due to the ordering of the offsets
+as well as the weights in the first layer all being set to 1.</p>
+<p>b) What value of <span class="math">\(w^2_1\)</span> can we use to replicate <span class="math">\(g\)</span> in the region of <span class="math">\(x\in[-1,-0.5)\)</span>?<br />
+<strong>Explanation</strong>: With <span class="math">\(w^2_1=-1.5\)</span>, we can create the desired line segment for the region of <span class="math">\(x\in[-1,-0.5).\)</span></p>
+<p>c) What value of <span class="math">\(w^2_2\)</span> can we use to replicate <span class="math">\(g\)</span> in the region of <span class="math">\(x\in[-0.5,0)\)</span>?</p>
+<p>Hint: think about which neurons in the first layer are activated when the input <span class="math">\(x\in[-0.5,0)\)</span>, and check the change in slope from the previous region to this one.</p>
+<p><strong>Answer</strong>: <span class="math">\(w^2_2=1\)</span>.<br />
+<strong>Explanation</strong>: <span class="math">\(w^2_2=1\)</span>; recall that in the region <span class="math">\([-0.5,0)\)</span> we need to consider the contribution of the neurons 1 and 2 from the first layer. As we want the slope in this region to be <span class="math">\(-0.5\)</span>; <span class="math">\(w^2_1\)</span> contributes <span class="math">\(-1.5\)</span> so <span class="math">\(w^2_2\)</span> need to add <span class="math">\(+1\)</span>.</p>
+<p>d) Finally, determine the remaining weights in the second layer as well as the offset.<br />
+<strong>Answer</strong>: <span class="math">\(w^2_3 = w^2_4 = 1, w^2_0=0\)</span>.</p>
+<p><strong>Explanation</strong>: <span class="math">\(w^2_3 = w^2_4 = 1, w^2_0=0\)</span></p>
+<p><br><img src="assets/nonlinear_models/annotated_relus.png" width=70%></p>
+<p>In the figure above, we piece everything together.
+Starting from the left (where <span class="math">\(x=-1\)</span>) the green arrow within the grid denotes the slope of 1 from the output of the first neuron in the first layer (<span class="math">\(\text{ReLU}(x+1)\)</span>.)
+In red, the impact of the weight <span class="math">\(w^2_1 = -1.5\)</span> is visualized, scaling the output of the first neuron such that it becomes a line segment with slope <span class="math">\(-1.5\)</span>.</p>
+<p>The green arrow within the start at <span class="math">\(x=-0.5\)</span> visualizes the output of the second neuron in the first layer.
+With a weight of <span class="math">\(w^2_2 = 1\)</span>, we can see the slope of <span class="math">\(g\)</span> changes from the original <span class="math">\(1.5\)</span> to <span class="math">\(-0.5\)</span>.</p>
+<p>This pattern continues for the third and fourth neuron in the first layer, and the weights <span class="math">\(w^2_3\)</span> and <span class="math">\(w^2_4\)</span>.</p>
+<p>The green arrow below the grid indicated the regions where each of the neuron are &quot;active&quot; based on the value of the offsets in the first layer.</p>
+<h1><strong>Problem 6</strong> Somebody that I used to know</h1>
+<p>When Alex was first studying machine learning, he sometimes wondered
+about the relationship between linear regression, logistic regression,
+and neural networks. Is there actually any? For each of the
+neural-network architectures described below, help him identify
+whether it is equivalent to some previous model we have studied.</p>
+<p>In each case, we will specify the number of layers, the activation
+function for each layer, and the loss function.  In all cases, please
+assume that the last layer outputs a <strong>scalar</strong>.  Let <span class="math">\(f\)</span> be the activation
+function in a single-layer network, and let <span class="math">\(f^1\)</span> and <span class="math">\(f^2\)</span> be the
+activations in the first and second layers of a two-layer network,
+respectively.</p>
+<p>a) Two layers, <span class="math">\(f^1\)</span> is ReLU, <span class="math">\(f^2\)</span> is identity (i.e., <span class="math">\(f(z)=z\)</span>), loss is squared. Which of the following is this equivalent to:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>linear regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>logistic regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>a different kind of sensible neural network</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>an ill-formed neural network</li>
+</ul>
+<p><strong>Answer</strong>: a different kind of sensible neural network.</p>
+<p><strong>Explanation</strong>: The ReLU takes us out of the world of linear and
+logistic regression into the more general world of nonlinear neural
+networks.</p>
+<p>b) One layer, <span class="math">\(f\)</span>  is identity, loss is NLL. Which of the following is this equivalent to:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>linear regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>logistic regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>a different kind of sensible neural network</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>an ill-formed neural network</li>
+</ul>
+<p><strong>Answer</strong>: an ill-formed neural network.</p>
+<p><strong>Explanation</strong>: Since the output of the last layer is a scalar,
+the output of the network is of the form <span class="math">\(w^T x + b\)</span>, where <span class="math">\(w\)</span> is a
+vector of the same shape as <span class="math">\(x\)</span> and <span class="math">\(b\)</span> is a scalar. Then note that
+for <span class="math">\(w\neq 0\)</span>, <span class="math">\(w^Tx + b\)</span> covers all of <span class="math">\(\mathbb R\)</span>.  However, NLL
+is only defined for inputs in the interval <span class="math">\((0,1)\)</span>, so the network
+is ill-formed.</p>
+<p>c) One layer, <span class="math">\(f\)</span>  is identity, loss is squared loss. Which of the following is this equivalent to:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>linear regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>logistic regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>a different kind of sensible neural network</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>an ill-formed neural network</li>
+</ul>
+<p><strong>Answer</strong>: linear regression.</p>
+<p><strong>Explanation</strong>: As in the previous question, our model output is
+of the form <span class="math">\(w^T x + b\)</span>, which we readily recognize as a linear
+regression.  Penalizing with a squared loss makes this a
+least-squares linear regression.  The weights of our one-layer
+neural network are a linear regressor.</p>
+<p>d) Two layers, <span class="math">\(f^1\)</span> is identity, <span class="math">\(f^2\)</span> is sigmoid,  loss is NLL. Which of the following is this equivalent to:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>linear regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>logistic regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>a different kind of sensible neural network</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>an ill-formed neural network</li>
+</ul>
+<p><strong>Answer</strong>: logistic regression.</p>
+<p><strong>Explanation</strong>: Since the output of the network is a scalar, the
+weight matrix in the second layer must be a vector of the same shape
+as the output of the first layer.  We have that the whole network
+takes the form</p>
+<div class="math">$$
+\begin{align}
+f^2\left( w_2^T f^1(W_1^Tx + b_1) + b_2\right) &amp;= \sigma\left(w_2^T\left(W_1^T x + b_1\right) + b_2\right)\\
+&amp;= \sigma\left(\left(w_2^T W_1\right)x + \left(w_2^T b_1 + b_2\right)\right)\\
+\end{align}
+$$</div>
+<p>Letting <span class="math">\(\theta = W_1^Tw_2\)</span> (note <span class="math">\(\theta\)</span> is a vector) and <span class="math">\(\theta_0 = w_2^Tb_1 + b_2\)</span> (note <span class="math">\(\theta_0\)</span> is a scalar),
+we can rewrite the network as <span class="math">\(\sigma\left(\theta^T x + \theta_0\right)\)</span>, which together with the NLL loss we
+recognize as a logistic regression.</p>
+<p>Then in the reverse direction, starting with a logistic regression model <span class="math">\(\sigma\left(\theta^T x + \theta_0\right)\)</span>,
+we can take <span class="math">\(w_2 = \theta\)</span>, <span class="math">\(b_2 = \theta_0\)</span>, <span class="math">\(W_1 = I\)</span>, and <span class="math">\(b_1 = 0\)</span> to get an output of the form</p>
+<div class="math">$$
+\begin{align}
+ \sigma\left(w_2^T\left(W_1^T x + b_1\right) + b_2\right) &amp;= \sigma\left(\theta^T\left(I^T x + 0\right) + \theta_0\right)\\
+ &amp;= \sigma\left( \theta^T x + \theta_0 \right),
+\end{align}
+$$</div>
+<p>meaning this two-layer net can express any logistic regression model.</p>
+<p>Since we can express any instance of logistic regression as an
+instance of this two-layer net and any instance of this two-layer net
+as an instance of logistic regression, we say that the two models are
+equivalent.</p>
+<p>e) One layer, <span class="math">\(f\)</span> is sigmoid, loss is NLL. Which of the following is this equivalent to:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>linear regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>logistic regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>a different kind of sensible neural network</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>an ill-formed neural network</li>
+</ul>
+<p><strong>Answer</strong>: logistic regression.</p>
+<p><strong>Explanation</strong>: As in previous questions, since the output of
+the neural net is a scalar, the net takes the form</p>
+<div class="math">$$
+f(w^T x + b) = \sigma(w^Tx + b),
+$$</div>
+<p>which together with the NLL loss we recognize as a logistic regression
+with <span class="math">\(\theta = w\)</span> and <span class="math">\(\theta_0 = b\)</span> in our usual notation.</p>
+<p>f) Two layers, <span class="math">\(f^1\)</span> is sigmoid, <span class="math">\(f^2\)</span> is sigmoid, loss is NLL. Which of the following is this equivalent to:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>linear regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>logistic regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>a different kind of sensible neural network</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>an ill-formed neural network</li>
+</ul>
+<p><strong>Answer</strong>: a different kind of sensible neural network.<br />
+<strong>Explanation</strong>: Note that since the output of this network is a scalar, it takes the form</p>
+<div class="math">$$
+\sigma\left(w_2^T\sigma\left(W_1^T x + b_1\right) + b_2\right).
+$$</div>
+<p>This network is sensible because its output is a scalar in the
+interval <span class="math">\((0,1)\)</span> (the range of sigmoid), and the NLL loss is
+well-defined for any input in <span class="math">\((0,1)\)</span>. Then taking <span class="math">\(W_1 = I\)</span>, $b_1 =
+0<span class="math">\(, \)</span>b_2 = 0<span class="math">\(, and \)</span>w_2 = [1, 0, \cdots, 0]^T$, we get an output of</p>
+<div class="math">$$
+\sigma\left([1, 0, \cdots, 0]\sigma\left(I^T x + 0\right) + 0\right) = \sigma\left(\sigma \left(x_0 \right)\right),
+$$</div>
+<p>a function which cannot be expressed via either a linear or logistic regression.</p>
+<p>g) Two layers, <span class="math">\(f^1\)</span> is sigmoid, <span class="math">\(f^2\)</span> is identity, loss is NLL. Which of the following is this equivalent to:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>linear regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>logistic regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>a different kind of sensible neural network</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>an ill-formed neural network</li>
+</ul>
+<p><strong>Answer</strong>: an ill-formed neural network.</p>
+<p><strong>Explanation</strong>: The weights in layer 2 can push the output
+outside (0,1), so NLL loss would be ill-suited and undefined for
+some outputs.</p>
+<p>h) Two layers, <span class="math">\(f^1\)</span> is sigmoid, <span class="math">\(f^2\)</span> is identity, loss is squared loss. Which of the following is this equivalent to:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>linear regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>logistic regression</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>a different kind of sensible neural network</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>an ill-formed neural network</li>
+</ul>
+<p><strong>Answer</strong>: a different kind of sensible neural network.</p>
+<p><strong>Explanation</strong>: This neural network takes the form
+<span class="math">\(w_2^T \sigma(W_1^Tx + b_1) + b_2,\)</span> which leads to a class of functions
+different from both linear and logistic regression. The scalar
+output of this neural network is compatible with the squared loss,
+which takes arbitrary real-valued predictions.  This architecture of
+neural network would be sensible for making a non-linear
+regressor. The final layer allows predicting any real number and
+optimizes with a sensible loss for any real number, and the first
+layer with sigmoid activation provides nonlinearity so that our
+regressor is not a simple linear function of the input.</p>
+<h1><strong>Problem 7</strong> c01</h1>
+<p>One of the key metrics of the success of a TV commercial is the number of new customers
+it brings. In this problem, we consider a regression problem to predict the number of
+new customers (y), where each commercial is represented by an input vector <span class="math">\(x = [x_1, x_2]^T\)</span>,
+where <span class="math">\(x_1\)</span> is the number of production hours and <span class="math">\(x_2\)</span> ∈ {0, 1} indicates whether the commercial
+has been previously aired (<span class="math">\(x_2\)</span> = 1) or not (<span class="math">\(x_2\)</span> = 0). The data visualization is provided below.</p>
+<img width=40% src="assets/nonlinear_models/p7_1.png">
+
+<p>We would like to solve this problem by considering a neural network shown
+below, with 3 hidden ReLU units and a single linear output. The transformations
+are given below:</p>
+<div class="math">$$
+z_j = w_{j1}x_1 + w_{j2}x_2 + b^{(1)}_j \\
+f_j = ReLU(z_j), for j = 1, 2, 3 \\
+\hat{y} = v_1f_1 + v_2f_2 + v_3f_3 + b^{(2)} \\
+$$</div>
+<img width=40% src="assets/nonlinear_models/p7_2.png">
+
+<p>Given the transformations defined above, we can write them in vector form</p>
+<p>$ z = \begin{bmatrix} z_1 \ z_2 \ z_3 \end{bmatrix} = Wx + b^{(1)}$</p>
+<p><span class="math">\(f = \begin{bmatrix} f_1 \\ f_2 \\ f_3 \end{bmatrix} ReLU(z)\)</span></p>
+<p><span class="math">\(\hat{y} = V f + b^{(2)}\)</span></p>
+<p>where W, V are the weights of the network, and <span class="math">\(b^{(1)}, b^{(2)}\)</span> are the biases and
+the ReLU function is applied element-wise. What are the dimensions of W, V, <span class="math">\(b^{(1)}, b^{(2)}\)</span>? Write, e.g., U ∈ <span class="math">\(R^{3×6}\)</span> if you would want to express that U were a matrix valued parameter of shape 3 × 6.</p>
+<p><strong>Answer</strong>: <span class="math">\(W ∈ R^{3×2}, b^{(1)} ∈ R^3, V ∈ R^{1×3}, b^{(2)} ∈ R^1\)</span></p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

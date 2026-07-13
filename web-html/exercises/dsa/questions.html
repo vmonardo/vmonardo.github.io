@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Dsa Questions</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <style>
+                ul {
+                list-style: none;
+                padding-left: 0;
+                }
+            </style>
+            <a href="/web-html/exercises.html" class="back-link">← Back to Exercises</a>
+            <a href="index.html" class="back-link">← Back to Dsa</a>
+            <h2>Dsa - Questions</h2>
+            
+            <div class="markdown-content">
+                <ol>
+<li>If we wanted a model to tell us whether there is a black dot in the black and white image with 3 pixels, and our training set is ([1, 1, 0], 1) (0 is black, 1 is white, label 1 means there is a black dot), what could an MLP model with no intermediate layers learn?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If the first pixel is 0, then there is a black dot</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If the third pixel is less than or equal to 0, then there is a black dot</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If one of the pixels is black, then there is a black dot</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If the second pixel is 0, then there is a black dot</li>
+</ul>
+<p>Training set: <img src="assets/im1.png" alt="the third pixel is black" /></p>
+<ol start="2">
+<li>If we give the shifted image [1, 0, 1] to the model, will it predict that there is a dot or not?<br />
+(a) Yes.<br />
+(b) No</li>
+</ol>
+<p><img src="assets/im2.png" alt="the second pixel is black" /></p>
+<ol start="3">
+<li>What are some problems of using MLP for images?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>MLPs have minimal assumptions built into the model</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Nowadays, image sizes are huge, meaning the input size is also big for the MLP</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Need to include shifted images in the training set for the model to generalize</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Nearby pixels are weighted equally to faraway pixels</li>
+</ul>
+<ol start="4">
+<li>What are the inductive (assumptions built into the model) biases that we want an image-specific model to have?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Faraway pixels should matter as much as the pixels close to the target object</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Shifting an object should not modify the output of the model</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Nearby pixels should matter more in recognizing the target object</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Shifts and translations of an object should make the model produce distinct results</li>
+</ul>
+<hr />
+<ol start="5">
+<li><p>For CNN, what layer is introduced into the architecture that was not present in MLP?<br />
+(a) CNNs are the same as MLPs.<br />
+(b) Convolutions replace the linear layers for a part of the network.<br />
+(c) Convolutions replace the elementwise nonlinear layers for a part of the network.<br />
+(d) Filters replace the linear layers for a part of the network.</p>
+</li>
+<li><p>In CNN, what object contains learnable parameters for convolution layers?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Kernel.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Filter.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Stride.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Padding.</li>
+</ul>
+<ol start="7">
+<li><p>Apply the following filter [-1, 1] to image [0, 0, 2, 2, 4, 4, 2, 2, 0, 0] with a stride of 1 and no padding?</p>
+</li>
+<li><p>What is the shape of your output?</p>
+</li>
+<li><p>What does the filter seem to do?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Sum adjacent pixels</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Calculate difference between adjacent pixels</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find pairs of pixels where the later value is bigger than the earlier value</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find pairs of adjacent pixels where the right value is bigger than the left value</li>
+</ul>
+<ol start="10">
+<li><p>Apply the following filter [-1, 1] to image [0, 0, 2, 2, 4, 4, 2, 2, 0, 0] with stride of 1 and 1 layer of zero-padding?</p>
+</li>
+<li><p>What is the shape of your output?</p>
+</li>
+<li><p>How does this output differ from output of 7?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Skip every second pixel</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Border pixels are no longer taken into account</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Border pixels are also taken into account</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No change</li>
+</ul>
+<ol start="13">
+<li><p>Apply the following filter [-1, 1] to image [0, 0, 2, 2, 4, 4, 2, 2, 0, 0] with stride of 2 and 1 layer of zero-padding?</p>
+</li>
+<li><p>What is the shape of your output?</p>
+</li>
+<li><p>How does this output differ from output of 10?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Skip every second pixel</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Border pixels are no longer taken into account</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Border pixels are also taken into account</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No change</li>
+</ul>
+<!-- Note: using the same filter across the image, so the parameters are “shared” -->
+
+<!-- TODO: feal like this should be part of something else -->
+
+<ol start="16">
+<li><p>Apply the following filter [-1, 0, 1] to image [[-1, 0, 1], [1, 2, 2], [1, 0, -1]] with a stride of 1 and no padding?</p>
+</li>
+<li><p>What is the shape of your output?</p>
+</li>
+<li><p>What does the filter seem to do?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find pairs of pixels where the later value is bigger than the earlier value in each row</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Sum adjacent pixels in each row</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find pairs of adjacent pixels where the right value is bigger than the left value in each row</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Calculate difference between adjacent pixels in each row</li>
+</ul>
+<ol start="19">
+<li><p>Apply the following filter [-1, 0, 1] to image [[-1, 0, 1], [1, 2, 2], [1, 0, -1]] with a stride of 2 and 1 layer of zero-padding?</p>
+</li>
+<li><p>What is the shape of your output?</p>
+</li>
+<li><p>Apply the following filter [[1, 1, 1], [1, 1, 1], [-1, -1, -1]] to image [[1, 1, 1], [1, 1, 1], [-1, -1, -1]] with a stride of 1 and no padding?</p>
+</li>
+<li><p>What is the shape of your output?</p>
+</li>
+<li><p>Apply the following filter [[1, 1, 1], [0, 0, 0], [-1, -1, -1]] to image [[1, 1, 1], [1, 1, 1], [-1, -1, -1]] with a stride of 1 and no padding?</p>
+</li>
+<li><p>Apply the following filter [[1, 1, 1], [0, 0, 0], [-1, -1, -1]] to image [[1, 1, 1], [1, 1, 1], [-1, -1, -1]] with a stride of 1 and 1 layer of zero-padding?</p>
+</li>
+<li><p>What is the shape of your output?</p>
+</li>
+<li><p>How is the output of 24 different from 23?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Skip every second pixel</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Identifies both rows of 1's not only top one</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Border pixels are also taken into account</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No change</li>
+</ul>
+<ol start="11">
+<li>How can convolution layers be integrated in CNN?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Have alternating convolution and elementwise nonlinearity layers</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Have only convolution layers</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Always have only one convolution layer and use MLP for the rest</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Have alternating convolution and elementwise nonlinearity layers with additional linear and elementwise nonlinearity layers at the end of the network</li>
+</ul>
+<!-- Note: In practice, we also introduce max pooling layers in between convolutions that help reduce the dimensionality, and add linear layers at the end of the network for the final task.   -->
+
+<ol start="12">
+<li>Match aspects of CNNs to inductive biases that they introduce.
+(a) Capture spatial dependencies <!-- convolution -->
+(b) Handle translations <!-- pooling -->
+(c) Compute efficiently <!-- weight sharing --></li>
+</ol>
+<hr />
+<p><img src="assets/graph.png" alt="Undirected graph representing network of friends" />
+Undirected graph G.</p>
+<p>The first number is just a label for us. The first feature is the name of the user, and the second feature is how many times the user bought an item due to a friend's recommendation. Final edges have a feature specifying how close the two users are as friends (between 0 and 1, where 1 means very, very close friends).</p>
+<ol start="13">
+<li>What are the vertices of G (report only labels)?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>0</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>2</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>3</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>4</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>5</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>7</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>12</li>
+</ul>
+<ol start="14">
+<li>What are the edges of G?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>(1, 2)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>(1, 5)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>(1, 3)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>(2, 5)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>(2, 6)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>(5, 4)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>(4, 7)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>(6, 3)</li>
+</ul>
+<ol start="15">
+<li>Who are Ann’s neighbors in G?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>2</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>3</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>4</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>5</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>7</li>
+</ul>
+<ol start="16">
+<li>What are possible paths from Ann to Abbi?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>5 -&gt; 1 -&gt; 4</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>4 -&gt; 5 -&gt; 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 -&gt; 2 -&gt; 5 -&gt; 4</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 -&gt; 5 -&gt; 4</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None</li>
+</ul>
+<ol start="17">
+<li>Is there a path from Ann to Kimi?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>5 -&gt; 1 -&gt; 6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>4 -&gt; 5 -&gt; 6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 -&gt; 2 -&gt; 5 -&gt; 6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 -&gt; 5 -&gt; 6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None</li>
+</ul>
+<hr />
+<ol start="18">
+<li>What are some problems of using MLP for graphs?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Minimal inductive bias</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Faraway/unrelated vertices affect a vertex as much as close neighbors</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Takes into account relations between vertices for directed graphs</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Big networks (e.g., followers network on Instagram) lead to a big input size for MLP</li>
+</ul>
+<ol start="19">
+<li>For GNN, what concept is introduced into the architecture that was not present in MLP?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Message-passing</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>GNNs are the same as MLPs</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Convolutions replace the linear layers</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<p><img src="assets/graph.png" alt="Undirected graph representing network of friends" />
+Undirected graph G.<br />
+The first number is just a label for us. The first feature is the name of the user, and the second feature is how many times the user bought an item due to a friend's recommendation. Final edges have a feature specifying how close the two users are as friends (between 0 and 1, where 1 means very, very close friends).</p>
+<ol start="20">
+<li><p>If the first layer is defined as <span class="math">\(h_i^1 = h_i^0 + \frac{1}{|N_i|} \sum_{j \in N_i} h_j^0 * e_{i, j}\)</span> calculate output of the layer for Ann in graph G.<br />
+Hint: <span class="math">\(h_i^0\)</span> is the feature how many times the user bought an item due to a friend's recommendation and <span class="math">\(e_{i,j}\)</span> is the feature of the edge describing how close the two users are as friends.</p>
+</li>
+<li><p>Apply a nonlinear ReLU to your output.</p>
+</li>
+<li><p>Did Abbi affect the output of the first layer?<br />
+(a) Yes.<br />
+(b) No.</p>
+</li>
+<li><p>After how many layers can Abbi affect Ann?</p>
+</li>
+<li><p>At least how many layers do we need such that all vertices affect all other vertices that they have a path to?</p>
+</li>
+</ol>
+<!-- Note: It may need a lot of layers for the receptive field to be high -->
+
+<hr />
+<ol start="25">
+<li>What are some problems of using MLP for sequences?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>MLP cannot deal with inputs of varying sizes out of the box</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Sequences can be very big, meaning the input size is also big for the MLP</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>MLP lacks representation for ordered input</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>All of the above</li>
+</ul>
+<ol start="26">
+<li>In RNN setting <span class="math">\(z_t = f_\theta(z_{t-1}, x_t)\)</span>, what is <span class="math">\(z_t\)</span>?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Hidden state</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Element in the input sequence</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Memory</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Element in the output sequence</li>
+</ul>
+<ol start="27">
+<li>In RNN setting <span class="math">\(z_t = f_\theta(z_{t-1}, x_t)\)</span>, what is <span class="math">\(x_t\)</span>?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Hidden state</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Element in the input sequence</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Memory</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Element in the output sequence</li>
+</ul>
+<ol start="28">
+<li><p>How many steps are needed to process one word at a time in the sentence “Inductive bias is an assumption about the relationship between input and output of a learning problem that is built into the model.”?</p>
+</li>
+<li><p>What are the advantages and disadvantages of RNNs?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Pro: Natural way to work with sequential data</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Con: Long-range dependencies get lost</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Con: Unstable and difficult to train</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Pro: Only need one term of a sequence at a time to do the computations</li>
+</ul>
+<ol start="30">
+<li>How does a transformer try to overcome the difficulties of RNNs?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Use MLP instead of RNN</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>A new module called attention</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Take into account all terms prior to the current one</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<hr />
+<ol start="31">
+<li>What are the advantages of using specialized architectures?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Can use less parameters than if was using MLP</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Can introduce useful inductive biases</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Can overfit to the specific data type</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<ol start="32">
+<li>Given problem match to one of the architectures learned so far.<br />
+(a) Find whether there is a car in the image.<br />
+(b) Given a molecule structure, decide whether it would have a pungent odor.<br />
+(c) Given information about an apartment, predict the sale price.<br />
+(d) Given changes in the price of the apartment for the last 2 years, predict the price in the future.</li>
+</ol>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

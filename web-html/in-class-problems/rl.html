@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Rl Conceptual Questions</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <a href="/web-html/in-class-problems.html" class="back-link">← Back to Conceptual Questions</a>
+            <h2>Rl</h2>
+
+            <div class="markdown-content">
+                <h1><strong>Problem 1</strong>  Tiny Value Iteration Example</h1>
+<p>Consider a tiny MDP with states <span class="math">\(s\in\{0,1,2,3\}\)</span> and actions <span class="math">\(a\in\{b,c\}\)</span>. The reward and transition functions are:</p>
+<div class="math">$$
+\mathrm{R}(s,a) =
+\begin{cases}
+1&amp; \text{if s=1, any a} \\
+2&amp; \text{if s=3, any a} \\
+0&amp; \text{otherwise}
+\end{cases}
+$$</div>
+<div class="math">$$
+\mathrm{T}(s_t,\text{b}, s_{t+1})=
+\begin{bmatrix}
+0.0 &amp; 0.9 &amp; 0.1 &amp; 0.0 \\
+0.9 &amp; 0.1 &amp; 0.0 &amp; 0.0 \\
+0.0 &amp; 0.0 &amp; 0.1 &amp; 0.9 \\
+0.9 &amp; 0.0 &amp; 0.0 &amp; 0.1
+\end{bmatrix}
+$$</div>
+<div class="math">$$
+\mathrm{T}(s_t, \text{c},s_{t+1})=
+\begin{bmatrix}
+0.0 &amp; 0.1 &amp; 0.9 &amp; 0.0 \\
+0.9 &amp; 0.1 &amp; 0.0 &amp; 0.0 \\
+0.0 &amp; 0.0 &amp; 0.1 &amp; 0.9 \\
+0.9 &amp; 0.0 &amp; 0.0 &amp; 0.1
+\end{bmatrix}
+$$</div>
+<p>where the transition matrix can be read row-wise. For example, the
+first row in <span class="math">\(\mathrm{T}(s_t,\text{b}, s_{t+1})\)</span> means, when currently in state
+<span class="math">\(0\)</span> and taking action <span class="math">\(b\)</span>, with probability 0.9 the agent will transition
+into state <span class="math">\(1\)</span> and with probability 0.1 the agent will transition into state <span class="math">\(2\)</span>.
+Similarly, the first row in <span class="math">\(\mathrm{T}(s_t,\text{c}, s_{t+1})\)</span> means, when currently in state
+<span class="math">\(0\)</span> and taking action <span class="math">\(c\)</span>, with probability 0.1 the agent will transition into
+state <span class="math">\(1\)</span> and with probability 0.9 the agent will transition into state <span class="math">\(2\)</span>.</p>
+<p>Given the reward and transition functions above with an infinite
+horizon and a discount factor of 0.9, compute three iterations of
+value iteration.</p>
+<p>Note that:</p>
+<ul>
+<li>All the value estimates start at 0: meaning, <strong>at iteration 0, $\mathrm{Q}(s,
+a) = 0$ for all <span class="math">\(s, a\)</span> pairs</strong></li>
+<li>on iteration <span class="math">\(t\)</span> of value iteration, you only use values that were computed on iteration
+<span class="math">\(t-1.\)</span></li>
+<li>We recommend you compute the <span class="math">\(\mathrm{Q}\)</span>-value iteration by hand to get a better
+understanding of the algorithm.</li>
+</ul>
+<p>For each iteration, write eight numbers corresponding to our value
+function estimate, expressed as</p>
+<div class="math">$$
+[\mathrm{Q}(0,b), \mathrm{Q}(0,c), \mathrm{Q}(1,b), \mathrm{Q}(1,c),
+\mathrm{Q}(2,b), \mathrm{Q}(2,c), \mathrm{Q}(3,b), \mathrm{Q}(3,c)]
+$$</div>
+<p>at that iteration, accurate to three
+decimal places.</p>
+<p>a) Iteration 1. Write a list of eight numbers for the value function estimate:</p>
+<p><strong>Answer</strong>: [0, 0, 1, 1, 0, 0, 2, 2].<br />
+<strong>Explanation</strong>: After one iteration, the <span class="math">\(\mathrm{Q}\)</span> values from each
+state are as described by the reward functions. Reward from being in
+state 0 and taking any action is 0, reward from being in state 1 and
+taking any action is 1, etc.</p>
+<p>b) Iteration 2. Write a list of eight numbers for the value function estimate:</p>
+<p><strong>Answer</strong>: [0.81, 0.09, 1.09, 1.09, 1.62, 1.62, 2.18, 2.18].<br />
+<strong>Explanation</strong>: After an iteration, the value from starting at <span class="math">\(0\)</span>
+and taking action <span class="math">\(b\)</span> is now <span class="math">\(0 + 0.9 \cdot (0.9 \cdot 1 + 0.1 \cdot 0).\)</span>
+The value from taking action <span class="math">\(c\)</span> is now <span class="math">\(0 + 0.9 \cdot (0.1 \cdot 1 + 0.9 \cdot 0).\)</span>
+We do similar calculations for the remaining (state, action) pairs.</p>
+<p>Iteration 2</p>
+<div class="math">$$
+\begin{align}
+\mathrm{Q}_2(0, b) &amp;:= 0.9 \cdot (0.9 \cdot 1 + 0.1 \cdot 0) = 0.9 \cdot 0.9 = 0.81 \\
+\mathrm{Q}_2(0, c) &amp;:= 0.9 \cdot (0.1 \cdot 1 + 0.9 \cdot 0) = 0.9 \cdot 0.1 = 0.09 \\
+\mathrm{Q}_2(1, \ast) &amp;:= 1 + 0.9 \cdot (0.1 \cdot 1 + 0.9 \cdot 0) = 1.09 \\
+\mathrm{Q}_2(2, \ast) &amp;:= 0.9 \cdot (0.1 \cdot 0 + 0.9 \cdot 2) = 1.62 \\
+\mathrm{Q}_2(3, \ast) &amp;:= 2 + 0.9 \cdot (0.1 \cdot 2 + 0.9 \cdot 0) = 2.18
+\end{align}
+$$</div>
+<p>.</p>
+<p>c) When the horizon is <span class="math">\(h=2\)</span>, what is the best action to select in state 0?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Action b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Action c</li>
+</ul>
+<p><strong>Answer</strong>: Action b.<br />
+<strong>Explanation</strong>: <span class="math">\(\mathrm{Q}_2(0,b) > \mathrm{Q}_2(0,c)\)</span> so we pick action <span class="math">\(b.\)</span>.</p>
+<p>d) Iteration 3 (Hint: pay attention to previous iteration's <span class="math">\(\mathrm{Q}(0,b)\)</span> and <span class="math">\(\mathrm{Q}(0,c)\)</span> values). Write a list of eight numbers for the value function estimate:</p>
+<p><strong>Answer</strong>: [1.0287, 1.4103, 1.7542, 1.7542, 1.9116, 1.9116, 2.8523, 2.8523].<br />
+<strong>Explanation</strong>:
+Iteration 3</p>
+<div class="math">$$
+\begin{align}
+\mathrm{Q}_3(0, b) &amp;:= 0.9 \cdot (0.9 \cdot 1.09 + 0.1 \cdot 1.62) = 1.0287 \\
+\mathrm{Q}_3(0, c) &amp;:= 0.9 \cdot (0.1 \cdot 1.09 + 0.9 \cdot 1.62) = 1.4103 \\
+\mathrm{Q}_3(1, \ast) &amp;:= 1 + 0.9 \cdot (0.1 \cdot 1.09 + 0.9 \cdot 0.81) = 1.7542 \\
+\mathrm{Q}_3(2, \ast) &amp;:= 0.9 \cdot (0.1 \cdot 1.62 + 0.9 \cdot 2.18) = 1.9116 \\
+\mathrm{Q}_3(3, \ast) &amp;:= 2 + 0.9 \cdot (0.1 \cdot 2.18 + 0.9 \cdot 0.81) = 2.8523
+\end{align}
+$$</div>
+<p>Note that when computing <span class="math">\(\mathrm{Q}_3(1, *)\)</span> we use <span class="math">\(0.9 \cdot \mathrm{Q}_2(0, b) = 0.9 \cdot 0.81\)</span>
+instead of <span class="math">\(0.9 \cdot \mathrm{Q}_2(0,c) = 0.9 \cdot 0.09\)</span> because
+<span class="math">\(0.81 > 0.09.\)</span> In value iteration, we care about finding <span class="math">\(\mathrm{Q^*}\)</span>. In general, <span class="math">\(\mathrm{Q}^*(s,a)\)</span> means we force ourselves to
+take action <span class="math">\(a\)</span> from state <span class="math">\(s\)</span>, and then behave according to the
+policy from thereon.  In this case our policy is the greedy
+policy <span class="math">\(\pi_3(s) = {\rm argmax}_a \mathrm{Q}_3(s,a)\)</span>. (Once we find <span class="math">\(\mathrm{Q^*}\)</span>, the (greedy) policy w.r.t. it, i.e. argmax <span class="math">\(\mathrm{Q^*}\)</span> is the optimal policy).</p>
+<h1><strong>Problem 2</strong> Tiny MDP</h1>
+<p>We consider the same tiny MDP as in the exercises, with states <span class="math">\(s\in\{0, 1, 2, 3\}\)</span>
+and actions <span class="math">\(a\in\{\text{b}, \text{c}\}\)</span>. The reward function is:</p>
+<div class="math">$$
+\mathrm{R}(s,a) =
+\begin{cases}
+1&amp; \text{if s=1} \\
+2&amp; \text{if s=3} \\
+0&amp; \text{otherwise}
+\end{cases}
+$$</div>
+<p>You get the reward associated with a state on the step when you take
+an action from that state. The reward function is the same for each of
+the two possible actions. The transition function for each action is
+below, where <span class="math">\(\mathrm{T}(i,x,j)\)</span> is the conditional probability <span class="math">\(P(s_{t+1}=j\;|\;a_t=x, s_t=i)\)</span>,
+where rows correspond to the input states, and columns
+correspond to the output states.</p>
+<div class="math">$$
+\mathrm{T}(s_t,\text{b}, s_{t+1})=
+\begin{bmatrix}
+0.0 &amp; 0.9 &amp; 0.1 &amp; 0.0 \\
+0.9 &amp; 0.1 &amp; 0.0 &amp; 0.0 \\
+0.0 &amp; 0.0 &amp; 0.1 &amp; 0.9 \\
+0.9 &amp; 0.0 &amp; 0.0 &amp; 0.1
+\end{bmatrix}
+$$</div>
+<div class="math">$$
+\mathrm{T}(s_t, \text{c},s_{t+1})=
+\begin{bmatrix}
+0.0 &amp; 0.1 &amp; 0.9 &amp; 0.0 \\
+0.9 &amp; 0.1 &amp; 0.0 &amp; 0.0 \\
+0.0 &amp; 0.0 &amp; 0.1 &amp; 0.9 \\
+0.9 &amp; 0.0 &amp; 0.0 &amp; 0.1
+\end{bmatrix}
+$$</div>
+<p>Note that the only difference between the two actions is different
+transition probabilities from state 0, i.e., the first rows of the
+transition matrices.</p>
+<h2>Finite horizons</h2>
+<p>Consider two policies: one that always takes action <span class="math">\(a = \text{b}\)</span> and one that
+always takes action <span class="math">\(a = \text{c}.\)</span></p>
+<p>a) Which policy is best if you're starting from state 0 with horizon 2?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Taking action b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Taking action c</li>
+</ul>
+<p><strong>Answer</strong>: Taking action b.<br />
+<strong>Explanation</strong>: We compare the values from each of the policies.</p>
+<div class="math">$$
+\begin{align*}
+\mathrm{V}_{2,b}(0) &amp; = \mathrm{R}(0, b) + \sum_{s&#x27;}\mathrm{T}(0, b, s&#x27;) \cdot \mathrm{R}(s&#x27;, b) = 0 + (0 + 0.9 \times 1 + 0.1 \times 0 + 0) = 0.9 \\
+\mathrm{V}_{2,c}(0) &amp; = \mathrm{R}(0, c) + \sum_{s&#x27;}\mathrm{T}(0, c, s&#x27;) \cdot \mathrm{R}(s&#x27;, c) = 0 + (0 + 0.1 \times 1 + 0.9 \times 0 + 0) = 0.1
+\end{align*}
+$$</div>
+<p>Since <span class="math">\(0.9 > 0.1\)</span>, taking action b is the better policy.</p>
+<p>b) Which policy is best if you're starting from state 0 with horizon 3?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Taking action b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Taking action c</li>
+</ul>
+<p><strong>Answer</strong>: Taking action c.<br />
+<strong>Explanation</strong>: Let <span class="math">\(\mathrm{V}_{h,a}(s)\)</span> be the horizon <span class="math">\(h\)</span> value from state <span class="math">\(s\)</span> by always taking action <span class="math">\(a.\)</span></p>
+<div class="math">$$
+\begin{align*}
+\mathrm{V}_{3,b}(0) &amp; = \mathrm{R}(0, b) + \sum_{s&#x27;}\mathrm{T}(0, b, s&#x27;) \cdot \mathrm{V}_{2,b}(s&#x27;) = 0 + (0 + 0.9 \times \mathrm{V}_{2,b}(1) + 0.1 \times \mathrm{V}_{2,b}(2) + 0) \\
+\mathrm{V}_{3,c}(0) &amp; = \mathrm{R}(0, c) + \sum_{s&#x27;}\mathrm{T}(0, c, s&#x27;) \cdot \mathrm{V}_{2,c}(s&#x27;) = 0 + (0 + 0.1 \times \mathrm{V}_{2,c}(1) + 0.9 \times \mathrm{V}_{2,c}(2) + 0) \\
+\mathrm{V}_{2,b}(1) &amp; = \mathrm{V}_{2,c}(1) = 1 + (0.9 \times 0 + 0.1 \times 1 + 0 + 0) = 1.1 \\
+\mathrm{V}_{2,b}(2) &amp; = \mathrm{V}_{2,c}(2) = 0 + (0 + 0 + 0.1 \times 0 + 0.9 \times 2) = 1.8 \\
+\mathrm{V}_{3,b}(0) &amp; = 0.9 \times 1.1 + 0.1 \times 1.8 = 1.17 \\
+\mathrm{V}_{3,c}(0) &amp; = 0.1 \times 1.1 + 0.9 \times 1.8 = 1.73 \\
+\end{align*}
+$$</div>
+<p>Since <span class="math">\(1.73 > 1.17\)</span>, the best policy for starting from state 0 with horizon 3 is taking action c.</p>
+<p>Intuitively, it takes a horizon of 3 to realize that taking action c
+makes it more likely to get to state 3, which has higher reward than
+state 1.</p>
+<p>c)  What if we start in state 0 with horizon 5, take action c, land in
+state 2 with horizon 4, land in state 3 with horizon 3 (and get
+reward = 2!), and then land in state 0 with horizon 2?  What action
+should we take now?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Taking action b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Taking action c</li>
+</ul>
+<p><strong>Answer</strong>: Taking action b.<br />
+<strong>Explanation</strong>: The previous actions have already yielded their
+rewards. Now that we're in state 0 with horizon two, the best action
+is 'b', as we have previously determined.</p>
+<h2>Infinite Horizon</h2>
+<p>Now, in the same tiny MDP, we are interested in the infinite-horizon
+discounted value case (refer to notes equation (11.8)), with discount
+factor <span class="math">\(\gamma=0.9\)</span>.  For a given policy, we can write down a set of linear
+equations characterizing these values, in the form:</p>
+<div class="math">$$
+\begin{align*}
+v_0 &amp; = r_0 + \gamma[c_{00}v_0 + c_{01} v_1 + c_{02} v_2 + c_{03}v_3] \newline
+v_1 &amp; = r_1 + \gamma[c_{10}v_0 + c_{11} v_1 + c_{12} v_2 + c_{13}v_3] \newline
+v_2 &amp; = r_2 + \gamma[c_{20}v_0 + c_{21} v_1 + c_{22} v_2 + c_{23}v_3] \newline
+v_3 &amp; = r_3 + \gamma[c_{30}v_0 + c_{31} v_1 + c_{32} v_2 + c_{33}v_3]
+\end{align*}
+$$</div>
+<p>where <span class="math">\(r_i\)</span> is the value of the reward function
+<span class="math">\(r_i = \mathrm{R}(s_i,a),~\forall i \in \{0,1,2,3\}\)</span> while the <span class="math">\(c_{ij}\)</span> are the
+entries to the transition function with respect to taking action <span class="math">\(a = c\)</span>.</p>
+<p>Write the vector of <span class="math">\(r_{i}\)</span> values, in the order shown above.</p>
+<p>d) Write the matrix as a list of four numbers:</p>
+<p><strong>Answer</strong>: [0, 1, 0, 2].<br />
+<strong>Explanation</strong>:  Thinking of <span class="math">\(v\)</span> as a vector, we can write it as
+<span class="math">\(v = r + Cv\; .\)</span> Now, the only constant term guaranteed is the
+reward at each state (i.e., that is independent of the values at
+other states), while the rest of the value is tied to values of
+other states. Thus, the constant part should be equal to the reward.</p>
+<p>e) Write the coefficients on the right hand side of the equation for each of the
+values <span class="math">\(v_0\)</span> thru <span class="math">\(v_3\)</span> for the policy &quot;always take action c&quot;.</p>
+<p>(Make sure not to miss the discount factor).</p>
+<p>Write the matrix as a list of four lists of numbers:</p>
+<p><strong>Answer</strong>:</p>
+<div class="math">$$
+\begin{bmatrix}
+0.0 &amp; 0.09 &amp; 0.81 &amp; 0.0 \\
+0.81 &amp; 0.09 &amp; 0.0 &amp; 0.0 \\
+0.0 &amp; 0.0 &amp; 0.09 &amp; 0.81 \\
+0.81 &amp; 0.0 &amp; 0.0 &amp; 0.09
+\end{bmatrix}
+$$</div>
+<p>.<br />
+<strong>Explanation</strong>: Consider <span class="math">\(v_0\)</span>, in other words the value from
+starting in state 0. We know that after the first action, we are
+guaranteed the reward defined by the reward function, 0. For future
+steps, it depends on where we transitioned to. Thus, the
+coefficients on the right hand side of the equation for each of the
+values <span class="math">\(v_0\)</span> thru <span class="math">\(v_3\)</span> are the discount factor times probability of
+transitioning to each of those states. The values for <span class="math">\(r_i\)</span> are the
+immediate rewards at each state.</p>
+<div class="math">$$
+\begin{align*}
+v_0 &amp; = 0 + 0.9*(0 v_0 + 0.1 v_1 + 0.9 v_2 + 0 v_3) \newline
+v_1 &amp; = 1 + 0.9*(0.9 v_0 + 0.1 v_1 + 0 v_2 + 0 v_3) \newline
+v_2 &amp; = 0 + 0.9*(0 v_0 + 0 v_1 + 0.1 v_2 + 0.9 v_3) \newline
+v_3 &amp; = 2 + 0.9*(0.9 v_0 + 0 v_1 + 0 v_2 + 0.1 v_3)
+\end{align*}
+$$</div>
+<p>Notice that you can also think of <span class="math">\(v\)</span> as the one steady solution to
+the equation</p>
+<div class="math">$$
+v_{t} = r + \gamma Tv_{t-1}
+$$</div>
+<p>i.e., if you have value
+<span class="math">\(v\)</span>, then applying the transition linear operation over the value
+distribution, scaling it by <span class="math">\(\gamma\)</span> and adding the constant reward
+gives you the same values as before.</p>
+<h2>With discount factor</h2>
+<p>Let's consider a similar problem: finding a finite horizon Q-value function.
+Given horizon <span class="math">\(h\)</span>,an action <span class="math">\(a\)</span>, and a state <span class="math">\(s\)</span>, we want to find the optimal value <span class="math">\(Q_h(s,a)\)</span> of taking action <span class="math">\(a\)</span> from state <span class="math">\(s\)</span> with <span class="math">\(h\)</span> more steps to go. We will call this function <span class="math">\(q_{em}(s, a, h)\)</span>, which computes the
+horizon-<span class="math">\(h\)</span> <span class="math">\(\mathrm{Q}\)</span> value for state <span class="math">\(s\)</span> and action <span class="math">\(a\)</span>
+by using the definition of the finite-horizon <span class="math">\(\mathrm{Q}\)</span> function (<strong>including a discount factor</strong>).</p>
+<p>Consider again our &quot;tiny&quot; MDP with states <span class="math">\(\{0, 1, 2, 3\}\)</span> and actions <span class="math">\(\{b, c\}\)</span>.
+Assume no discounting (i.e., discount factor = 1.0). The reward function is:</p>
+<div class="math">$$
+\mathrm{R}(s,a) =
+\begin{cases}
+1&amp; \text{if s=1} \\
+2&amp; \text{if s=3} \\
+0&amp; \text{otherwise}
+\end{cases}
+$$</div>
+<p>You get the reward associated with a state on the step when you exit
+that state. The transition function for each action is below,
+where <span class="math">\(\mathrm{T}[i,x,j]\)</span> is the <span class="math">\(P(s_{t+1}=j | a=x, s_t=i)\)</span>.</p>
+<div class="math">$$
+\mathrm{T}(s_t,\text{b}, s_{t+1})=
+\begin{bmatrix}
+0.0 &amp; 0.9 &amp; 0.1 &amp; 0.0 \\
+0.9 &amp; 0.1 &amp; 0.0 &amp; 0.0 \\
+0.0 &amp; 0.0 &amp; 0.1 &amp; 0.9 \\
+0.9 &amp; 0.0 &amp; 0.0 &amp; 0.1
+\end{bmatrix}
+$$</div>
+<div class="math">$$
+\mathrm{T}(s_t, \text{c},s_{t+1})=
+\begin{bmatrix}
+0.0 &amp; 0.1 &amp; 0.9 &amp; 0.0 \\
+0.9 &amp; 0.1 &amp; 0.0 &amp; 0.0 \\
+0.0 &amp; 0.0 &amp; 0.1 &amp; 0.9 \\
+0.9 &amp; 0.0 &amp; 0.0 &amp; 0.1
+\end{bmatrix}
+$$</div>
+<p>f) What is <span class="math">\(q_{em}(0, \mathtt{'b'}, 0)\)</span>?</p>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: The horizon 0 <span class="math">\(\mathrm{Q}\)</span> value is always 0; we have no horizon left
+so can't transition out of any state, so can't earn any reward.</p>
+<p>g) What is <span class="math">\(q_{em}(0, \mathtt{'b'}, 1)\)</span>?</p>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: In this case, we transition out of state <span class="math">\(s=0\)</span>
+to state <span class="math">\(s=1\)</span> with probability 0.9, and to state <span class="math">\(s=2\)</span> with
+probability 0.1 (and are then done). However, transitioning out of
+state <span class="math">\(s=0\)</span> earned us <span class="math">\(\mathrm{R} = 0\)</span> reward, for our reward function.</p>
+<p>h) What is <span class="math">\(q_{em}(0, \mathtt{'b'}, 2)\)</span>?</p>
+<p><strong>Answer</strong>: 0.9.<br />
+<strong>Explanation</strong>: Now things get interesting. For <span class="math">\(q_{em}(0, \mathtt{'b'}, 2)\)</span>
+we have a 0.9 probability of going into state
+<span class="math">\(s=1\)</span> and a 0.1 probability of going into state <span class="math">\(s=2\)</span>. Let's
+consider the <span class="math">\(s=1\)</span> branch first.</p>
+<p>From state <span class="math">\(s=1\)</span>, we can consider the two possible actions, 'b' and 'c' but
+now with a horizon smaller by 1:
+<span class="math">\(q_{em}(1,\mathtt{'b'},1)\)</span> and
+<span class="math">\(q_{em}(1,\mathtt{'c'},1)\)</span>. In both of those cases, those <span class="math">\(q_{em}\)</span> values are zero
+(because the time horizon <span class="math">\(h=1\)</span> means we won't transition out from
+the lower level state/action options). However, in taking any of
+those <span class="math">\(h=1\)</span> actions after having moved into state <span class="math">\(s=1\)</span> through the
+<span class="math">\((0, \mathtt{'b'}, 2)\)</span> branch, now we <em>do</em> transition from state
+<span class="math">\(s=1\)</span> in those cases, earning a reward <span class="math">\(\mathrm{R} = 1\)</span>.  Thus in going down
+this first branch, we earn reward 1 with probability 0.9.</p>
+<p>Now consider the <span class="math">\(s=2\)</span> branch from <span class="math">\((0, \mathtt{'b'}, 2)\)</span>. The two
+subsequent possible actions are again 'b' and 'c', but now since
+we'd be moving out of state <span class="math">\(s=2\)</span>, that state transition doesn't
+earn any reward. So this branch earns 0 reward with 0.1 probability.</p>
+<p>Summing those two branches from <span class="math">\((0, \mathtt{'b'}, 2)\)</span>, we get
+<span class="math">\(q_{em}(0, \mathtt{'b'}, 2) = 0.9\)</span>.</p>
+<h1><strong>Problem 3</strong> ABBA</h1>
+<center>
+  <div class="inline_imgs">
+  <img src="assets/rl/abba_mdp.png" width=80%>
+  </div>
+</center>
+
+<p>Consider the MDP shown above.
+There are seven states <span class="math">\(\mathcal{S} = \{s_0, \ldots, s_6\}\)</span> and two actions <span class="math">\(\mathcal{A} = \{ A, B \} \)</span>.
+Each arrow is labeled with one or more actions, and a probability value: this means that if any of those actions is chosen from the state at the start of the arrow, then it will make a transition to the state at the end of the arrow with the associated probability.</p>
+<p>In this example, the reward function is state-dependent, e.g., <span class="math">\(\mathrm{R}(s_3, A) = \mathrm{R}(s_3,B) = 2.\)</span>
+Remember that with horizon <span class="math">\(h = 1\)</span>, the agent can collect the reward associated with the state it is in, and then terminates.</p>
+<h2>Infinite Horizon</h2>
+<p>Consider the policy <span class="math">\(\pi\)</span> that takes action <span class="math">\(B\)</span> in <span class="math">\(s_0\)</span> and action <span class="math">\(A\)</span> in <span class="math">\(s_2\)</span>.
+If the system starts in <span class="math">\(s_0\)</span> or <span class="math">\(s_2\)</span>, then under that policy, only those two states (<span class="math">\(s_0\)</span> and <span class="math">\(s_2\)</span>) are reachable.</p>
+<p>Recall that, for a fixed policy <span class="math">\(\pi\)</span>, the infinite horizon value of a state <span class="math">\(s\)</span> is defined as</p>
+<div class="math">$$
+\mathrm{V}^\pi_\infty(s) =  \mathrm{R}(s, \pi(s)) + \gamma \sum_{s&#x27;} \mathrm{T}(s, \pi(s), s&#x27;) \mathrm{V}^\pi_\infty(s&#x27;).
+$$</div>
+<p>Let the discount factor be <span class="math">\(\gamma = 0.8\)</span>.
+What are the infinite-horizon values <span class="math">\(\mathrm{V}^\pi_\infty(s_0)\)</span> and <span class="math">\(\mathrm{V}^\pi_\infty(s_2)\)</span>?
+Round your answer to at least two decimal points.</p>
+<p>a) <span class="math">\(\mathrm{V}^\pi_\infty(s_0)\)</span> =  .</p>
+<p><strong>Answer</strong>: 100/27.<br />
+<strong>Explanation</strong>:
+We can write out a system of two equations and two unknowns:</p>
+<div class="math">$$
+\begin{align*}
+\mathrm{V}^\pi_\infty (s_0) &amp;= \mathrm{R}(s_0, \text{B}) + \gamma \mathrm{V}^\pi_\infty (s_2) \\ 
+\mathrm{V}^\pi_\infty (s_2) &amp;= \mathrm{R}(s_2, \text{A}) + \gamma (0.1 \mathrm{V}^\pi_\infty (s_0) + 0.9
+\mathrm{V}^\pi_\infty (s_2)
+\end{align*}
+$$</div>
+<p>plugging in <span class="math">\(\gamma=0.8,\mathrm{R}(s_0, \text{B})=0,\)</span> and <span class="math">\(\mathrm{R}(s_2, \text{A})=1\)</span>, we obtain:</p>
+<div class="math">$$
+\begin{align*}
+\mathrm{V}^\pi_\infty (s_0) &amp;= 0.8 \mathrm{V}^\pi_\infty (s_2) \\ 
+\mathrm{V}^\pi_\infty (s_2) &amp;= 1 + 0.72 \mathrm{V}^\pi_\infty (s_2) + 0.08 \mathrm{V}^\pi_\infty (s_0)
+\end{align*}
+$$</div>
+<p>Therefore, <span class="math">\(\mathrm{V}_\pi^\infty(s_2) = 1 + 0.72 \mathrm{V}^\pi_\infty(s_2) + 0.064 \mathrm{V}^\pi_\infty(s_2)\)</span>, so:</p>
+<p>\begin{align<em>}
+\mathrm{V}_\pi^\infty(s_2) &amp;= \frac{1}{1 - 0.72 - 0.064} = \frac{125}{27} \approx 4.63\
+\mathrm{V}_\pi^\infty(s_0) &amp;= 0.8\mathrm{V}_\pi^\infty(s_0) = \frac{100}{27} \approx 3.70
+\end{align</em>}.</p>
+<p>b) <span class="math">\(\mathrm{V}^\pi_\infty(s_2)\)</span> =       .</p>
+<p><strong>Answer</strong>: 125/27.<br />
+<strong>Explanation</strong>: Check the explanation to the previous question.</p>
+<h2>Horizon 1</h2>
+<p>Suppose that the horizon is <span class="math">\(h = 1\)</span>.
+What is the optimal value <span class="math">\(\mathrm{V}^*_{1}(s)\)</span> for each of the following states with no discounting?</p>
+<p>c) <span class="math">\(\mathrm{V}^*_{1} (s_0)\)</span> =     .</p>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: With a horizon of <span class="math">\(h=1\)</span>, only one transition is taken.
+Therefore, <span class="math">\(\mathrm{V}^*_1(s_0) = \mathrm{R}(s_0, \cdot ) = 0.\)</span></p>
+<p>d) <span class="math">\(\mathrm{V}^*_{1} (s_1)\)</span> =     .</p>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: With a horizon of <span class="math">\(h=1\)</span>, only one transition is taken.
+Therefore, <span class="math">\(\mathrm{V}^*_1(s_1) = \mathrm{R}(s_1, \cdot ) = 0.\)</span></p>
+<p>e) <span class="math">\(\mathrm{V}^*_{1} (s_2)\)</span> =     .</p>
+<p><strong>Answer</strong>: 1.<br />
+<strong>Explanation</strong>: With a horizon of <span class="math">\(h=1\)</span>, only one transition is taken.
+Therefore, <span class="math">\(\mathrm{V}^*_1(s_2) = \mathrm{R}(s_2, \cdot ) = 1.\)</span></p>
+<h2>Horizon 2</h2>
+<p>Suppose that the horizon is now <span class="math">\(h=2\)</span>.
+What is the optimal action and value <span class="math">\(\mathrm{V}^*_{2}(s)\)</span> for each of the following states with no discounting?</p>
+<p>f) What is the optimal action for state <span class="math">\(s_0\)</span> for horizon <span class="math">\(h=2\)</span> with no discounting?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>A</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>B</li>
+</ul>
+<p><strong>Answer</strong>: B.<br />
+<strong>Explanation</strong>:
+With a horizon of <span class="math">\(h=2\)</span>, we must consider <span class="math">\(\mathrm{V}^*_1(s_1)\)</span> and <span class="math">\(\mathrm{V}^*_1(s_2)\)</span> (the horizon-<span class="math">\(1\)</span> value of the only states accessible from state <span class="math">\(s_0\)</span>).</p>
+<p>From the previous parts, <span class="math">\(\mathrm{V}^*_1(s_2) > \mathrm{V}^*_1(s_1)\)</span>.
+Therefore the optimal action to take from state <span class="math">\(s_0\)</span> for horizon <span class="math">\(h=2\)</span> is <span class="math">\(B\)</span>.</p>
+<p>g)  <span class="math">\(\mathrm{V}^*_{2} (s_0)\)</span> =      .</p>
+<p><strong>Answer</strong>: 1.<br />
+<strong>Explanation</strong>: Note from the diagram that <span class="math">\(\mathrm{T}(s_0, B, s_2) = 1\)</span>.
+Continuing from the previous part, we can compute <span class="math">\(\mathrm{V}^*_2(s_0)\)</span> as:</p>
+<div class="math">$$
+\begin{align*}
+\mathrm{V}^*_2 (s_0) &amp;= \mathrm{R}(s_0, B) + \sum_{s&#x27;} \mathrm{T}(s_0, B, s&#x27;) \mathrm{V}^*_1 (s&#x27;) \\
+&amp;= 0 + (1) \mathrm{V}^*_1(s_2) \\ 
+&amp; = \mathrm{V}^*_1(s_2) \\
+&amp;= 1.
+\end{align*}
+$$</div>
+<p>h) What is the optimal action for state <span class="math">\(s_1\)</span> for horizon <span class="math">\(h=2\)</span> with no discounting?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>A</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>B</li>
+</ul>
+<p><strong>Answer</strong>: B.<br />
+<strong>Explanation</strong>:
+With a horizon of <span class="math">\(h=2\)</span>, we must consider <span class="math">\(\mathrm{V}^*_1(s_3) = 2, \mathrm{V}^*_1(s_4) = 0\)</span> and <span class="math">\(\mathrm{V}^*_1(s_5)= 10\)</span>.<br />
+These values can be obtained from the diagram above by examining the reward in each state.</p>
+<p>Since</p>
+<div class="math">$$
+\begin{align*}
+\mathrm{T}(s_1, A, s_3)\mathrm{V}^*_1(s_3) &amp;= 2 \\ 
+\mathrm{T}(s_1, B, s_4)\mathrm{V}^*_1(s_4) + \mathrm{T}(s_1, B, s_5) \mathrm{V}^*_1(s_5)  
+&amp;= (0.5)(10) + (0.5)(0)\\ 
+&amp;= 5
+\end{align*}
+$$</div>
+<p>the optimal action is <span class="math">\(B\)</span>.</p>
+<p>i) <span class="math">\(\mathrm{V}^*_{2} (s_1)\)</span> =     .</p>
+<p><strong>Answer</strong>: 5.<br />
+<strong>Explanation</strong>:
+Continuing from the previous part, we can compute <span class="math">\(\mathrm{V}^*_2(s_1)\)</span> as:</p>
+<div class="math">$$
+\begin{align*}
+\mathrm{V}^*_2 (s_1) &amp;= \mathrm{R}(s_1, B) + \sum_{s&#x27;} \mathrm{T}(s_0, B, s&#x27;) \mathrm{V}^*_1 (s&#x27;) \\
+&amp;= 0 + 0.5 \mathrm{V}^*_1(s_4) + 0.5 \mathrm{V}^*_1(s_5) \\
+&amp;= 5.
+\end{align*}
+$$</div>
+<p>j) What is the optimal action for state <span class="math">\(s_2\)</span> for horizon <span class="math">\(h=2\)</span> with no discounting?&quot;&quot;&quot;</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>A</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>B</li>
+</ul>
+<p><strong>Answer</strong>: A.<br />
+<strong>Explanation</strong>:<br />
+With a horizon of <span class="math">\(h=2\)</span>, we must consider <span class="math">\(V^*_1(s_0) = 0, V^*_1(s_2) = 1\)</span> and <span class="math">\(V^*_1(s_6)= 0\)</span>.<br />
+Since <span class="math">\((0.9)(1) + (0.1)(0) = 0.9 > 0,\)</span> the optimal action is <span class="math">\(A\)</span>, for the potential reward of <span class="math">\(0.9\)</span> (and avoiding <span class="math">\(s_6\)</span>).</p>
+<p>k)  <span class="math">\(\mathrm{V}^*_{2} (s_2)\)</span> =      .</p>
+<p><strong>Answer</strong>: 1.9.<br />
+<strong>Explanation</strong>:
+Continuing from the previous part, we can compute <span class="math">\(\mathrm{V}^*_2(s_2)\)</span> as:</p>
+<div class="math">$$
+\begin{align*}
+\mathrm{V}^*_2 (s_2) &amp; = \mathrm{R}(s_2, A) + \sum_{s&#x27;} \mathrm{T}(s_0, A, s&#x27;) \mathrm{V}^*_1 (s&#x27;) \\
+&amp;= 1 + 0.9 \mathrm{V}^*_1(s_2) + 0.1 \mathrm{V}^*_1(s_0) \\
+&amp;= 1.9.
+\end{align*}
+$$</div>
+<!-- skipped horizon 3 -->
+
+<h1><strong>Problem 4</strong> 1d grid</h1>
+<p>Consider a domain where states correspond to squares on a 1 by 10
+grid.  The state is the position of a robot on the board, <span class="math">\(i\)</span>, which
+ranges from 1 to 10.  The robot can move one square East or West.  In
+this question, assume there is no randomness in the robot's motion.
+The robot cannot move off the board; moving east in the east-most position
+will result in remaining in the east-most position. Similarly, moving
+west in the west-most position will result in remaining in the west-most
+position.</p>
+<p>In the following sections, we will consider two different reward functions.
+Let <span class="math">\(\mathrm{V}^*(s)\)</span> be the value of state <span class="math">\(s\)</span> under any optimal policy <span class="math">\({\pi^*}(s)\)</span> corresponding to the optimal value function; the horizon <span class="math">\(h\)</span> is to be specified in the problem.</p>
+<h2>Negative Reward</h2>
+<p>There is a &quot;goal&quot; state <span class="math">\(i_g\)</span>, which will be specified later.
+Assume that the reward for taking any
+action from the goal state is 0, and that, once in the goal state, the
+robot &quot;sticks&quot; there forever.  Further, assume the reward for all
+other actions is -1.</p>
+<p>a) If the goal state is <span class="math">\(10\)</span>, <span class="math">\(h = 5\)</span> and <span class="math">\(\gamma = 1\)</span>, what is <span class="math">\(\mathrm{V}^*(1)\)</span>?</p>
+<p><strong>Answer</strong>: -5.<br />
+<strong>Explanation</strong>: If the horizon length is long enough that we can
+reach the goal state, then reaching the goal state as quickly as
+possible yields the highest rewards. If we can't reach the goal
+state by the end of the horizon, we will accumulate -1 reward per
+transition and all policies give us the same reward of -5, so
+<span class="math">\(\mathrm{V}^*(1) = -5\)</span>.</p>
+<p>b) If the goal state is <span class="math">\(10\)</span>, <span class="math">\(h = 15\)</span> and <span class="math">\(\gamma = 1\)</span>, what is <span class="math">\(\mathrm{V}^*(1)\)</span>?</p>
+<p><strong>Answer</strong>: -9.<br />
+<strong>Explanation</strong>: The (<span class="math">\(h, s, r\)</span>) sequence will be: (15, 1, -1),
+(14, 2, -1), (13, 3, -1), (12, 4, -1), (11, 5, -1), (10, 6, -1), (9,
+7, -1), (8, 8, -1), (7, 9, -1), (6, 10, 0), (5, 10, 0), etc.,
+yielding <span class="math">\(\mathrm{V}^*(1) = -9\)</span>.</p>
+<p>c) If the goal state is <span class="math">\(10\)</span>, <span class="math">\(h = \infty\)</span> and <span class="math">\(\gamma = 1\)</span>, what is <span class="math">\(\mathrm{V}^*(1)\)</span>?</p>
+<p><strong>Answer</strong>: -9.<br />
+<strong>Explanation</strong>: By the argument above, <span class="math">\(\mathrm{V}^*(1) = -9\)</span>. Note that
+once we are in state 10 and stay in state 10 (which gives reward 0),
+we don’t accrue any further award.</p>
+<!-- a bit more math -->
+
+<p>d) If the goal state is <span class="math">\(10\)</span> and <span class="math">\(h = \infty\)</span>, what is <span class="math">\(\mathrm{V}^*(1)\)</span> in terms
+of <span class="math">\(\gamma\)</span>, if <span class="math">\(0 < \gamma < 1\)</span>?  Recall that $\sum_{i = 0}^n
+\gamma^i = \frac{ 1 - \gamma^{n + 1} }{ 1 - \gamma }$.  You can use
+<code>gamma</code> in your expression.</p>
+<p><strong>Answer</strong>: -(1-gamma**9)/(1-gamma).<br />
+<strong>Explanation</strong>:  The first reward for going from state 1 to 2 is
+-1.  Then the reward from 2 to 3 is <span class="math">\(-1\times\gamma\)</span>.  The reward
+from 3 to 4 is <span class="math">\(-1\times\gamma^2\)</span>, and so on, until from state 9 to
+10, which gives a reward of <span class="math">\(-1\times\gamma^8\)</span>.  Therefore, the
+total reward is: <span class="math">\(-1(1 + \gamma + \gamma^2 + \ldots + \gamma^8)\)</span> =
+<span class="math">\(-\frac{1 - \gamma^9}{1 - \gamma}\)</span></p>
+<p>e) Is there a value of <span class="math">\(0 < \gamma < 1\)</span> for which the
+optimal policy differs from the optimal policy for <span class="math">\(\gamma = 0.9\)</span>?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Yes</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No</li>
+</ul>
+<p><strong>Answer</strong>: No.<br />
+<strong>Explanation</strong>: No matter the value of the positive fractional
+discount <span class="math">\(\gamma\)</span>, the only way we can maximize reward is by heading
+towards the goal of 10, which will give us a nonnegative reward.</p>
+<h2>Positive Reward</h2>
+<p>Now, we will consider a different reward function: The reward for any
+action in the goal state is 1; reward for any action in any other
+state is 0; once in the goal state, the robot &quot;sticks&quot; there forever.
+<span class="math">\(h\)</span> is the horizon.</p>
+<p>f) If the goal state is <span class="math">\(10\)</span>, <span class="math">\(h = 5\)</span> and <span class="math">\(\gamma = 1\)</span>, what is <span class="math">\(\mathrm{V}^*(1)\)</span>?</p>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: We have that the reward for any action out of
+state 10 is 1, and you actually &quot;stick&quot; in the goal state, getting
+1's forever more; the reward for any action in any other state is
+0. If goal is 10 and h = 5, then <span class="math">\(\mathrm{V}^*(1)\)</span> is 0 because we were not
+able to reach goal state 10.</p>
+<p>g) If the goal state is <span class="math">\(10\)</span>, <span class="math">\(h = 15\)</span> and <span class="math">\(\gamma = 1\)</span>, what is <span class="math">\(\mathrm{V}^*(1)\)</span>?</p>
+<p><strong>Answer</strong>: 6.<br />
+<strong>Explanation</strong>: Once the agent hits the goal state it is going
+to get a reward of 1 for each step further that it lives. Its $(h,
+s, r)$ sequence will be:</p>
+<p>(15, 1, 0), (14, 2, 0), (13, 3, 0), (12, 4, 0), (11, 5, 0), (10, 6,
+0), (9, 7, 0), (8, 8, 0), (7, 9, 0), (6, 10, 1), (5, 10, 1), (4, 10,
+1), (3, 10, 1), (2, 10, 1), (1, 10, 1),</p>
+<p>resulting in <span class="math">\(\mathrm{V}^*(1) = 6. \)</span></p>
+<p>h) If the goal state is <span class="math">\(10\)</span>, <span class="math">\(h = \infty\)</span> and <span class="math">\(\gamma = 1\)</span>, what is <span class="math">\(\mathrm{V}^*(1)\)</span>?</p>
+<p><strong>Answer</strong>: +infty.<br />
+<strong>Explanation</strong>: With an infinite horizon and no discounting, we
+get 1's forever, giving a <span class="math">\(\mathrm{V}^*(1)\)</span> of +infinity.</p>
+<!-- a bit more math -->
+
+<p>i) If the goal state is <span class="math">\(10\)</span> and <span class="math">\(h = \infty\)</span>, enter an expression for
+<span class="math">\(\mathrm{V}^*(1)\)</span> in terms of <span class="math">\(\gamma\)</span>, if <span class="math">\(0 < \gamma < 1\)</span>?  Recall that
+<span class="math">\(\sum_{i = 0}^\infty \gamma^i = \frac{1}{1 - \gamma}\)</span>. You can use
+<code>gamma</code> in your expression.</p>
+<p><strong>Answer</strong>: (gamma**9)/(1-gamma).<br />
+<strong>Explanation</strong>: We have a case similar to earlier, except we now
+have discounting. Since it takes 9 steps to get to state 10 from
+state 1, the first reward the robot collects would be 1 discounted 9
+times, i.e., <span class="math">\(\gamma^9.\)</span> The second reward would be <span class="math">\(\gamma^{10}\)</span>,
+and so on. The total reward is hence <span class="math">\(\sum_{i = 9}^\infty \gamma^i\)</span>,
+which can be rewritten as
+<span class="math">\(\gamma^9\times\sum_{i = 0}^\infty \gamma^i = \gamma^9\times\frac{1}{1 - \gamma}\)</span>.</p>
+<p>Another way of saying this is, if we were to start out in state 10,
+the amount of reward we'd get is <span class="math">\(\frac{1}{1 - \gamma}\)</span>. However, we
+have to walk 9 steps to get there, so that &quot;chunk of reward&quot; is
+discounted by <span class="math">\(\gamma^9\)</span>, making the final answer be
+<span class="math">\(\frac{\gamma^9}{1 - \gamma}\)</span>.</p>
+<h1><strong>Problem 5</strong> Deterministic wash-paint MDP</h1>
+<p>We will model aspects of a very simple wash and paint machine as a
+Markov decision process (MDP).  An agent controls the actions taken,
+while the environment responds with the transition to the next state.</p>
+<p>Our simple machine has three possible operations: &quot;wash&quot;, &quot;paint&quot;, and
+&quot;eject&quot; (each with a corresponding button). Objects are put into the
+machine.  Each time you push a button, something is done to the
+object. The machine has a camera inside that can clearly detect what
+is going on with the object and will output the state of the object:</p>
+<p><font color="red">dirty</font>, <font color="green">clean</font>,
+<font color="blue">painted</font>, or <font color="purple">ejected</font>.</p>
+<p>In this question, you will devise a policy that will take the state of
+an object as input and select a button to press until finally you
+press the eject button. You get reward +10 for
+the &quot;eject&quot; action on a <font color="blue">painted</font> object, reward 0 for
+&quot;eject&quot; action on an object that is <font color="red">dirty</font> or <font
+color="green">clean</font>, reward 0 for any action on an <font
+color="purple">ejected</font> object, and reward -3 otherwise.</p>
+<p>We start out with a brand-new machine that operates
+deterministically, as illustrated in the state diagram below. Here
+state transition arcs are labeled with the action responsible for the
+transition. Specifically, when we &quot;wash&quot; a <font
+color="red">dirty</font> or <font color="blue">painted</font> object,
+it becomes <font color="green">clean</font>; and when we &quot;paint&quot; a
+<font color="green">clean</font> object it becomes <font
+color="blue">painted</font>. If we &quot;eject&quot; a <font color="red">dirty</font>,
+<font color="green">clean</font>, or <font color="blue">painted</font>
+object, it becomes <font color="purple">ejected</font>. An <font
+color="purple">ejected</font> object stays ejected, for any action.</p>
+<div class="inline_imgs">
+  <center>
+  <img src="assets/rl/wash_paint_mdp.png", width=50%>
+  </center>
+</div>
+
+<p>You will formulate the brand-new machine as an MDP, but with a
+deterministic transition function. It will be useful to write out and
+save tables/diagrams of your answers and show them to staff during the
+checkoff.</p>
+<p>a) Write out a specification of the <strong>state space</strong> and <strong>action space</strong>.</p>
+<p><strong>Answer</strong>: states = [dirty, clean, painted, ejected]. actions = [&quot;wash&quot;, &quot;paint&quot;, &quot;eject&quot;].</p>
+<p>The <strong>transition model</strong> is specified by the diagram above, where an
+arc from state <span class="math">\(s\)</span> to state <span class="math">\(s'\)</span> under action <span class="math">\(a\)</span> indicates a
+transition probability <span class="math">\(\mathrm{T}(s,a,s') = 1\)</span>, and lack of an arc from <span class="math">\(s\)</span> to <span class="math">\(s'\)</span>
+indicates a transition probability <span class="math">\(\mathrm{T}(s,a,s') = 0\)</span>.</p>
+<p>Define the <strong>reward function</strong>, <span class="math">\(\mathrm{R}(s,a)\)</span>.  Given <span class="math">\(m\)</span>
+states and <span class="math">\(n\)</span> actions, the reward matrix should be <span class="math">\(m\)</span> by <span class="math">\(n\)</span>, and
+will look something like:</p>
+<pre>
+         wash   paint  eject
+<font color="red"   >dirty</font>     --     --     --
+<font color="green" >clean</font>     --     --     --
+<font color="blue"  >painted</font>   --     --     --
+<font color="purple">ejected</font>   --     --     --
+</pre>
+
+<p>For the matrix in the response below, order the states as &quot;dirty&quot;,
+&quot;clean&quot;, &quot;painted&quot;, and &quot;ejected&quot; and the actions as &quot;wash&quot;, &quot;paint&quot;,
+&quot;eject&quot;.</p>
+<p>b) Write the reward matrix:     .</p>
+<p><strong>Answer</strong>:</p>
+<div class="math">$$
+\begin{bmatrix}
+-3 &amp; -3 &amp; 0 \\
+-3 &amp; -3 &amp; 0 \\
+-3 &amp; -3 &amp; 10 \\
+0 &amp; 0 &amp; 0
+\end{bmatrix}
+$$</div>
+<p>.</p>
+<p>c) Suppose we have an infinite horizon and discount factor <span class="math">\(\gamma=1\)</span> (yes,
+this is an unusual assumption; can you think of why it is actually fine in this problem?). That
+means you can take as many steps as you want to, and all rewards are
+weighted equally whether they happen at the beginning or end of the
+action sequence. What would be the optimal action to take in each
+state?  What would your total sum of rewards be (under the optimal
+policy) if you started in state <font color="red">dirty</font>?</p>
+<p><strong>Answer</strong>:</p>
+<ul>
+<li><strong>In state dirty: wash   (reward sum is -3 -3 +10 = 4)</strong>
+for (dirty, wash), (clean, paint), (painted, eject)</li>
+<li>In state clean: paint    (reward sum is -3 +10 = 7)
+for (clean, paint), (painted, eject)</li>
+<li>In state painted: eject  (reward sum is 10)
+for (painted, eject)</li>
+<li>In state ejected: any    (reward sum is 0).</li>
+</ul>
+<p>d) Suppose we have a horizon of 2 and discount factor 1. That means you could
+only take two steps in total. Would the policy from the previous question
+change? Why, or why not?  What would your total sum of
+rewards be (under the optimal policy) if you started in state <font color="red">dirty</font>?</p>
+<p><strong>Answer</strong>:
+With horizon of 2, we can only take two steps. Optimal actions
+from starting states are:</p>
+<ul>
+<li><strong>If start in state dirty: eject  (reward sum is 0 + 0 = 0)</strong>
+for (dirty, eject), (ejected, [any])</li>
+<li>If start in state clean: paint    (reward sum is -3 +10 = 7)
+for (clean, paint), (painted, eject)</li>
+<li>If start in state painted: eject  (reward sum is 10 + 0 = 10)
+for (painted, eject), (ejected, [any])</li>
+<li>If start in state ejected: any    (reward sum is 0)
+for (ejected, [any]), (ejected, [any])</li>
+</ul>
+<p>If instead we do wash when we start in state dirty, then we end up in state clean
+with 1 step to go and a penalty of -3.  We can just eject now for a
+total of -3, or do something else for a total of -6.  In any case, it
+would have been better to eject in state dirty at the first step.</p>
+<p>e) Suppose we have an infinite horizon and discount factor 0.5. Let's
+also assume that under our action policy, we always &quot;paint&quot; an object
+if it is <font color="green">clean</font>, and always &quot;eject&quot; an
+object if it is <font color="blue">painted</font>.  What would be the
+sum of discounted future rewards if you start with a <font
+color="red">dirty</font> object in each of the policies listed next:</p>
+<ul>
+<li><p>Your policy is to &quot;eject&quot; an object whenever it is <font
+color="red">dirty</font>?</p>
+</li>
+<li><p>Your policy is to &quot;wash&quot; an object whenever it is <font
+color="red">dirty</font>, followed by optimal actions after that?</p>
+</li>
+</ul>
+<p>Which policy yields a larger infinite horizon discounted reward?</p>
+<p><strong>Answer</strong>: You have a dirty part. We are asked to consider two cases:</p>
+<ul>
+<li><p>You eject, getting penalty 0 and game is over.  So, the value is 0.</p>
+</li>
+<li><p>You wash, paint, then eject in an effort to gain that big +10 reward.
+First, you wash, getting penalty -3 and transition to state clean.
+In state clean, you paint with penalty -3, but with discount 0.5,
+and transition deterministically to state painted.
+Finally, in state painted, you eject with reward +10, but with
+discount 0.5**2. Now the game is over (no more rewards accumulate
+in the future from the ejected state). So, the total value
+is -3 + 0.5 * (-3) + 0.5 * 0.5 * 10 = -2.</p>
+</li>
+</ul>
+<p>Better to eject.</p>
+<p>Similar to the horizon 2 case, it's not worth washing because
+the deferred benefit &quot;costs&quot; too much, this time in terms of
+decaying future postive reward due to discounting.</p>
+<h1><strong>Problem 6</strong> Stochastic Wash &amp; Paint MDP</h1>
+<p>Our wash and paint machine has been overused and is no longer as
+reliable.  Now, many of its state transitions are stochastic in
+response to specific actions:</p>
+<p><strong>Wash:</strong></p>
+<ul>
+<li>If you perform the &quot;wash&quot; operation on any object, whether it's
+<font color="red">dirty</font>, <font color="green">clean</font>, or
+<font color="blue">painted</font>, it will end up <font
+color="green">clean</font> with probability 0.9 and <font
+color="red">dirty</font> otherwise.</li>
+</ul>
+<p><strong>Paint:</strong></p>
+<ul>
+<li>If you perform the &quot;paint&quot; operation on a <font color="green">clean</font> object, it will become nicely <font
+color="blue">painted</font> with probability 0.8.  With probability
+0.1, the paint misses but the object stays <font color="green">clean</font>, and also with probability 0.1, the
+machine dumps rusty dust all over the object and it becomes <font color="red">dirty</font>.</li>
+<li>If you perform the &quot;paint&quot; operation on a <font color="blue">painted</font> object, it
+stays <font color="blue">painted</font> with probability 1.0.</li>
+<li>If you perform the &quot;paint&quot; operation on a <font color="red">dirty</font> object, it
+stays <font color="red">dirty</font> with probability 1.0.</li>
+</ul>
+<p><strong>Eject:</strong></p>
+<ul>
+<li>If you perform an &quot;eject&quot; operation on any object, the object comes out
+of the machine and this fun game is over. The object remains
+<font color="purple">ejected</font> regardless of any further action.</li>
+</ul>
+<p>Here is an example state diagram for the &quot;wash&quot; operation, now with arcs labeling
+the probability <span class="math">\(\mathrm{T}(s, a, s')\)</span>, for action <span class="math">\(a\)</span> being &quot;wash&quot;.</p>
+<div class="inline_imgs">
+<center>
+<img src="assets/rl/wash_diagram.png", width=40%>
+</center>
+</div>
+
+<p>a) In order to visualize the stochastic machine MDP, <b>draw the state diagrams
+for the &quot;paint&quot; and &quot;eject&quot; operations</b>.</p>
+<p><strong>Answer</strong>:
+Now the state diagrams are:</p>
+<table style="width: 100%; border-collapse: collapse; background-color: white;">
+<tr>
+<th style="text-align: center; padding: 10px; border: 1px solid #ccc;"></th>
+<th style="text-align: center; padding: 10px; border: 1px solid #ccc;">wash</th>
+<th style="text-align: center; padding: 10px; border: 1px solid #ccc;">paint</th>
+<th style="text-align: center; padding: 10px; border: 1px solid #ccc;">eject</th>
+</tr>
+<tr>
+<th style="text-align: left; padding: 10px; border: 1px solid #ccc; vertical-align: middle;">State Diagrams</th>
+<td style="text-align: center; padding: 10px; border: 1px solid #ccc; vertical-align: middle;">
+<img src="assets/rl/wash_diagram.png" style="max-width: 100%; height: auto;">
+</td>
+<td style="text-align: center; padding: 10px; border: 1px solid #ccc; vertical-align: middle;">
+<img src="assets/rl/paint_diagram.png" style="max-width: 100%; height: auto;">
+</td>
+<td style="text-align: center; padding: 10px; border: 1px solid #ccc; vertical-align: middle;">
+<img src="assets/rl/eject_diagram.png" style="max-width: 100%; height: auto;">
+</td>
+</tr>
+<tr>
+<th style="text-align: left; padding: 10px; border: 1px solid #ccc; vertical-align: top;">Transition Matrices</th>
+<td style="text-align: center; padding: 10px; border: 1px solid #ccc; vertical-align: top;">
+<pre>[[0.1, 0.9, 0, 0],
+ [0.1, 0.9, 0, 0],
+ [0.1, 0.9, 0, 0],
+ [  0,   0, 0, 1]]</pre>
+</td>
+<td style="text-align: center; padding: 10px; border: 1px solid #ccc; vertical-align: top;">
+<pre>[[  1,   0,   0, 0],
+ [0.1, 0.1, 0.8, 0],
+ [  0,   0,   1, 0],
+ [  0,   0,   0, 1]]</pre>
+</td>
+<td style="text-align: center; padding: 10px; border: 1px solid #ccc; vertical-align: top;">
+<pre>[[0, 0, 0, 1],
+ [0, 0, 0, 1],
+ [0, 0, 0, 1],
+ [0, 0, 0, 1]]</pre>
+</td>
+</tr>
+</table>
+
+<p>b) The state space, action space, and reward function remain the same as
+for our deterministic machine, but now our <strong>transition model</strong> has
+changed. Write out the transition matrices for the &quot;wash&quot;, &quot;paint&quot;,
+and &quot;eject&quot; actions.  Specifically, provide three transition matrices
+(rows should sum to one, with the conventions used in this class), one
+transition matrix for each of the &quot;wash&quot;, &quot;paint&quot;, and &quot;eject&quot;
+actions.</p>
+<p>Given <span class="math">\(m\)</span> states, each transition matrix should be <span class="math">\(m\)</span> by <span class="math">\(m\)</span>,
+corresponding to <span class="math">\(\mathrm{T}(s, a, s')\)</span> with row indicating <span class="math">\(s\)</span> and column
+<span class="math">\(s'\)</span>. Thus, a transition matrix for a given action <span class="math">\(a\)</span> will look
+something like:</p>
+<pre>
+         <font color="red"   >dirty</font>  <font color="green">clean</font>  <font color="blue">painted</font>  <font color="purple">ejected</font>
+<font color="red"   >dirty</font>     --     --      --       --
+<font color="green" >clean</font>     --     --      --       --
+<font color="blue"  >painted</font>   --     --      --       --
+<font color="purple">ejected</font>   --     --      --       --
+</pre>
+
+<p>For the prompt just below, order the rows and columns as <font
+color="red">dirty</font>, <font color="green">clean</font>, <font
+color="blue">painted</font>, <font color="purple">ejected</font>.</p>
+<p>b) Write the transition matrix as a list of lists for &quot;wash&quot; action:      .</p>
+<p><strong>Answer</strong>:</p>
+<div class="math">$$
+\begin{bmatrix}
+0.1 &amp; 0.9 &amp; 0 &amp; 0 \\
+0.1 &amp; 0.9 &amp; 0 &amp; 0 \\
+0.1 &amp; 0.9 &amp; 0 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+$$</div>
+<p>.</p>
+<p>c) Write the transition matrix as a list of lists for &quot;paint&quot; action:      .</p>
+<p><strong>Answer</strong>:</p>
+<div class="math">$$
+\begin{bmatrix}
+1 &amp; 0 &amp; 0 &amp; 0 \\
+0.1 &amp; 0.1 &amp; 0.8 &amp; 0 \\
+0 &amp; 0 &amp; 1 &amp; 0 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+$$</div>
+<p>.</p>
+<p>d) Write the transition matrix as a list of lists for &quot;eject&quot; action:      .</p>
+<p><strong>Answer</strong>:</p>
+<div class="math">$$
+\begin{bmatrix}
+0 &amp; 0 &amp; 0 &amp; 1 \\
+0 &amp; 0 &amp; 0 &amp; 1 \\
+0 &amp; 0 &amp; 0 &amp; 1 \\
+0 &amp; 0 &amp; 0 &amp; 1
+\end{bmatrix}
+$$</div>
+<p>.</p>
+<p>We next consider some finite horizon scenarios (and with discount
+factor <span class="math">\(\gamma = 1\)</span>), but now with our stochastic wash &amp; paint MDP. We
+consider running the Q-value iteration algorithm for these scenarios, using the same rewards as in problem 1.</p>
+<p>e) First, assume horizon <span class="math">\(h = 1\)</span>. What is our optimal action <span class="math">\(a_1^* = \pi^*_1(\text{\color{blue}painted})\)</span>? What is the value of the optimal
+action-value function <span class="math">\(\mathrm{Q}^*_1(s = \text{painted}, a_1)\)</span>?</p>
+<p><strong>Answer</strong>: eject, reward 10.<br />
+<strong>Explanation</strong>:
+Our optimal action <span class="math">\(a_1\)</span> if in a painted state, is clearly to eject.
+We earn reward 10 in this case.</p>
+<p>f) If we instead have a finite horizon of <span class="math">\(h = 2\)</span>, what is our optimal
+action <span class="math">\(a_2^* = \pi^*_2(\text{\color{blue}painted})\)</span> if we are in a <font color="blue">painted</font> state
+with two steps to go? Why is this different than (or the same as)
+<span class="math">\(a_1^*\)</span>?</p>
+<p>What is <span class="math">\(\mathrm{Q}^*_2(s = \text{painted}, a_2^*)\)</span>? How does this compare to
+<span class="math">\(\mathrm{Q}^*_1(s = \text{painted}, a_1^*)\)</span> and why?</p>
+<p><strong>Explanation</strong>:
+Our optimal action <span class="math">\(a_2\)</span> if in a painted state, with two steps to go, is
+still to eject (same as with <span class="math">\(h = 1\)</span>).  If we take any other action, we incur a penalty and
+are then in a state where our second step will not make up for that
+penalty.</p>
+<p>In this particular case, <span class="math">\(\mathrm{Q}^*_2(s = \text{painted}, a_2)\)</span> <strong>does</strong>
+have the same value as <span class="math">\(\mathrm{Q}^*_1(s = \text{painted}, a_1)\)</span>, because
+we transition to the ejected state with probability 1 when we take
+action &quot;eject&quot; from the painted state.</p>
+<p>f) Still with a finite horizon of <span class="math">\(h = 2\)</span>, now we start in state <font
+color="green">clean</font>. In the deterministic (brand new) wash &amp;
+paint machine, we saw that the optimal action was to paint, then
+eject, for a total accumulated reward of 7.</p>
+<p>Now, with horizon <span class="math">\(h = 2\)</span> in our stochastic wash &amp; paint machine,
+we still hope to paint then eject. What is the value of following this (paint then eject) policy in clean state?
+Is it 7, more than 7, or less than 7? Why?</p>
+<p><strong>Explanation</strong>:
+Now, <span class="math">\(\mathrm{Q}^*_2(s = \text{clean}, a_2 = \text{paint}) < 7\)</span>, less than from
+before. We need to take into account the possibility that we will
+transition to some state <span class="math">\(s'\)</span> different than the painted state we
+desired, then have no opportunity to gain the +10 reward with only one
+remaining step to go. Specifically, this optimal $\mathrm{Q}^<em>_2(s =
+\text{clean}, a_2 = \text{paint}) = -3 + 0.8</em>10 + 0.2*0 = 5$, because
+we have 80% chance of getting to painted state (and then earning 10
+on the second step), but 20% chance of getting to another state where
+our best choice is to eject with reward 0 on the second step.</p>
+<p>g)
+We switch to an infinite-horizon scenario.  For our stochastic
+machine, here is the infinite-horizon <span class="math">\(\mathrm{Q}_{\infty}^*\)</span> function (computed via value
+iteration) for <span class="math">\(\gamma\)</span> near 1.</p>
+<pre>
+             wash        paint     eject
+<font color="red"   >dirty</font>   [[ 2.32274541 -0.70048204  0.        ]
+<font color="green" >clean</font>    [ 2.32274541  5.71581775  0.        ]
+<font color="blue"  >painted</font>  [ 2.32274541  6.9        10.        ]
+<font color="purple">ejected</font>  [ 0.          0.          0.        ]]
+</pre>
+
+<p>What is the optimal thing to do with a <font color="green">clean</font> object?</p>
+<p>What will you do if it becomes <font color="red">dirty</font>?</p>
+<p>Does this optimal policy make intuitive sense?</p>
+<p><strong>Explanation</strong>:
+<strong>For clean part, best action:</strong>
+Clean is the second row; paint is the second column.  Paint is the
+best thing to do to a clean part (largest Q for the second row).</p>
+<p><strong>If it becomes dirty,</strong> we're in the top row.  Largest Q for the top
+row tells us that the best thing is to wash!</p>
+<p>Yes, these make intuitive sense; for our machine that &quot;usually&quot; makes
+the desired transitions, these actions are what we would also take for a
+deterministic machine.
+</answer></p>
+<p>h)
+If the machine became much less reliable (i.e., washing and painting
+only achieve the desired transition, say, 20% of the time), how do you
+think the optimal policy would change?</p>
+<p><strong>Explanation</strong>:
+If the machine is highly unreliable, it will cost a lot more to get a
+painted part and eventually earn the reward of 10. Indeed, we'll spend
+most of the time in dirty or clean states accumulating penalties of
+-3.  Instead, we should just eject right away even from dirty or clean
+states to avoid these penalties.</p>
+<h1><strong>Problem 7</strong> Q learning</h1>
+<p>Let's simulate the Q-learning algorithm!  Assume there are states <span class="math">\(\mathcal{S} = \{0,1,2,3 \}\)</span> and actions <span class="math">\(\mathcal{A} =\{\rm{'b'}, \rm{'c'}\}\)</span>, and discount factor <span class="math">\(\gamma = 0.9\)</span>.  Furthermore,
+assume that all the <span class="math">\(\mathrm{Q}\)</span> values are initialized to 0 (for all state-action pairs) and that the learning rate is
+<span class="math">\(\alpha = 0.5\)</span>.</p>
+<p>Experience is represented as a list of 4-element tuples: the <span class="math">\(t\)</span>th
+element of the experience corresponds to a record of experience at
+time <span class="math">\(t\)</span>: <span class="math">\((s_t, a_t, s_{t+1}, r_t)\)</span> (state, action, next state,
+reward).</p>
+<p>After each step <span class="math">\(t\)</span>, indicate what update <span class="math">\(\mathrm{Q}(s_t, a_t) \leftarrow q\)</span>
+will be made by the Q learning algorithm based on $(s_t, a_t, s_{t+1},
+r_t)<span class="math">\(.  You will want to keep track of the overall table \)</span>\mathrm{Q}(s_t, a_t)$
+as these updates take place, spanning the multiple parts of this
+question.</p>
+<p>As a reminder, the Q-learning update formula is the following:</p>
+<div class="math">$$
+\mathrm{Q}(s,a) \leftarrow (1-\alpha)\mathrm{Q}(s,a) + \alpha(r + \gamma\max_{a&#x27;} \mathrm{Q}(s&#x27;,a&#x27;))\; .
+$$</div>
+<p>You are welcome to do this problem by hand, by drawing a table
+specifying <span class="math">\(\mathrm{Q}(s,a)\)</span> for all possible states <span class="math">\(s\)</span> and actions <span class="math">\(a\)</span>.  Alternatively, you
+may write a program which takes in the following history of
+experience:</p>
+<pre>
+experience = [(0, 'b', 2, 0), #t = 0
+              (2, 'b', 3, 0),
+              (3, 'b', 0, 2),
+              (0, 'b', 2, 0), #t = 3
+              (2, 'b', 3, 0),
+              (3, 'c', 0, 2),
+              (0, 'c', 1, 0), #t = 6
+              (1, 'b', 0, 1),
+              (0, 'b', 2, 0),
+              (2, 'c', 3, 0), #t = 9
+              (3, 'c', 0, 2),
+              (0, 'c', 1, 0)]
+</pre>
+
+<p>a)</p>
+<pre>
+ t: S  A  S' R
+---------------
+ 0: 0 'b' 2  0
+</pre>
+
+<p>The <span class="math">\(t=0\)</span> step of Q-learning will update the Q value of some
+state-action pair based on the experience tuple <span class="math">\((s_0, a_0, s_1,  r_0)\)</span>.</p>
+<p>After observing this tuple, the Q-value for one
+specific state-action pair is updated. What is the state in this
+state-action pair?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>0</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>2</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>3</li>
+</ul>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: Since we observe an experience in state 0, we update the Q value for state 0.</p>
+<p>b) What is the action in the state-action pair that is updated?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>c</li>
+</ul>
+<p><strong>Answer</strong>: b.<br />
+<strong>Explanation</strong>: Since action b was used in the experience at <span class="math">\(t = 0\)</span>, we update the Q value for action b.</p>
+<p>c) Recall that <span class="math">\(s'\)</span> denotes the next observed state. What is <span class="math">\(\max_{a'}\mathrm{Q}(s', a')\)</span> for <span class="math">\(t=0\)</span>?</p>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: The <span class="math">\(\mathrm{Q}\)</span> values are all initialized to 0, so the
+maximum <span class="math">\(\mathrm{Q}(2, a')\)</span> value is 0 for any action <span class="math">\(a'\)</span> at this stage of Q
+learning.</p>
+<p>d) Putting it all together, what is the new Q-value for
+the state-action pair that is updated?</p>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: We will make use of the Q-learning update rule
+for an action <span class="math">\(a\)</span> that takes state <span class="math">\(s\)</span> to <span class="math">\(s'\)</span> with reward <span class="math">\(\mathrm{R}\)</span>:</p>
+<div class="math">$$
+\begin{align*}
+    \mathrm{Q}(s,a) &amp;= (1-\alpha)\mathrm{Q}(s,a) + \alpha(r + \gamma\max_{a&#x27;} \mathrm{Q}(s&#x27;,a&#x27;)). \\
+    \mathrm{Q}^{new}(0,b) &amp;= 0.5\cdot \mathrm{Q}^{old}(0,b) + 0.5(0 + 0.9\cdot \max_{a&#x27;}\mathrm{Q}^{old}(2,a&#x27;)) = 0 .
+  \end{align*}
+$$</div>
+<pre>
+ t: S  A  S' R
+---------------
+ 1: 2 'b' 3 0
+</pre>
+
+<p>The <span class="math">\(t=1\)</span> step of Q-learning will update the Q value of some
+state-action pair based on the experience tuple <span class="math">\((s_1, a_1, s_2, r_1)\)</span>.</p>
+<p>e) After observing this tuple, what is the state of the state-action pair that is updated? &quot;&quot;&quot;</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>0</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>2</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>3</li>
+</ul>
+<p><strong>Answer</strong>: 2.<br />
+<strong>Explanation</strong>: Since we observe an experience in state 2, we update the Q value for state 2.</p>
+<p>f) What is the action of the state-action pair that is updated?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>c</li>
+</ul>
+<p><strong>Answer</strong>: b.<br />
+<strong>Explanation</strong>:  Since action <span class="math">\(b\)</span> was used in this experience, we update the Q value for action b.</p>
+<p>g) What is <span class="math">\(\max_{a'}\mathrm{Q}(s', a')\)</span> for <span class="math">\(t=1\)</span>?</p>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: We haven't updated anything with state 3 up to
+this point, which is <span class="math">\(s'\)</span> in this case, so the maximum is still at the
+initial value of 0.</p>
+<p>h) Putting it all together, what is the updated value that Q-learning makes for <span class="math">\(t=1\)</span>?</p>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: <span class="math">\(\mathrm{Q}^{new}(2,b) = 0.5\cdot \mathrm{Q}^{old}(2,b) + 0.5(0 + 0.9\cdot \max_{a'}\mathrm{Q}^{old}(3,a')) = 0 \; .\)</span></p>
+<pre>
+ t: S  A  S' R
+---------------
+ 2: 3 'b' 0 2
+</pre>
+
+<p>The <span class="math">\(t=2\)</span> step of Q-learning will update the Q value of some
+state-action pair based on the experience tuple $(s_2, a_2, s_3,
+r_2)$.</p>
+<p>i) What is the updated value that Q-learning makes for
+<span class="math">\(t=2\)</span>? Recall that <span class="math">\(\alpha=0.5\)</span> and <span class="math">\(\gamma=0.9\)</span>.</p>
+<p><strong>Answer</strong>: 1.<br />
+<strong>Explanation</strong>:</p>
+<div class="math">$$
+\mathrm{Q}^{new}(3,b)
+ = 0.5\cdot \mathrm{Q}^{old}(3,b) + 0.5(2 + 0.9\cdot \max_{a&#x27;}\mathrm{Q}^{old}(0,a&#x27;))
+ = 0.5\cdot 0 + 0.5 \cdot 2 = 1 \; .
+$$</div>
+<pre>
+ t: S  A  S' R
+---------------
+ 3: 0 'b' 2  0
+ 4: 2 'b' 3  0
+ 5: 3 'c' 0  2
+</pre>
+
+<p>Recall that <span class="math">\(\alpha=0.5\)</span> and <span class="math">\(\gamma=0.9\)</span>.</p>
+<p>j) Write a list of three numbers for the updated Q values for <span class="math">\(t=3, 4, 5\)</span>:     .</p>
+<p><strong>Answer</strong>: [0, .45, 1].<br />
+<strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align*}
+  \mathrm{Q}^{new}(0,b) &amp;= 0.5\cdot \mathrm{Q}^{old}(0,b) + 0.5(0 + 0.9\cdot \max_{a&#x27;}\mathrm{Q}^{old}(2,a&#x27;)) = 0 \\
+  \mathrm{Q}^{new}(2,b) &amp;= 0.5\cdot \mathrm{Q}^{old}(2,b) + 0.5(0 + 0.9\cdot \max_{a&#x27;}\mathrm{Q}^{old}(3,a&#x27;)) \\
+               &amp;= 0.5\cdot 0 + 0.5\cdot (0 + 0.9\cdot 1) = 0.45 \\
+  \mathrm{Q}^{new}(3,c) &amp;= 0.5\cdot \mathrm{Q}^{old}(3,c) + 0.5(2 + 0.9\cdot \max_{a&#x27;}\mathrm{Q}^{old}(0,a&#x27;)) \\
+               &amp;= 0.5\cdot 0 + 0.5 \cdot(2 + 0.9\cdot 0) = 1
+\end{align*}
+$$</div>
+<p>.</p>
+<pre>
+ t: S  A  S' R
+---------------
+ 6: 0 'c' 1  0
+ 7: 1 'b' 0  1
+ 8: 0 'b' 2  0
+</pre>
+
+<p>Recall that <span class="math">\(\alpha=0.5\)</span> and <span class="math">\(\gamma=0.9\)</span>.</p>
+<p>k) Write a list of three numbers for the updated Q values for <span class="math">\(t=6, 7, 8\)</span>:    .</p>
+<p><strong>Answer</strong>: [0, 0.5, 0.2025].<br />
+<strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align*}
+  \mathrm{Q}^{new}(0,c) &amp;= 0.5\cdot \mathrm{Q}^{old}(0,c) + 0.5(0 + 0.9\cdot \max_{a&#x27;}\mathrm{Q}^{old}(1,a&#x27;)) = 0 \\
+  \mathrm{Q}^{new}(1,b) &amp;= 0.5\cdot \mathrm{Q}^{old}(1,b) + 0.5(0 + 0.9\cdot \max_{a&#x27;}\mathrm{Q}^{old}(0,a&#x27;)) \\
+               &amp;= 0.5\cdot 0 + 0.5\cdot (1 + 0.9\cdot 0) = 0.5 \\
+  \mathrm{Q}^{new}(0,b) &amp;= 0.5\cdot \mathrm{Q}^{old}(0,b) + 0.5(0 + 0.9\cdot \max_{a&#x27;}\mathrm{Q}^{old}(2,a&#x27;)) \\
+               &amp;= 0.5\cdot 0 + 0.5 \cdot(0 + 0.9\cdot 0.45) = 0.2025
+\end{align*}
+$$</div>
+<pre>
+ t: S  A  S' R
+---------------
+ 9: 2 'c' 3  0
+10: 3 'c' 0  2
+11: 0 'c' 1  0
+</pre>
+
+<p>Recall that <span class="math">\(\alpha=0.5\)</span> and <span class="math">\(\gamma=0.9\)</span>.</p>
+<p>l) Enter a list of three numbers for the updated Q values for <span class="math">\(t=9, 10, 11\)</span>:    .</p>
+<p><strong>Answer</strong>: [0.45, 1.591125, 0.225].<br />
+<strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align*}
+  \mathrm{Q}^{new}(2,c) &amp;= 0.5\cdot \mathrm{Q}^{old}(2,c) + 0.5(0 + 0.9\cdot \max_{a&#x27;}\mathrm{Q}^{old}(3,a&#x27;)) \\
+               &amp;= 0.5\cdot 0 + 0.5\cdot(0 + 0.9\cdot 1) = 0.45 \\
+  \mathrm{Q}^{new}(3,c) &amp;= 0.5\cdot \mathrm{Q}^{old}(3,c) + 0.5(2 + 0.9\cdot \max_{a&#x27;}\mathrm{Q}^{old}(0,a&#x27;)) \\
+               &amp;= 0.5\cdot 1 + 0.5\cdot (2 + 0.9\cdot 0.2025) = 1.591125 \\
+  \mathrm{Q}^{new}(0,c) &amp;= 0.5\cdot \mathrm{Q}^{old}(0,c) + 0.5(0 + 0.9\cdot \max_{a&#x27;}\mathrm{Q}^{old}(1,a&#x27;)) \\
+               &amp;= 0.5\cdot 0 + 0.5 \cdot(0 + 0.9\cdot 0.5) = 0.225
+\end{align*}
+$$</div>
+<h1><strong>Problem 8</strong> Understanding Q-learning equation</h1>
+<p>You are helping a friendly alien named Zog learn to navigate a <span class="math">\(3\times3\)</span> maze on the planet <strong>Quixara</strong>. Zog hopes to reach the shiny treasure located in a specific cell in the maze. Along the way, Zog may encounter other treasures and pesky space traps.</p>
+<p>Your task is to use <strong>Q-learning</strong> to teach Zog to navigate the maze efficiently.  The maze grid is structured as follows:</p>
+<div class="inline_imgs">
+<center>
+<img src="assets/rl/zog.png", width=40%>
+</center>
+</div>
+
+<p><strong>Maze Details:</strong></p>
+<ul>
+<li>Any action in Cell 9 (bottom-right) gives a &quot;gold&quot; reward of <strong>+10</strong>.</li>
+<li>Any action in Cell 5 gives a &quot;trap&quot; reward of <span class="math">\(\mathbf{-1}\)</span>.</li>
+<li>Any action in Cell 2 gives a &quot;silver&quot; reward of <span class="math">\(\mathbf{+1}\)</span>.</li>
+<li>All other (state, action) pairs give a boring reward of <span class="math">\(\mathbf{0}\)</span>.</li>
+</ul>
+<p><strong>Movement and Transitions:</strong> Zog can attempt to take an action in ( <strong>up</strong>, <strong>down</strong>, <strong>left</strong>,or~<strong>right</strong>); however, the maze is unstable, and the transitions are unknown. For example, the probability of transitioning from location 1 to location 9
+as a result of action &quot;up&quot; could be positive.</p>
+<p><strong>Greedy Action-Selection:</strong> Zog will explore the maze using an <span class="math">\(\epsilon\)</span>-greedy policy (with <span class="math">\(\epsilon\)</span> value to be specified in the sub-parts). When there is a tie, Zog chooses the action in this order: {<strong>bf up, down, left, right</strong>}.</p>
+<p><strong>Discount factor:</strong> <span class="math">\(\gamma,\)</span> the discount factor is set to <strong>0.9</strong>.</p>
+<p>Before taking any actions, Zog’s Q-table is initialized with zero values for all state-action pairs.</p>
+<p>For part (a) to part (c), <span class="math">\(\epsilon=0,\)</span> that is, we use pure greedy action selection.</p>
+<p>a) Define the Q-learning update equation Zog should use to learn from each step. Use <span class="math">\(\alpha\)</span> to denote the learning rate.</p>
+<p><strong>Explanation</strong>:
+The Q-learning update equation is:</p>
+<p>$    Q(s, a) \leftarrow Q(s, a) + \alpha \left( r + \gamma \max_{a'} Q(s', a') - Q(s, a) \right)$</p>
+<p>where:</p>
+<ul>
+<li>$ s $ is the current state (cell).</li>
+<li>$ a $ is the action taken.</li>
+<li>$ s' $ is the <strong>observed</strong> resulting state after taking action $ a $.</li>
+<li>$ r $ is the reward received.</li>
+<li>$ \alpha $ is the learning rate.</li>
+<li>$ \gamma $ is the discount factor (set to <strong>0.9</strong>).</li>
+</ul>
+<p>b) If Zog starts in Cell 4, what would be Zog's first action?</p>
+<p><strong>Explanation</strong>:
+Zog's first action would be to move <strong>up</strong>.
+Due to the tie-breaking.</p>
+<p>c)  Is there a learning rate <span class="math">\(\alpha\)</span> such that Zog always chooses the action you gave in the previous part, any time they visit Cell 4?</p>
+<p><strong>Explanation</strong>:
+Yes. When <span class="math">\(\alpha = 0\)</span>, we never update our reward.</p>
+<p>Reset the Q-table with zeros for all (state, action) pairs. For all subparts below, assume that we change the action-selection strategy to <span class="math">\(\epsilon\)</span>-greedy with some unknown <span class="math">\(\epsilon,\)</span> and fix the learning rate <span class="math">\(\alpha\)</span> to be 0.5.</p>
+<p>d)    Zog ended up following this trajectory of (state, action, rewards): \ (1, <strong>right</strong>, 0) <span class="math">\(\rightarrow\)</span>  (2, <strong>right</strong>, 1)<span class="math">\(\rightarrow\)</span>  (3, <strong>down</strong>, 0) <span class="math">\(\rightarrow\)</span> (6, <strong>down</strong>, 0) <span class="math">\(\rightarrow\)</span> (9, <strong>down</strong>, 10). Assume after state 9 we don't transition to state 2.
+Solve for all non-zero Q-values after this trajectory?</p>
+<div class="inline_imgs">
+<center>
+<img src="assets/rl/zog_empty.png", width=40%>
+</center>
+</div>
+
+<p><strong>Explanation</strong>:</p>
+<p>Two entries are updated to be non-zero.</p>
+<p>First, Q(2, <strong>right</strong>) = 0.5*(1+0) = 0.5.</p>
+<p>Second, Q(9, <strong>down</strong>) = 0.5*(10+0) = 5.</p>
+<p>e) Adjust the reward if you want Zog to prioritize avoiding traps over collecting silvers. How would you adjust the silver reward? How would you adjust the trap penalty?</p>
+<p><strong>Explanation</strong>:
+We could decrease silver reward or make the trap penalty more negative.</p>
+<p>f)  Now assume <span class="math">\(\epsilon=0.4\)</span>. Using the Q-table from the previous part, what is the probability that Zog chooses action <strong>down</strong> when in state 6?<br />
+<strong>Explanation</strong>:
+<span class="math">\(\epsilon=0.4\)</span> means that there is a <span class="math">\(1-\epsilon=0.6\)</span> chance that Zog picks the greedy action, which is <strong>down</strong> from state 6. There is an additional <span class="math">\(\frac{\epsilon}{4}=0.1\)</span> chance Zog picks <strong>down</strong>, since the exploration is equally split between all possible actions. Thus the total probability Zog picks <strong>down</strong> from state 6 is <span class="math">\(0.7\)</span>.</p>
+<h1><strong>Problem 9</strong> Snakes and Ladders</h1>
+<p>You are playing a simplified version of a classic game, sometimes
+called &quot;Snakes and Ladders&quot; in English.</p>
+<div class="inline_imgs">
+<center>
+<img width=300 src="assets/rl/snakes.png">
+</center>
+</div>
+
+<ul>
+<li>You are moving up a 1-dimensional track with squares <span class="math">\(s_1, s_2, s_4, s_5, s_7\)</span>, as shown above.</li>
+<li>You have two actions: <strong>climb</strong> and <strong>quit</strong>.</li>
+<li>If you <strong>climb</strong> from state <span class="math">\(s_i\)</span> then with probability <span class="math">\(0.5\)</span> you go
+up <strong>one</strong> square, and with probability <span class="math">\(0.5\)</span> you go up <strong>two</strong> squares.</li>
+<li>However! if the square you land on has a ladder going <em>up</em> from
+it, then you automatically, instantaneously, with probability 1 move
+to the square the ladder goes to.</li>
+<li>And! if the square you land on has a snake going <em>down</em> from it,
+then you automatically, instantaneously, with probability 1 move to
+the square the snake goes to.</li>
+<li>For example, in our case, if you start in state <span class="math">\(s_5\)</span> and
+<strong>climb</strong> there is a <span class="math">\(0.5\)</span> chance you'll end up in square <span class="math">\(s_2\)</span>
+(because you move up one but hit a snake and fall back down) and a
+<span class="math">\(0.5\)</span> chance you'll end up in square <span class="math">\(s_7\)</span>.  If you <strong>climb</strong> from
+<span class="math">\(s_7\)</span> then you will <em>go back to square 1</em> with probability <span class="math">\(1.0\)</span>.</li>
+<li>If you <strong>quit</strong> then the game is over and you get to take no further
+actions.</li>
+<li>Each new episode starts in state <span class="math">\(s_1\)</span>.</li>
+<li>The reward for choosing <strong>climb</strong> in any state is 0.</li>
+<li>The reward for choosing <strong>quit</strong> in state <span class="math">\(s_i\)</span> is <span class="math">\(i\)</span>.</li>
+</ul>
+<p>In the following, you need to submit actions or <span class="math">\(\mathrm{Q}\)</span>-values for the
+states <span class="math">\(s_1\)</span>, <span class="math">\(s_2\)</span>, <span class="math">\(s_4\)</span>, <span class="math">\(s_5\)</span> and <span class="math">\(s_7\)</span>.</p>
+<p>a) What is the optimal horizon 1 policy? Write your answer as a list of five strings, each being either &quot;climb&quot;
+or &quot;quit&quot;, corresponding to the optimal action for <span class="math">\(s_1\)</span>, <span class="math">\(s_2\)</span>,
+<span class="math">\(s_4\)</span>, <span class="math">\(s_5\)</span>, and <span class="math">\(s_7\)</span>, in that order.</p>
+<p><strong>Answer</strong>: quit, quit, quit, quit, quit.<br />
+<strong>Explanation</strong>: Because the horizon is 1, there are no rewards
+in the future, so the only reward we can get is the one at this
+current time. If we climb, we get a reward of 0, and if we quit, we
+get a reward of <span class="math">\(i\)</span>, which is always greater than 0, so it is
+optimal to quit in every state.</p>
+<p>b) If you initialize the <span class="math">\(\mathrm{Q}\)</span> values of all the states to
+0, and do one iteration of undiscounted (<span class="math">\(\gamma = 1\)</span>) value
+iteration, what is the resulting <span class="math">\(\mathrm{Q}\)</span> value function?</p>
+<p><strong>Answer</strong>: [[1, 2, 4, 5, 7], [0, 0, 0, 0, 0]].<br />
+<strong>Explanation</strong>: After one iteration, <span class="math">\(\mathrm{Q}(s, a) = \mathrm{R}(s, a) + 0\)</span>,
+so, for example, <span class="math">\(\mathrm{Q}(s_1, \textbf{quit}) = 1, \mathrm{Q}(s_1, \textbf{climb}) =0\)</span>, etc.</p>
+<p>c) If <span class="math">\(\gamma = 1\)</span> (that is, there is no discounting)
+what is the optimal infinite-horizon policy?
+Give your answer as a list of five strings, each being either
+&quot;climb&quot; or &quot;quit&quot;, corresponding to the optimal action for <span class="math">\(s_1\)</span>,
+<span class="math">\(s_2\)</span>, <span class="math">\(s_4\)</span>, <span class="math">\(s_5\)</span>, and <span class="math">\(s_7\)</span>, in that order.</p>
+<p><strong>Answer</strong>: climb, climb, climb, climb, quit.<br />
+<strong>Explanation</strong>: We only get rewards when we quit, so the
+maximum reward of <span class="math">\(7\)</span> is attained by quitting in <span class="math">\(s_7\)</span>. Because
+there is no discounting, the highest reward is obtained by climbing
+in every state that is not <span class="math">\(s_7\)</span> and then quitting when we get to
+<span class="math">\(s_7\)</span>. Note that this policy induces a finite state markov chain,
+and the steady-state vector of this markov chain tells us that the
+long-term probability that we are in <span class="math">\(s_7\)</span> is 1.</p>
+<p>d) Now let's consider discounting.  State an inequality
+involving numeric values, <span class="math">\(\gamma\)</span>, <span class="math">\(Q(s_2, \textbf{climb})\)</span>, and
+<span class="math">\(Q(s_7, \textbf{climb})\)</span>, specifying the condition under which the
+optimal action in <span class="math">\(s_5\)</span> is to <strong>quit</strong>.</p>
+<p><strong>Answer</strong>: 10 / (<span class="math">\(Q(s_2, \textbf{climb})\)</span> + 7).<br />
+<strong>Explanation</strong>: <span class="math">\(Q(s_5, \textbf{climb}) = 0 + \gamma(0.5 *7 + 0.5* Q(s_2, \textbf{climb}))\)</span> and
+<span class="math">\(Q(s_5, \textbf{quit}) = 5\)</span>.</p>
+<p>Note that it's not obvious that we choose to climb in <span class="math">\(s_2\)</span>. We do
+this when <span class="math">\(Q(s_2, \textbf{climb}) > Q(s_2, \textbf{quit})\)</span>. But this
+will likely be the case. The worst we can get in <span class="math">\(s_4\)</span> and <span class="math">\(s_5\)</span> is
+4 and 5 respectively, by quitting. So we can derive that this will
+hold if <span class="math">\(\gamma(0.5 *4 + 0.5* 5) > 2\)</span>, which happens if <span class="math">\(\gamma > 4/9\)</span>.</p>
+<p>Back to the original problem, we have <span class="math">\(5 > 0 + \gamma(0.5 * 7 + 0.5 - Q(s_2, \textbf{climb}))\)</span>. Rearranging, we get <span class="math">\(\gamma < \frac{10}{7+ Q(s_2, \textbf{climb})}\)</span>.</p>
+<hr />
+<h2>Sneaking Snakes and Lurking Ladders</h2>
+<p>What if we have to play snakes and ladders, but we don't know where
+the snakes and ladders actually are?  Assume we know the rewards, but
+not the transition model.  We'll try <span class="math">\(\mathrm{Q}\)</span> learning to address this
+problem.</p>
+<p>During learning, after executing the <strong>quit</strong> action and getting a
+reward, the current learning episode terminates. We then initialize a new learning episode, and <em>we always start the new episode in
+square 1</em>. <em>We will use a discount factor of <span class="math">\(\gamma = 1\)</span> throughout.</em></p>
+<p>e) If we do purely greedy action selection <em>during</em> <span class="math">\(\mathrm{Q}\)</span>-learning (that is <span class="math">\(\epsilon = 0\)</span>), starting from all 0's in our <span class="math">\(\mathrm{Q}\)</span> table and where ties are broken in favor of the <strong>climb</strong> action, what (roughly) will the <span class="math">\(\mathrm{Q}\)</span> function be after 1000 steps?</p>
+<div class="math">$$
+\begin{array}{rccccc}
+                &amp;s_1&amp;s_2&amp;s_4&amp;s_5&amp;s_7\\
+  \textbf{quit}  &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+  \textbf{climb} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+  \end{array}
+$$</div>
+<div class="math">$$
+\begin{array}{rccccc}
+               &amp;s_1&amp;s_2&amp;s_4&amp;s_5&amp;s_7\\
+\textbf{quit}  &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+\textbf{climb} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{array}
+$$</div>
+<div class="math">$$
+\begin{array}{rccccc}
+               &amp;s_1&amp;s_2&amp;s_4&amp;s_5&amp;s_7\\
+\textbf{quit}  &amp; 1 &amp; 2 &amp; 4 &amp; 5 &amp; 7 \\
+\textbf{climb} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{array}
+$$</div>
+<div class="math">$$
+\begin{array}{rccccc}
+               &amp;s_1&amp;s_2&amp;s_4&amp;s_5&amp;s_7\\
+\textbf{quit}  &amp; 1 &amp; 2 &amp; 4 &amp; 5 &amp; 7 \\
+\textbf{climb} &amp; 7 &amp; 7 &amp; 7 &amp; 7 &amp; 7
+\end{array}
+$$</div>
+<p><strong>Answer</strong>:</p>
+<div class="math">$$
+\begin{array}{rccccc}
+                &amp;s_1&amp;s_2&amp;s_4&amp;s_5&amp;s_7\\
+  \textbf{quit}  &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+  \textbf{climb} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+  \end{array}
+$$</div>
+<p><strong>Explanation</strong>: Because the reward is zero for climbing in any
+state, <span class="math">\(\mathrm{Q}(s, \text{climb})\)</span> will be zero for all states.
+<span class="math">\(\mathrm{Q}(s, \text{quit})\)</span> will also be zero for all states because we will never
+take a quit action, so we won't ever update it.</p>
+<p>f) If we do purely greedy action selection <em>during</em>
+<span class="math">\(\mathrm{Q}\)</span>-learning (that is <span class="math">\(\epsilon = 0\)</span>), starting from all 0's in our <span class="math">\(\mathrm{Q}\)</span>
+table and where ties are broken in favor of the <strong>quit</strong> action,
+what (roughly) will the <span class="math">\(\mathrm{Q}\)</span> function be after 1000 steps?</p>
+<div class="math">$$
+\begin{array}{rccccc}
+               &amp;s_1&amp;s_2&amp;s_4&amp;s_5&amp;s_7\\
+\textbf{quit}  &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+\textbf{climb} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{array}
+$$</div>
+<div class="math">$$
+\begin{array}{rccccc}
+               &amp;s_1&amp;s_2&amp;s_4&amp;s_5&amp;s_7\\
+\textbf{quit}  &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+\textbf{climb} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{array}
+$$</div>
+<div class="math">$$
+\begin{array}{rccccc}
+               &amp;s_1&amp;s_2&amp;s_4&amp;s_5&amp;s_7\\
+\textbf{quit}  &amp; 1 &amp; 2 &amp; 4 &amp; 5 &amp; 7 \\
+\textbf{climb} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{array}
+$$</div>
+<div class="math">$$
+\begin{array}{rccccc}
+               &amp;s_1&amp;s_2&amp;s_4&amp;s_5&amp;s_7\\
+\textbf{quit}  &amp; 1 &amp; 2 &amp; 4 &amp; 5 &amp; 7 \\
+\textbf{climb} &amp; 7 &amp; 7 &amp; 7 &amp; 7 &amp; 7
+\end{array}
+$$</div>
+<p><strong>Answer</strong>:</p>
+<div class="math">$$
+\begin{array}{rccccc}
+               &amp;s_1&amp;s_2&amp;s_4&amp;s_5&amp;s_7\\
+\textbf{quit}  &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+\textbf{climb} &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 0
+\end{array}
+$$</div>
+<p><strong>Explanation</strong>: Assuming when we start in <span class="math">\(s_1\)</span> when we start a
+new episode, we will never visit any states other than <span class="math">\(s_1\)</span>, so the
+<span class="math">\(\mathrm{Q}\)</span> values for any states other than <span class="math">\(s_1\)</span> will never change.
+<span class="math">\(\mathrm{Q}(s_1, \text{quit}) = 1\)</span> because <span class="math">\(R(s_1, \text{quit}) = 1\)</span> and the
+episode ends with a quit action.</p>
+<hr />
+<p>Assume we start with a tabular <span class="math">\(\mathrm{Q}\)</span> function on states <span class="math">\(s_1\)</span>, <span class="math">\(s_2\)</span>,
+<span class="math">\(s_4\)</span>, <span class="math">\(s_5\)</span> and <span class="math">\(s_7\)</span>, initialized to all 0's.  Then we get the
+following experience, consisting of three trajectories, shown below as
+(state, action, reward) tuples.</p>
+<p>Using learning rate <span class="math">\(\alpha = 0.5\)</span>, what is the <span class="math">\(\mathrm{Q}\)</span> function after each
+of these trajectories? <em>Do not reset all your <span class="math">\(\mathrm{Q}\)</span> values back to 0 after
+each trajectory --- assume this is all a single execution of the <span class="math">\(\mathrm{Q}\)</span>
+learning algorithm on three episodes of experience.</em></p>
+<p>For each trajectory, give your answer as a 2 x 5 array of numbers, in
+the form</p>
+<div class="math">$$
+[[\mathrm{Q}(s_1, \textbf{quit}), \ldots, \mathrm{Q}(s_7, \textbf{quit})],
+[\mathrm{Q}(s_1, \textbf{climb}), \ldots, \mathrm{Q}(s_7, \textbf{climb})]].
+$$</div>
+<p>g) After <span class="math">\(((s_1, \textbf{climb}, 0), (s_2, \textbf{climb}, 0), (s_5, \textbf{climb}, 0), (s_7, \textbf{quit}, 7)),\)</span> what is the <span class="math">\(\mathrm{Q}\)</span> function?</p>
+<p><strong>Answer</strong>: [[0, 0, 0, 0, 3.5], [0, 0, 0, 0, 0]].<br />
+<strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align*}
+\mathrm{Q}(s_1, \text{climb}) &amp;= 0.5* 0 + 0.5 *(0 + \gamma* 0) = 0 \\
+  \mathrm{Q}(s_2, \text{climb}) &amp;= 0.5 *0 + 0.5* (0 + \gamma *0) = 0 \\
+\mathrm{Q}(s_5, \text{climb}) &amp;= 0.5* 0 + 0.5 *(0 + \gamma* 0) = 0 \\
+  \mathrm{Q}(s_7, \text{quit}) &amp;= 0.5 *0 + 0.5* (7 + 0) = 3.5
+\end{align*}
+$$</div>
+<p>h) After the additional experience <span class="math">\((s_1, \textbf{quit}, 1),\)</span> what is the <span class="math">\(\mathrm{Q}\)</span> function?</p>
+<p><strong>Answer</strong>: [[0.5, 0, 0, 0, 3.5], [0, 0, 0, 0, 0]].<br />
+<strong>Explanation</strong>:</p>
+<div class="math">$$
+\mathrm{Q}(s_1, \text{quit}) = 0.5 *0 + 0.5* (1 + 0) = 0.5
+$$</div>
+<p>.</p>
+<p>i) After the additional experience <span class="math">\(((s_1, \textbf{climb}, 0), (s_2, \textbf{climb}, 0), (s_5, \textbf{climb}, 0), (s_7, \textbf{quit}, 7)),\)</span> what is the <span class="math">\(\mathrm{Q}\)</span> function?</p>
+<p><strong>Answer</strong>: [[0.5, 0, 0, 0, 5.25], [0, 0, 0, 1.75, 0]].<br />
+<strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align*}
+\mathrm{Q}(s_1, \text{climb}) &amp;= 0.5* 0 + 0.5 *(0 + \gamma* 0) = 0 \\
+  \mathrm{Q}(s_2, \text{climb}) &amp;= 0.5 *0 + 0.5* (0 + \gamma *0) = 0 \\
+\mathrm{Q}(s_5, \text{climb}) &amp;= 0.5* 0 + 0.5 *(0 + \gamma* 3.5) = 1.75 \\
+  \mathrm{Q}(s_7, \text{quit})  &amp;= 0.5 *3.5 + 0.5* (7 + 0) = 5.25
+\end{align*}
+$$</div>
+<h1><strong>Problem 10</strong> Goal Reward vs SSP</h1>
+<!--Q1.2-->
+
+<p><catsoop-subsection>Q-Learning algorithm with different reward functions</catsoop-subsection></p>
+<p>Consider an environment with two possible actions (<span class="math">\(b\)</span> and <span class="math">\(c\)</span>) and four states (<span class="math">\(S0\)</span>, <span class="math">\(S1\)</span>, <span class="math">\(S2\)</span>, <span class="math">\(S3\)</span>).</p>
+<p>The transition model is unknown to the agent. However, in all our
+experiments, we observed the following (state, action) pair to next
+state transitions:</p>
+<div class="math">$$
+\begin{align*}
+(S0, b) &amp;\text{ all transitioned into } S1  \\
+(S0, c) &amp;\text{ all transitioned into } S2 \\
+(S1, \ast) &amp;\text{ all transitioned into } S0  \\
+(S2, \ast) &amp;\text{ all transitioned into } S3  \\
+(S3, \ast) &amp;\text{ all transitioned into } S3
+\end{align*}
+$$</div>
+<p>where <span class="math">\(\ast\)</span> represents either <span class="math">\(b\)</span> or <span class="math">\(c\)</span>, i.e., both actions lead to the same outcome.</p>
+<p>You may find the state transition diagram below helpful (it's good practice to draw such diagrams in MDP/RL settings). Do note that this diagram only represents the <strong>observed</strong> transitions.</p>
+<center>
+<img src="assets/rl/q-learn-diagram.png" width="500px"></a>
+</center>
+
+<p>Some notes:</p>
+<ol>
+<li>The agent starts in state <span class="math">\(S0\)</span>.</li>
+<li>The goal state is <span class="math">\(S2\)</span>, and <span class="math">\(S3\)</span> is a terminal state.</li>
+<li>Assume that <strong>if there are ties in the <span class="math">\(\mathrm{Q}\)</span> function for actions <span class="math">\(b\)</span> and <span class="math">\(c\)</span> in a state, then we pick action b</strong>.</li>
+<li>Assume the <span class="math">\(\mathrm{Q}\)</span> function is initialized to 0 for every state-action
+pair and that, after every episode (sequence of actions) of length
+10, the agent is restarted in state <span class="math">\(S0\)</span>.</li>
+<li>Assume a learning rate of <span class="math">\(\alpha = 0.5\)</span>.</li>
+<li>Assume an <span class="math">\(\epsilon\)</span>-greedy strategy with <span class="math">\(\epsilon = 0\)</span>.</li>
+<li>Assume a discount factor of <span class="math">\(\gamma = 1\)</span>.</li>
+</ol>
+<p>Note that we restart the agent in state <span class="math">\(S0\)</span> after every 10 steps because otherwise it may reach <span class="math">\(S3\)</span> and stay there forever.</p>
+<p>Next, we will see two typical reward functions for domains with a goal state: Goal-reward setup, and Stochastic-shortest-path (SSP) setup, and we will study how each scheme affects the exploration of the state space.</p>
+<h2>Goal-reward</h2>
+<p>In the goal-reward case, every action taken from the goal state <span class="math">\(S2\)</span>
+gives an immediate positive reward of <span class="math">\(1\)</span>, and leads to a zero-reward
+next state (in fact terminal state) <span class="math">\(S3\)</span> that can never be
+escaped. Taking any action from any state other than <span class="math">\(S2\)</span>
+provides zero reward. In other words, we have a reward function which
+outputs <span class="math">\(0\)</span> for every state-action pair, except for <span class="math">\(\mathrm{R}(S2, *) = 1\)</span>.</p>
+<p>a) What action will be selected the first time the agent encounters <span class="math">\(S0\)</span>?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>c</li>
+</ul>
+<p><strong>Answer</strong>: b.<br />
+<strong>Explanation</strong>: In the first encounter of S0, the agent picks action b, because there is a tie in Q-value between (S0,b) and (S0,c).</p>
+<p>b) What action will be selected the second time the agent encounters <span class="math">\(S0\)</span>?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>c</li>
+</ul>
+<p><strong>Answer</strong>: b.<br />
+<strong>Explanation</strong>: After round one the Q-value of (S0,b) remains 0, so next time the agent finds itself in S0, it still picks action b.</p>
+<p>c) What action will be selected the hundredth time the agent encounters <span class="math">\(S0\)</span>?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>c</li>
+</ul>
+<p><strong>Answer</strong>: b.<br />
+<strong>Explanation</strong>: Agent keeps picking action b, keeps getting 0 reward, keeps being in a tie between (S0,b) and (S0,c), and keeps choosing b over and over.</p>
+<h2>Stochastic shortest path</h2>
+<p>In the stochastic shortest path (SSP) case, we put zero reward on
+taking any action from the goal state <span class="math">\(S2\)</span>. Every action taken from <span class="math">\(S2\)</span> leads to a zero-reward terminal state <span class="math">\(S3\)</span> that can
+never be escaped. We put <span class="math">\(-1\)</span> in rewards everywhere else. In other
+words, we have a reward function which outputs <span class="math">\(-1\)</span> for every
+state-action pair except <span class="math">\(\mathrm{R}(S2, \ast) = \mathrm{R}(S3, \ast) = 0\)</span>.</p>
+<p>(Note that in this example, we have deterministic transitions; nothing &quot;stochastic&quot; yet.)</p>
+<p>d) What action will be selected the first time the agent encounters <span class="math">\(S0\)</span>?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>c</li>
+</ul>
+<p><strong>Answer</strong>: b.<br />
+<strong>Explanation</strong>: In the first encounter of S0, the agent picks action b, because there is a tie in Q-value between (S0,b) and (S0,c).</p>
+<p>e) What action will be selected the second time the agent encounters <span class="math">\(S0\)</span>?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>c</li>
+</ul>
+<p><strong>Answer</strong>: c.<br />
+<strong>Explanation</strong>: After round one the Q-value of (S0,b) gets updated to a negative value, so next time the agent finds itself in S0, it picks action c.</p>
+<p>f) What action will be selected the hundredth time the agent encounters <span class="math">\(S0\)</span>?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>b</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>c</li>
+</ul>
+<p><strong>Answer</strong>: c.<br />
+<strong>Explanation</strong>: <span class="math">\(\mathrm{Q}\)</span> values continue to get updated as learning proceeds.  By the time we reach the 100th iteration, the learned <span class="math">\(\mathrm{Q}\)</span> values should get more stable and approach the true <span class="math">\(\mathrm{Q}\)</span> values.
+The true <span class="math">\(\mathrm{Q}\)</span> value reflects the fact that action c is better when you are in state S0, and and so agent will choose c at the 100th iteration.</p>
+<p>In this example, the Goal-Reward formulation prevents us from learning
+the better action, c. The SSP formulation allows us to learn from our
+mistake and try the unexplored (and better) action, c.</p>
+<p>We note however, that there is no reward function that will work
+best for all problems. Different problems require different
+ideas. Another idea is that of designing the reward function to
+incentivize exploring states that have been visited the least
+throughout the exploration (curiosity-based ideas).</p>
+<p>This is related to the concept of <strong>reward shaping</strong>, where changing
+the reward changes the task and how the agent functions. Researchers
+sometimes spend a lot of time hand-tuning reward functions (although
+this has severe pitfalls, since the reward implicitly specifies the
+task and shaping the reward changes the task.)</p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

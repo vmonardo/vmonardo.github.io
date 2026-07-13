@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Optimization Conceptual Questions</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <a href="/web-html/in-class-problems.html" class="back-link">← Back to Conceptual Questions</a>
+            <h2>Optimization</h2>
+
+            <div class="markdown-content">
+                <h1><strong>Problem 1</strong></h1>
+<p>Kim constructs a fully connected deep neural network with 4 layers, pictured in the figure below.
+He uses ReLU activation functions for all hidden layers, denoted by <span class="math">\(f^1,f^2,f^3\)</span> in the figure, and an identity activation <span class="math">\(f(z) = z\)</span> for the output layer, denoted by <span class="math">\(f^4\)</span>.
+The ReLU activation function is implemented as <span class="math">\(\text{ReLU}(z) = \max(0, z)\)</span>, with <span class="math">\(\partial\text{ReLU}(z) / \partial z = 1\)</span> if <span class="math">\(z > 0\)</span>, and 0 otherwise.</p>
+<p>Kim has a data set <span class="math">\(\mathcal{D}_\text{train} = \{ (x^{(i)}, y^{(i)}) \}_{i=1}^n,\)</span> where each <span class="math">\(x^{(i)}\)</span> is a 2-dimensional feature and <span class="math">\(y^{(i)}\)</span> is a 2-dimensional label.
+He uses a squared-error loss function for training the neural network.</p>
+<p><br><img src="assets/optimization/make_kim_nn.png" width=90%></p>
+<p>The computation of the neural network is described by the following:
+<span class="math">\(A^0 = X,~~~Z^l = W^{l^T}A^{l-1} + W_{0}^l,~~~A^l = f^l(Z^l),~~~g=A^4.\)</span></p>
+<p>a) Following the above construction, Kim wants to derive the formula for back-propagation.
+Kim derives the gradient of the loss function with respect to weight <span class="math">\(W^{1}\)</span> as:</p>
+<div class="math">$$
+\frac{\partial \mathcal{L}(g,y)}{\partial W^{1}} =
+    \frac{\partial Z^1}{\partial W^1}.
+    \left(
+    \frac{\partial A^1}{\partial Z^1} \cdot
+    \frac{\partial Z^2}{\partial A^1} \cdot
+    \frac{\partial A^2}{\partial Z^2} \cdot
+    \frac{\partial Z^3}{\partial A^2} \cdot
+    \frac{\partial A^3}{\partial Z^3} \cdot
+    \frac{\partial Z^4}{\partial A^3} \cdot
+    \frac{\partial g}{\partial Z^4} \cdot
+    \frac{\partial \mathcal{L}(g,y)}{\partial g} 
+    \right)^T
+$$</div>
+<p>Provide equations for the following factors in the equation above.</p>
+<p>Hint: please check the shape of each term to make sure the matrix multiplications are valid.</p>
+<div class="math">$$
+\begin{align*}
+    \frac{\partial Z^1}{\partial W^1} &amp;=  \hspace{20ex}
+    \frac{\partial A^1}{\partial Z^1} &amp;=  \hspace{20ex}\\
+    \frac{\partial g}{\partial Z^4} &amp;=  \hspace{20ex}
+    \frac{\partial \mathcal{L}}{\partial g} &amp;=\hspace{20ex}
+\end{align*}
+$$</div>
+<p><strong>Answer</strong>:</p>
+<div class="math">$$
+\begin{aligned}
+    &amp;\frac{\partial Z^1}{\partial W^1} = X \hspace{15ex} \frac{\partial A^1}{\partial Z^1} = \text{diag} (v), \text{ where }v_i = \frac{\partial \text{ReLU} (z_i)}{\partial z_i} \\ 
+    &amp;\frac{\partial g}{\partial Z^4} = I \hspace{17ex} \frac{\partial \mathcal{L}}{\partial g} = 2(g - y) 
+\end{aligned}
+$$</div>
+<p>Formally, <span class="math">\(\frac{\partial Z^1}{\partial W^1}\)</span> is a vector-to-matrix derivative, which produces a tensor. However, the sparse structure of the tensor allows it to collapse into a matrix <span class="math">\(X\)</span>. (More details can be found in the lecture notes.)</p>
+<p>b) Kim next looks to find the gradient with respect to the offsets to the first layer, <span class="math">\(W_0^1.\)</span> Write out the equation for <span class="math">\(\frac{\partial \mathcal{L}(g,y)}{\partial W_0^{1}},\)</span> and identify which factors are shared with the equation for <span class="math">\(\frac{\partial \mathcal{L}(g,y)}{\partial W^{1}}.\)</span></p>
+<p><strong>Explanation</strong>:</p>
+<div class="math">$$
+\frac{\partial \mathcal{L}(g,y)}{\partial W^{1}_0} =
+        \frac{\partial Z^1}{\partial W^1_0}.
+        \underbrace{
+        \frac{\partial A^1}{\partial Z^1} \cdot
+        \frac{\partial Z^2}{\partial A^1} \cdot
+        \frac{\partial A^2}{\partial Z^2} \cdot
+        \frac{\partial Z^3}{\partial A^2} \cdot
+        \frac{\partial A^3}{\partial Z^3} \cdot
+        \frac{\partial Z^4}{\partial A^3} \cdot
+        \frac{\partial g}{\partial Z^4} \cdot
+        \frac{\partial \mathcal{L}(g,y)}{\partial g} 
+    }_{\text{Shared}}
+$$</div>
+<h1><strong>Problem 2</strong> Backpropagation</h1>
+<p>Remember, we developed a general approach to specifying an <span class="math">\(L\)</span>-layer neural networks, both the <strong>forward</strong> pass that takes an input <span class="math">\(x\)</span> and produces a final output, and the <strong>backward</strong> pass that computes gradients of a loss function relative to the weights.   We do this by treating the network as being made up of multiple <strong>layers</strong>, each of which can be broken down into two modules:</p>
+<ul>
+<li>A <strong>linear</strong> module that implements a linear transformation: <span class="math">\(z_j = (\sum_{i=1}^{m} x_i w_{i,j}) + {w_0}_j\)</span> specified by a weight matrix <span class="math">\(W\)</span> and a bias vector <span class="math">\(W_0\)</span>.  The output is <span class="math">\([z_1, \ldots, z_n]^T\)</span>.</li>
+<li>An <strong>activation</strong> module that applies an activation function to the outputs of the linear module for some activation function <span class="math">\(f\)</span>, such as sigmoid or ReLU in the hidden layers or softmax (see below) at the output layer.  We write the output as: : <span class="math">\([f(z_1), \ldots, f(z_m)]^T\)</span>, although technically, for some activation functions such as softmax, each output will depend on all the <span class="math">\(z_i\)</span>, not just one.</li>
+</ul>
+<p>We will use the following notation for quantities in a network:</p>
+<ul>
+<li>Inputs to the network are <span class="math">\(x_1, \ldots, x_d\)</span>.</li>
+<li>Number of layers is <span class="math">\(L\)</span></li>
+<li>The weight matrix for layer <span class="math">\(l\)</span> is <span class="math">\(W^l\)</span>, an <span class="math">\(m^l \times n^l\)</span> matrix, and the bias vector (offset) is <span class="math">\(W_0^l\)</span>, an <span class="math">\(n^l \times 1\)</span> vector</li>
+<li>There are <span class="math">\(m^l\)</span> inputs to layer <span class="math">\(l\)</span></li>
+<li>There are <span class="math">\(n^l = m^{l+1}\)</span> outputs from layer <span class="math">\(l\)</span></li>
+<li>The outputs of the linear module for layer <span class="math">\(l\)</span> are known as <b>pre-activation</b> values and denoted <span class="math">\(z^l\)</span></li>
+<li>The activation function at layer <span class="math">\(l\)</span> is <span class="math">\(f^l(\cdot)\)</span></li>
+<li>Layer <span class="math">\(l\)</span> activations are <span class="math">\(a^l = [f^l(z^l_1), \ldots, f^l(z^l_{n^l})]^T\)</span></li>
+<li>The output of the network is the values <span class="math">\(a^L = [f^L(z^L_1), \ldots, f^L(z^L_{n^L})]^T\)</span></li>
+<li>Loss function <span class="math">\(Loss(a, y)\)</span> measures the loss of output values <span class="math">\(a\)</span> when the target is <span class="math">\(y\)</span></li>
+</ul>
+<!-- * There are <strong>$b$ data points</strong>  (we've seen the notation as $n$ datapoints before, but now $n$ is used for number of layer outputs) -->
+
+<p>Here is an illustrative picture of just a single layer for you to visualize while thinking about dimensions. Go through the above bullets and make sure you understand each set of notations and/or dimensions. Why should <span class="math">\(n^l =  m^{l+1}\)</span>? Given the dimensions for the input and output of a layer, can you see why <span class="math">\(W^l\)</span> has the dimensions that it does?</p>
+<div class="inline_imgs">
+<center>
+<img src="assets/optimization/single_layer_with_z_notation.png" width=40%>
+</center>
+</div>
+
+<p>Here is another illustrative picture that illustrates multiple layers:</p>
+<div class="inline_imgs" style="background-color: white">
+<center>
+<img src="assets/optimization/nn_notation_new.png" width=100%>
+</center>
+</div>
+
+<ul>
+<li><p>Each linear module has a <code>forward</code> method that takes in a column
+vector of activations <span class="math">\(A\)</span> (from the previous layer) and returns a
+column vector <span class="math">\(Z\)</span> of pre-activations; it also stores its input or
+output vectors for use by other methods (e.g., for subsequent
+backpropagation).</p>
+</li>
+<li><p>Each activation module has a <code>forward</code> method that takes in a column
+vector of pre-activations <span class="math">\(Z\)</span> and returns a column vector <span class="math">\(A\)</span> of
+activations; it also stores its input or output vectors for use by
+other methods (e.g., for subsequent backpropagation).</p>
+</li>
+<li><p>Each linear module has a <code>backward</code> method that takes in a
+column vector <span class="math">\(\frac{\partial Loss}{\partial Z}\)</span> and returns a column
+vector <span class="math">\(\frac{\partial Loss}{\partial A}\)</span>.  This module also computes
+and stores <span class="math">\(\frac{\partial Loss}{\partial W}\)</span> and $\frac{\partial
+Loss}{\partial W_0}$, the gradients with respect to the weights.</p>
+</li>
+<li><p>Each activation module has a <code>backward</code> method that takes in a
+column vector <span class="math">\(\frac{\partial Loss}{\partial A}\)</span> and returns a column
+vector <span class="math">\(\frac{\partial Loss}{\partial Z}\)</span>.</p>
+</li>
+</ul>
+<p>The backpropagation algorithm will consist of:</p>
+<ul>
+<li><p>Calling the <code>forward</code> method of each module in turn, feeding
+the output of one module as the input to the next; starting with the
+input values of the network.  After this pass, we have a predicted
+value for the final network output.</p>
+</li>
+<li><p>Calling the <code>backward</code> method of each module in reverse
+order, using the returned value from one module as the input value of
+the previous one. The starting value for the backward method is
+<span class="math">\(\partial Loss(a^L, y)/\partial a^L\)</span>, where <span class="math">\(a^L\)</span> is the activation of
+the final layer (computed during the forward pass) and <span class="math">\(y\)</span> is the
+desired output (the label).</p>
+</li>
+</ul>
+<h2>Linear Module</h2>
+<p>The <code>forward</code> method, given <span class="math">\(A\)</span> from the previous layer, implements:</p>
+<div class="math">$$
+Z = W^T A  + W_0
+$$</div>
+<p>and stores the input <span class="math">\(m^l \times 1\)</span> input <span class="math">\(A\)</span> to be used by the <code>backward</code> method (please refer to the glossary above for the definitions of <span class="math">\(m^l\)</span> and other variables).</p>
+<p>The following questions ask for a matrix expression involving any of <code>A</code>, <code>Z</code>, <code>dLdA</code>, <code>dLdZ</code>,<code>W</code> and <code>W_0</code>.</p>
+<p>a) The <code>backward</code> method, given  <span class="math">\({\tt dLdZ} = \frac{\partial Loss}{\partial Z}\)</span>  (<span class="math">\(n^l \times 1\)</span> vector), returns
+<span class="math">\({\tt dLdA} = \frac{\partial Loss}{\partial A}\)</span>  (<span class="math">\(m^l \times 1\)</span> vector),  which is passed to the previous activation module in the neural network:
+$ \frac{\partial Loss}{\partial A} = \frac{\partial Z}{\partial A} \frac{\partial Loss}{\partial Z}$.</p>
+<p>Compute <span class="math">\(dLdA\)</span> =</p>
+<p><strong>Answer</strong>: W@dLdZ.</p>
+<p><strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align}
+Z &amp;= W^T A  + W_0\\
+\frac{\partial Z}{\partial A} &amp;= \left(W^T\right)^T = W.
+\end{align}
+$$</div>
+<p>For <span class="math">\({\tt dLdA}\)</span> to be an <span class="math">\(m^l \times 1\)</span> matrix, we have <span class="math">\(W\)</span>, which is
+<span class="math">\(m^l \times n^l\)</span>, and <span class="math">\(({\tt dLdZ})\)</span>, which is <span class="math">\(n^l \times 1\)</span>.</p>
+<p>b) The <code>backward</code> method, given <span class="math">\({\tt dLdZ} = \frac{\partial Loss}{\partial Z}\)</span>, also computes <span class="math">\({\tt dLdW}\)</span> (<span class="math">\(m^l \times n^l\)</span> matrix) and stores it in the module instance.</p>
+<p><span class="math">\({\tt dLdW} =  \frac{\partial Loss}{\partial W} =  \frac{\partial Z}{\partial W} \frac{\partial Loss}{\partial Z} \)</span>.<br />
+Compute <span class="math">\(dLdW\)</span> =</p>
+<p><strong>Answer</strong>: <span class="math">\(A@dLdZ^T\)</span>.</p>
+<p><strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align}
+Z &amp;= W^T A  + W_0\\
+\frac{\partial Z}{\partial W} &amp;= A.
+\end{align}
+$$</div>
+<p>For <span class="math">\({\tt dLdW}\)</span> to be an <span class="math">\(m^l \times n^l\)</span> matrix, we have <span class="math">\(A\)</span>, which is <span class="math">\(m^l \times 1\)</span>, and <span class="math">\(({\tt dLdZ})^T\)</span>, which is <span class="math">\(1 \times n^l\)</span>.</p>
+<!-- TODO: include? -->
+
+<p>A full explaination from LA Grace Tian Spring 2025:</p>
+<p>Technically the gradient is a &quot;3-dimensional object&quot;. In this special case with the linear relationship, we can also just think of the gradient as a vector. This is because it happens that we can &quot;collapse&quot; the gradient into a vector since many of the terms in the extra dimension have no dependence. The result for the gradient happens to be <span class="math">\(A\)</span> &quot;multiplied by&quot; an identity matrix. </p>
+<p>To see this, below is the written out where <span class="math">\(W\)</span> is <span class="math">\(2 \times 2\)</span>:</p>
+<p>Let</p>
+<div class="math">$$
+W = \begin{bmatrix} W^{00} &amp; W^{01} \\ W^{10} &amp; W^{11} \end{bmatrix}, \quad A = \begin{bmatrix} A^0 \\ A^1 \end{bmatrix}, \quad W_0 = \begin{bmatrix} W_0^0 \\ W_0^1 \end{bmatrix}.
+$$</div>
+<p>Then,</p>
+<div class="math">$$
+z = W^T A + W_0 = \begin{bmatrix} W^{00} &amp; W^{10} \\ W^{01} &amp; W^{11} \end{bmatrix} \begin{bmatrix} A^0 \\ A^1 \end{bmatrix} + \begin{bmatrix} W_0^0 \\ W_0^1 \end{bmatrix}.
+$$</div>
+<div class="math">$$
+= \begin{bmatrix} W^{00} A^0 + W^{10} A^1 + W_0^0 \\ W^{01} A^0 + W^{11} A^1 + W_0^1 \end{bmatrix}
+$$</div>
+<p>Then we can calculate the gradient components:</p>
+<div class="math">$$
+\frac{\partial z}{\partial W^{00}} = \begin{bmatrix} A^0 \\ 0 \end{bmatrix}, \quad
+\frac{\partial z}{\partial W^{01}} = \begin{bmatrix} 0 \\ A^0 \end{bmatrix}
+$$</div>
+<div class="math">$$
+\frac{\partial z}{\partial W^{10}} = \begin{bmatrix} A^1 \\ 0 \end{bmatrix}, \quad
+\frac{\partial z}{\partial W^{11}} = \begin{bmatrix} 0 \\ A^1 \end{bmatrix}
+$$</div>
+<p>Thus, the full gradient matrix is:</p>
+<div class="math">$$
+\frac{\partial z}{\partial W} =
+\begin{bmatrix}
+\begin{bmatrix} A^0 \\ 0 \end{bmatrix} &amp; \begin{bmatrix} A^1 \\ 0 \end{bmatrix} \\
+\begin{bmatrix} 0 \\ A^0 \end{bmatrix} &amp; \begin{bmatrix} 0 \\ A^1 \end{bmatrix}
+\end{bmatrix}
+$$</div>
+<p>'''</p>
+<p>c) The last part of the <code>backward</code> method is to compute and store <span class="math">\({\tt dLdW0}\)</span> (an <span class="math">\(n^l \times 1\)</span> vector).
+<span class="math">\({\tt dLdW0} = \frac{\partial Loss}{\partial W_0} =  \frac{\partial Z}{\partial W_0} \frac{\partial Loss}{\partial Z}\)</span>.<br />
+Compute <span class="math">\(dLdW\)</span> =</p>
+<p><strong>Answer</strong>: <span class="math">\(dLdZ\)</span>.</p>
+<p><strong>Explanation</strong>: Note that</p>
+<div class="math">$$
+\begin{align}
+\frac{\partial Z}{\partial W_0} &amp;=
+\begin{bmatrix}
+\partial z_1^l/\partial w^l_{0,1} &amp; \cdots &amp; \partial z_{n^l}^l/\partial w_{0, 1}^l\\
+\vdots &amp; \ddots &amp; \vdots\\
+\partial z_{1}^l/\partial w^l_{0,n^l} &amp; \cdots &amp; \partial z_{n^l}^l/\partial w_{0, n^l}^l
+\end{bmatrix}
+= \begin{bmatrix}
+1 &amp; \cdots &amp; 0\\
+\vdots &amp; \ddots &amp; \vdots\\
+0 &amp; \cdots &amp; 1
+\end{bmatrix}
+= I_{n^l}.
+\end{align}
+$$</div>
+<p>We will use <code>dLdW</code> and <code>dLdW0</code> as the gradient values in SGD.</p>
+<h2>Activation Module</h2>
+<p>Activation modules don't have any weights to update and so they are simpler.</p>
+<p>The <code>forward</code> method for functions like <em>sigmoid</em> or <em>tanh</em>, given
+<span class="math">\(Z\)</span>, return the function on the vector, <strong>component wise</strong>.  <em>Softmax</em>
+operates on the whole vector, as described in homework 4, and will need some special treatment.</p>
+<p>The <code>backward</code> method, given <span class="math">\({\tt dLdA} = \frac{\partial Loss}{\partial A}\)</span>,
+returns:</p>
+<div class="math">$$
+dLdZ = \frac{\partial Loss}{\partial Z} = \frac{\partial A}{\partial Z} \frac{\partial
+Loss}{\partial A}.
+$$</div>
+<p>In this case, <span class="math">\(m^l = n^l\)</span> and the quantities are column vectors of that size.</p>
+<p>For softmax $ = SM(Z)$ at the output layer and assuming that we are
+using <em>NLL</em> as the <span class="math">\(Loss(A, Y)\)</span> function, we have seen that there is a
+simple form for <span class="math">\({\tt dLdZ} = \frac{\partial Loss}{\partial Z}\)</span>;
+namely, it is the prediction error <span class="math">\(A - Y\)</span>.  A similar result holds
+when using <em>NLL</em> with a sigmoid output activation or a quadratic loss
+with a linear output activation.</p>
+<p>No question here, but please read as this information will be helpful!</p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

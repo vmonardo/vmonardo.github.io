@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Modeling Answers</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <style>
+                ul {
+                list-style: none;
+                padding-left: 0;
+                }
+            </style>
+            <a href="/web-html/exercises.html" class="back-link">← Back to Exercises</a>
+            <a href="index.html" class="back-link">← Back to Modeling</a>
+            <h2>Modeling - Answers</h2>
+            
+            <div class="markdown-content">
+                <!-- metric design -->
+
+<ol>
+<li>For the classification example (+ points and - points) from the lecture, what does the training loss measure?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>How well the line separates the datapoints</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Only count number of + points that are incorrectly classified</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Count number of - points that are correctly classified</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Number of + points that are incorrectly classified and - points that are incorrectly classified</li>
+</ul>
+<p><strong>Explanation</strong>: The training loss measure how well the line separates + points from - points, by calculating the number of + points that are incorrectly classified and number of - points that are incorrectly classified.</p>
+<ol start="2">
+<li>Why using only number of mistakes to calculate the loss might not be enough in this example?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Number of mistakes does not say anything about how good the line is</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Leaves ambiguity between lines that classify all points correctly</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Might want to have a separator that has largest distance from all points</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<p><strong>Explanation</strong>: As was shown in the lecture, the line in second and third graphs both made no mistakes, so based on our loss they are both perfectly fine. However, this leaves ambiguity on which line is better, even though, intuitively, we would prefer third line because it has the biggest margin (empty space).</p>
+<hr />
+<p><img src="assets/sizevcost.png" alt="Size vs cost example for data points (10, 23),(20,25),(30,35),(40,36),(45,40.5), where blue line f(size) is line satisfying equation y=0.5x+18 and orange line g(size) is line satisfying equation y=x+5" /></p>
+<ol start="3">
+<li>For the above size vs cost of an apartment example, calculate the loss for the orange line g(size) satisfying the equation y = x+5 using the least squares loss.</li>
+</ol>
+<p><strong>Answer</strong>: 47.05.</p>
+<p><strong>Explanation</strong>: The formula for least squares loss is <span class="math">\(\varepsilon(f, \{(x_i, y_i)\}_{i=1}^N) := \frac{1}{N} \sum_{i=1}^N (f(x_i) - y_i)^2\)</span>. We have N = 5 data points: (10, 23),(20,25),(30,35),(40,36),(45,40.5). For these data points, the orange line predicts following outputs:<br />
+<span class="math">\(g(x_1) = g(10) = 10+5 = 15\)</span>,<br />
+<span class="math">\(g(x_2) = g(20) = 20+5 = 25\)</span>,<br />
+<span class="math">\(g(x_3) = g(30) = 30+5 = 35\)</span>,<br />
+<span class="math">\(g(x_4) = g(40) = 40+5 = 45\)</span>,<br />
+<span class="math">\(g(x_5) = g(45) = 45+5 = 50\)</span>.<br />
+Plugging these values in, we get <span class="math">\(\varepsilon(f, \{(x_i, y_i)\}_{i=1}^N) := \frac{1}{N} \sum_{i=1}^N (f(x_i) - y_i)^2 = \frac{1}{5} ((15-23)^2 + (25-25)^2 + (35-35)^2 + (45-36)^2 + (50-40.5)^2) = 47.05\)</span></p>
+<ol start="4">
+<li>For the above size vs cost of an apartment example, calculate the loss for the blue line f(size) satisfying the equation y = 0.5x+18 using the least squares loss.</li>
+</ol>
+<p><strong>Answer</strong>: 3.4.</p>
+<p><strong>Explanation</strong>: Similarly to the previous problem, the formula for least squares loss is <span class="math">\(\varepsilon(f, \{(x_i, y_i)\}_{i=1}^N) := \frac{1}{N} \sum_{i=1}^N (f(x_i) - y_i)^2\)</span>. We have N = 5 data points: (10, 23),(20,25),(30,35),(40,36),(45,40.5). For these data points, the orange line predicts following outputs:<br />
+<span class="math">\(g(x_1) = f(10) = 0.5*10+18 = 23\)</span>,<br />
+<span class="math">\(g(x_2) = f(20) = 0.5*20+18 = 28\)</span>,<br />
+<span class="math">\(g(x_3) = f(30) = 0.5*30+18 = 33\)</span>,<br />
+<span class="math">\(g(x_4) = f(40) = 0.5*40+18 = 38\)</span>,<br />
+<span class="math">\(g(x_5) = f(45) = 0.5*45+18 = 40.5\)</span>.<br />
+Plugging these values in, we get <span class="math">\(\varepsilon(f, \{(x_i, y_i)\}_{i=1}^N) := \frac{1}{N} \sum_{i=1}^N (f(x_i) - y_i)^2 = \frac{1}{5} ((23-23)^2 + (28-25)^2 + (33-35)^2 + (38-36)^2 + (40.5-40.5)^2) = 3.4\)</span>.</p>
+<p>Note: distinct loss for each line that is found</p>
+<ol start="5">
+<li>If the goal is to find a line that minimizes the loss, which of the two lines would you prefer?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Orange line because it has better fit</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Orange line because it has smaller loss</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Blue line because it passes through more points</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Blue line because it has smaller loss</li>
+</ul>
+<p><strong>Explanation</strong>: Blue has smaller loss 3.4 &lt; 47.05, and is visually a better fit to the points we have.<br />
+Note: there is no way to fit a line exactly through all the points, but we still get a pretty small loss</p>
+<hr />
+<ol start="6">
+<li>How does the type of loss function affect the resulting model behavior?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Has no effect</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Depending on type of loss get different effects</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Always causes the best model to be found</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<p><strong>Explanation</strong>: While the type of loss affects the resulting model behavior, we cannot guarantee that the best model will always be found as we will discuss in later classes.</p>
+<ol start="7">
+<li>What are some considerations that need to be made when designing a loss function?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>The loss function should reward models that generalize better</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>The loss function needs to penalize correct predictions</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>The loss function should reward models resilient to noisy inputs</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>The loss function should not penalize fairness</li>
+</ul>
+<p><strong>Explanation</strong>: We want the loss to penalize incorrect predictions. Other considerations are capturing whether model can make good predictions on unseen data, whether model works equally well across different subpopulations, whether model is resilient to noisy/unexpected input, and potentially how interpretable the model is.</p>
+<hr />
+<ol start="8">
+<li>What are the differences between the train set, validation set, and test set?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Test set is used with the loss to find best line</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Training set is used with the loss to find best line</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Validation set used to do pseudo-test for model generalization</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Test set used to evaluate the model generalization</li>
+</ul>
+<p><strong>Explanation</strong>: As discussed in lecture, training set is used to specify/find best parameters, based on specified loss. Validation set is then used to do a &quot;fake&quot; test on whether found model has potential to generalize (more on this in future lectures). Finally, Test set is used to do final evaluation of a model to test how well it generalizes to unseen data.</p>
+<hr />
+<ol start="9">
+<li>What is the difference between parametric and nonparametric models?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Parametric models make some assumptions about the data, and their complexity does not depend on the size of the training data</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Non-parametric models make no assumptions about the underlying data, and their complexity depends on the size of the training data</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Non-parametric models make some assumptions about the data, and their complexity depends on the size of the training data</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Parametric models make no assumptions about the underlying data, and their complexity does not depend on the size of the training data</li>
+</ul>
+<p><strong>Explanation</strong>:<br />
+Parametric models make some assumptions about the data. Given these assumptions, we find parameters for the model, and make future predictions using the found parameters. Because the number of parameters does not depend on data size, complexity of parametric models does not depend on the size of the training data.<br />
+Non-parametric models, on the other hand, make no assumptions about the underlying data, and complexity of these models depends on data size and nature of the data.</p>
+<hr />
+<p><img src="assets/points.png" alt="Data points (-3,25),(-4,30),(-4.5,35),(-3,20),(-2,13),(0,9),(1,10),(2,15),(3,20),(4,25),(5,26),(8,25), (9,20),(10,10),(12,0),(-3.5,28),(-2.5,17),(-1,10), (1.5,12),(7,26),(8.5,23),(9.5,15),(10.5,5), (1.5,11),(7,25),(8.5,22),(9.5,18),(10.5,2), (9,21),(10,8),(12,-1),(-3.5,23),(-2.5,15),(-1,12),(10.1,6),(9.1,13)" />
+10. For the above dataset, which of the following shapes would be a good fit (describes the points the best)?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Line</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Quadratic function</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Cubic function</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<p><strong>Explanation</strong>: The given datapoints most closely follow a cubic function as can be seen in the image below.</p>
+<p><img src="assets/point_line.png" alt="Cubic function approximately passing through Data points (-3,25),(-4,30),(-4.5,35),(-3,20),(-2,13),(0,9),(1,10),(2,15),(3,20),(4,25),(5,26),(8,25), (9,20),(10,10),(12,0),(-3.5,28),(-2.5,17),(-1,10), (1.5,12),(7,26),(8.5,23),(9.5,15),(10.5,5), (1.5,11),(7,25),(8.5,22),(9.5,18),(10.5,2), (9,21),(10,8),(12,-1),(-3.5,23),(-2.5,15),(-1,12),(10.1,6),(9.1,13)" /></p>
+<hr />
+<ol start="11">
+<li>In bias variance trade-off, what is the difference between bias and variance?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Bias is error from over simplistic model</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Bias is error from a complex (over-sensitive) model</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Variance is error from over simplistic model</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Variance is error from a complex (over-sensitive) model</li>
+</ul>
+<p><strong>Explanation</strong>: Bias captures error from having a model that is too simplistic. Variance captures error from having a model that is overly complicated. We want to have a model that is neither too simple nor too complicated.</p>
+<ol start="12">
+<li>In bias variance trade-off, what do we want to achieve?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Maximal bias</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Maximal variance</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Minimal bias</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Minimal variance</li>
+</ul>
+<p><strong>Explanation</strong>: We want to achieve both minimal bias and variance, because we want a model that is simple enough to be interpretable but also complicated enough to actually perform well on a given task (more on this in future lectures).</p>
+<hr />
+<ol start="13">
+<li>What is the main goal of representation learning?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Transformation of features that makes it easy for downstream models to train</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Transformation of features that makes it hard for downstream models to train</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Transformation of features that makes it easy for downstream models to test</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Transformation of features that makes it hard for downstream models to test</li>
+</ul>
+<p><strong>Explanation</strong>: Representation learning tries to find a transformation of features that somehow captures the underlying information of the features and helps to make it easier for downstream models to train.</p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Optimization Answers</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <style>
+                ul {
+                list-style: none;
+                padding-left: 0;
+                }
+            </style>
+            <a href="/web-html/exercises.html" class="back-link">← Back to Exercises</a>
+            <a href="index.html" class="back-link">← Back to Optimization</a>
+            <h2>Optimization - Answers</h2>
+            
+            <div class="markdown-content">
+                <ol>
+<li>For parametric modeling, we have been studying the following setting <span class="math">\(y = f_\theta(x)\)</span>. What is the main goal we are trying to achieve by running a learning algorithm?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Find <span class="math">\(\theta\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find a loss function</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find a model that would fit well both the training and unseen data</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find y</li>
+</ul>
+<p><strong>Explanation</strong>: By running the learning algorithm we want to find <span class="math">\(\theta\)</span>, which will in turn correspond to a particular model.</p>
+<ol start="2">
+<li>Based on what criteria does the Gradient Descent find <span class="math">\(\theta\)</span>?<br />
+(b) <span class="math">\(\theta\)</span> that minimizes the loss function</li>
+</ol>
+<p><strong>Explanation</strong>: In gradient descent, we try to find <span class="math">\(\theta\)</span> that would minimize the loss function value on the training data.</p>
+<ol start="3">
+<li>What is the main step in the Gradient Descent algorithm that helps find <span class="math">\(\theta\)</span> that minimizes the loss function <span class="math">\(\mathcal{L}(\theta)\)</span>?<br />
+(b) <span class="math">\(\theta_{k+1} \leftarrow \theta_{k} - \eta \nabla \mathcal{L}(\theta_k)\)</span></li>
+</ol>
+<p><strong>Explanation</strong>: To minimize the loss we move <span class="math">\(\theta_k\)</span> in the opposite direction of the gradient of the loss function.</p>
+<ol start="3">
+<li>If we wanted to maximize the loss instead, what would be the main step in the Gradient Descent algorithm that would help find <span class="math">\(\theta\)</span> that maximizes the loss function <span class="math">\(\mathcal{L}(\theta)\)</span>?<br />
+(d) <span class="math">\(\theta_{k+1} \leftarrow  \theta_{k} + \eta \nabla \mathcal{L}(\theta_k)\)</span></li>
+</ol>
+<p><strong>Explanation</strong>: To maximize the loss we need to move <span class="math">\(\theta_k\)</span> in the direction of the gradient of the loss function because it &quot;points&quot; to the maximal direction of the loss.</p>
+<hr />
+<ol start="4">
+<li>The following graphs depict steps taken in the gradient descent algorithm for the loss function <span class="math">\(L(\theta) = \frac{1}{n}\sum_{i=1}^n (x^{(i)} \cdot \theta - y^{(i)})^2\)</span></li>
+</ol>
+<p>Graph A             |  Graph B | Graph C
+:-------------------------:|:-------------------------:|:-------------------------:
+<img src="assets/graph_1.png" alt="Graph 1: reaches minimum" />  |  <img src="assets/graph_2.png" alt="Graph 2: does not reach minimum" /> | <img src="assets/graph_3.png" alt="Graph 3: oscillates" /></p>
+<p>Assuming the only parameter that changed across the runs of the gradient descent is the learning rate used, match the graphs to the magnitude of the learning rate.</p>
+<p><strong>Graph A</strong><br />
+(c) The step size is just right.</p>
+<p><strong>Graph B</strong><br />
+(b) The step size is too small.</p>
+<p><strong>Graph C</strong><br />
+(a) The step size is too big.</p>
+<p><strong>Explanation</strong>: First graph depicts the minimal loss being reached, so the learning rate is neither too small nor too big. In the second graph, we never reach the minimum value. Given that nothing other than the learning rate changed from the run of Graph A, the slow movement towards the minimum must be caused be the step size being too small. In the third graph, we oscillate and diverge from the minimum value. Given that nothing other than the learning rate changed from the run of Graph A, the big steps away from the minimum must be caused by the step size being too big.</p>
+<hr />
+<ol start="5">
+<li>For <span class="math">\(l(\theta) = (e^{-\theta \cdot x} - y)^2\)</span>, where <span class="math">\(\theta = \begin{bmatrix} \theta_1 \\ \theta_2 \end{bmatrix}\)</span>, <span class="math">\(x = \begin{bmatrix} 1 \\ 1 \end{bmatrix}\)</span>, and <span class="math">\(y = 1\)</span>, calculate the gradient of <span class="math">\(l(\theta)\)</span> with respect to <span class="math">\(\theta_1\)</span> as you would do in calculus class.</li>
+</ol>
+<p>(a) <span class="math">\(2 \cdot (e^{-\theta \cdot x} - y) \cdot (-1) \cdot e^{-\theta \cdot x}\)</span></p>
+<p><strong>Explanation</strong>: By using chain rule, we can calculate <span class="math">\(\frac{\partial l(\theta)}{ \partial \theta_1} = \frac{(\partial e^{-\theta \cdot x} - y)^2}{ \partial \theta_1} = \frac{\partial (e^{-\theta \cdot x} - y)^2}{ \partial (e^{-\theta \cdot x} - y)} \cdot \frac{\partial (e^{-\theta \cdot x} - y)}{ \partial \theta_1} = 2 \cdot (e^{-\theta \cdot x} - y) \cdot \frac{\partial e^{-\theta \cdot x} - y}{ \partial \theta \cdot x} \cdot \frac{\partial \theta \cdot x}{ \partial \theta_1} = 2 \cdot (e^{-\theta \cdot x} - y) \cdot (-1) \cdot (e^{-\theta \cdot x}) \cdot \frac{\partial \theta \cdot x}{ \partial \theta_1} = 2 \cdot (e^{-\theta \cdot x} - y) \cdot (-1) \cdot (e^{-\theta \cdot x}) \cdot 1 = 2 \cdot (e^{-\theta \cdot x} - y) \cdot (-1) \cdot e^{-\theta \cdot x}\)</span>.</p>
+<ol start="6">
+<li>For the same <span class="math">\(l(\theta) = (e^{-\theta \cdot x} - y)^2\)</span>, where <span class="math">\(\theta = \begin{bmatrix} \theta_1 \\ \theta_2 \end{bmatrix}\)</span>, <span class="math">\(x = \begin{bmatrix} 1 \\ 1 \end{bmatrix}\)</span>, and <span class="math">\(y = 1\)</span>, calculate the gradient of <span class="math">\(l(\theta)\)</span> with respect to <span class="math">\(\theta_2\)</span> as you would do in calculus class.</li>
+</ol>
+<p>(a) <span class="math">\(2 \cdot (e^{-\theta \cdot x} - y) \cdot (-1) \cdot e^{-\theta \cdot x}\)</span></p>
+<p><strong>Explanation</strong>: Similarly, by using chain rule, we can calculate <span class="math">\(\frac{\partial l(\theta)}{ \partial \theta_2} = \frac{(\partial e^{-\theta \cdot x} - y)^2}{ \partial \theta_2} = \frac{\partial (e^{-\theta \cdot x} - y)^2}{ \partial (e^{-\theta \cdot x} - y)} \cdot \frac{\partial (e^{-\theta \cdot x} - y)}{ \partial \theta_2} = 2 \cdot (e^{-\theta \cdot x} - y) \cdot \frac{\partial e^{-\theta \cdot x} - y}{ \partial \theta \cdot x} \cdot \frac{\partial \theta \cdot x}{ \partial \theta_2} = 2 \cdot (e^{-\theta \cdot x} - y) \cdot (-1) \cdot (e^{-\theta \cdot x}) \cdot \frac{\partial \theta \cdot x}{ \partial \theta_2} = 2 \cdot (e^{-\theta \cdot x} - y) \cdot (-1) \cdot (e^{-\theta \cdot x}) \cdot 1 = 2 \cdot (e^{-\theta \cdot x} - y) \cdot (-1) \cdot e^{-\theta \cdot x}\)</span> (note that only the last part mattered for differentiating with respect to <span class="math">\(\theta_1\)</span> vs <span class="math">\(\theta_2\)</span>).</p>
+<hr />
+<ol start="7">
+<li>To do automatic differentiation of <span class="math">\(l(\theta) = (e^{-\theta \cdot x} - y)^2\)</span>, where <span class="math">\(\theta = \begin{bmatrix} \theta_1 \\ \theta_2 \end{bmatrix}\)</span>, <span class="math">\(x = \begin{bmatrix} 1 \\ 1 \end{bmatrix}\)</span>, and <span class="math">\(y = 1\)</span>, which of the following is a valid split of <span class="math">\(l(\theta)\)</span> into simpler pieces?</li>
+</ol>
+<p>(b) <span class="math">\(z_1 = \theta_1\)</span>, <span class="math">\(z_2 = \theta_1\)</span>, <span class="math">\(z_3 = z_1 \cdot 1 + z_2 \cdot 1\)</span>, <span class="math">\(z_4 = -z_3\)</span>, <span class="math">\(z_5 = e^{z_4}\)</span>, <span class="math">\(z_6 = z_5 - 1\)</span>, <span class="math">\(z_7 = (z_6)^2\)</span></p>
+<p><strong>Explanation</strong>: To split the expression <span class="math">\(l(\theta) = (e^{-\theta \cdot x} - y)^2\)</span>, we need to decide what the simplest arithmetic blocks are. For <span class="math">\(\theta = \begin{bmatrix} \theta_1 \\ \theta_2 \end{bmatrix}\)</span>, <span class="math">\(x = \begin{bmatrix} 1 \\ 1 \end{bmatrix}\)</span>, and <span class="math">\(y = 1\)</span>, <span class="math">\(l(\theta) = (e^{-\theta \cdot x} - y)^2 = (e^{\theta_1 + \theta_2} - 1)^2\)</span>, so the simplest arithmetic blocks are <span class="math">\(z_1 = \theta_1\)</span>, <span class="math">\(z_2 = \theta_1\)</span>, <span class="math">\(z_3 = z_1 + z_2\)</span>, <span class="math">\(z_4 = -z_3\)</span>, <span class="math">\(z_5 = e^{z_4}\)</span>, <span class="math">\(z_6 = z_5 - 1\)</span>, <span class="math">\(z_7 = (z_6)^2\)</span>.</p>
+<ol start="8">
+<li>For forward automatic differentiation, which of the following do you need to maintain?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\frac{\partial  z_1}{\partial  \theta_1}, \frac{\partial z_2}{\partial \theta_1}, \frac{\partial z_3}{\partial \theta_1}, \frac{\partial z_4}{\partial \theta_1}, \frac{\partial z_5}{\partial \theta_1}, \frac{\partial z_6}{\partial \theta_1}, \frac{\partial z_7}{\partial \theta_1}\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\frac{\partial z_1}{\partial \theta_2}, \frac{\partial z_2}{\partial \theta_2}, \frac{\partial z_3}{\partial \theta_2}, \frac{\partial z_4}{\partial \theta_2}, \frac{\partial z_5}{\partial \theta_2}, \frac{\partial z_6}{\partial \theta_2}, \frac{\partial z_7}{\partial \theta_2}\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\begin{bmatrix} \frac{\partial z_1}{\partial \theta_1} \\ \frac{\partial z_1}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_2}{\partial \theta_1} \\ \frac{\partial z_2}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_3}{\partial \theta_1} \\ \frac{\partial z_3}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_4}{\partial \theta_1} \\ \frac{\partial z_4}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_5}{\partial \theta_1} \\ \frac{\partial z_5}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_6}{\partial \theta_1} \\ \frac{\partial z_6}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_7}{\partial \theta_1} \\ \frac{\partial z_7}{\partial \theta_2} \end{bmatrix}\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\frac{dl}{dz_1}, \frac{dl}{dz_2}, \frac{dl}{dz_3}, \frac{dl}{dz_4}, \frac{dl}{dz_5}, \frac{dl}{dz_6}, \frac{dl}{dz_7}\)</span></li>
+</ul>
+<p><strong>Explanation</strong>:  For forward automatic differentiation, we need to maintain <span class="math">\(\frac{\partial (\text{intermediate variable})}{\partial (\text{parameter i})}\)</span>, so need to maintain <span class="math">\(\frac{\partial  z_i}{\partial  \theta_j}\)</span> for all possible i and j.</p>
+<p>If you actually compute all these values, you would get the following<br />
+<span class="math">\(\begin{bmatrix} \frac{\partial z_1}{\partial \theta_1} \\ \frac{\partial z_1}{\partial \theta_2} \end{bmatrix} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}, \begin{bmatrix} \frac{\partial z_2}{\partial \theta_1} \\ \frac{\partial z_2}{\partial \theta_2} \end{bmatrix} = \begin{bmatrix} 0 \\ 1 \end{bmatrix}, \begin{bmatrix} \frac{\partial z_3}{\partial \theta_1} \\ \frac{\partial z_3}{\partial \theta_2} \end{bmatrix} = \begin{bmatrix} 1 \\ 1 \end{bmatrix}, \begin{bmatrix} \frac{\partial z_4}{\partial \theta_1} \\ \frac{\partial z_4}{\partial \theta_2} \end{bmatrix} = \begin{bmatrix} -1 \\ -1 \end{bmatrix}, \begin{bmatrix} \frac{\partial z_5}{\partial \theta_1} \\ \frac{\partial z_5}{\partial \theta_2} \end{bmatrix} = \begin{bmatrix} -e^{-z_3} \\ -e^{-z_3} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_6}{\partial \theta_1} \\ \frac{\partial z_6}{\partial \theta_2} \end{bmatrix} = \begin{bmatrix} -e^{-z_3} \\ -e^{-z_3} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_7}{\partial \theta_1} \\ \frac{\partial z_7}{\partial \theta_2} \end{bmatrix} = \begin{bmatrix} -e^{-z_3} \cdot 2z_6 \\ -e^{-z_3} \cdot 2z_6 \end{bmatrix}.\)</span></p>
+<ol start="9">
+<li>What is the final gradient of <span class="math">\(l(\theta)\)</span> with respect to <span class="math">\(\theta_1\)</span>?<br />
+(a) <span class="math">\(\frac{\partial z_7}{\partial \theta_1}\)</span></li>
+</ol>
+<p><strong>Explanation</strong>: <span class="math">\(z_7\)</span> represents the final expression of <span class="math">\(l(\theta)\)</span>, so the the final gradient of <span class="math">\(l(\theta)\)</span> with respect to <span class="math">\(\theta_1\)</span> is equal to <span class="math">\(\frac{\partial z_7}{\partial \theta_1}\)</span>.</p>
+<p>Note: Based on calculation from problem 8, <span class="math">\(\frac{\partial z_7}{\partial \theta_1} = -e^{-z_3} \cdot 2z_6 = -e^{-\theta_1-\theta_2} \cdot 2 \cdot (e^{-\theta_1 - \theta_2} - 1)\)</span> which is the same result as problem 5!</p>
+<ol start="10">
+<li>What is the final gradient of <span class="math">\(l(\theta)\)</span> with respect to <span class="math">\(\theta_2\)</span>?<br />
+(c) <span class="math">\(\frac{\partial z_7}{\partial \theta_2}\)</span><br />
+<strong>Explanation</strong>: Similar to previous problem, since <span class="math">\(z_7\)</span> represents the final expression of <span class="math">\(l(\theta)\)</span>, the the final gradient of <span class="math">\(l(\theta)\)</span> with respect to <span class="math">\(\theta_2\)</span> is equal to <span class="math">\(\frac{\partial z_7}{\partial \theta_2}\)</span>.</li>
+</ol>
+<p>Note: Based on calculation from problem 8, <span class="math">\(\frac{\partial z_7}{\partial \theta_2} = -e^{-z_3} \cdot 2z_6 = -e^{-\theta_1-\theta_2} \cdot 2 \cdot (e^{-\theta_1 - \theta_2} - 1)\)</span> which is the same result as problem 6!</p>
+<hr />
+<ol start="11">
+<li>For backward automatic differentiation, which of the following do you need to maintain?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\frac{\partial  z_1}{\partial  \theta_1}, \frac{\partial z_2}{\partial \theta_1}, \frac{\partial z_3}{\partial \theta_1}, \frac{\partial z_4}{\partial \theta_1}, \frac{\partial z_5}{\partial \theta_1}, \frac{\partial z_6}{\partial \theta_1}, \frac{\partial z_7}{\partial \theta_1}\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\frac{\partial z_1}{\partial \theta_2}, \frac{\partial z_2}{\partial \theta_2}, \frac{\partial z_3}{\partial \theta_2}, \frac{\partial z_4}{\partial \theta_2}, \frac{\partial z_5}{\partial \theta_2}, \frac{\partial z_6}{\partial \theta_2}, \frac{\partial z_7}{\partial \theta_2}\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\begin{bmatrix} \frac{\partial z_1}{\partial \theta_1} \\ \frac{\partial z_1}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_2}{\partial \theta_1} \\ \frac{\partial z_2}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_3}{\partial \theta_1} \\ \frac{\partial z_3}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_4}{\partial \theta_1} \\ \frac{\partial z_4}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_5}{\partial \theta_1} \\ \frac{\partial z_5}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_6}{\partial \theta_1} \\ \frac{\partial z_6}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_7}{\partial \theta_1} \\ \frac{\partial z_7}{\partial \theta_2} \end{bmatrix}\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\frac{dl}{dz_1}, \frac{dl}{dz_2}, \frac{dl}{dz_3}, \frac{dl}{dz_4}, \frac{dl}{dz_5}, \frac{dl}{dz_6}, \frac{dl}{dz_7}\)</span></li>
+</ul>
+<p><strong>Explanation</strong>: For backward automatic differentiation, we need to maintain <span class="math">\(\frac{d \mathcal{L}}{d (\text{intermediate variable i})}\)</span>, so need to maintain <span class="math">\(\frac{\partial  l(\theta)}{\partial  z_i}\)</span> for all possible i.</p>
+<p>If you actually compute all these values, you would get the following<br />
+<span class="math">\(\frac{dl}{dz_7} = 1,\)</span><br />
+<span class="math">\(\frac{dl}{dz_6} = \frac{dl}{dz_7} \cdot \frac{dz_7}{dz_6} = \frac{dl}{dz_7} \cdot 2z_6 = 2z_6,\)</span><br />
+<span class="math">\(\frac{dl}{dz_5} = \frac{dl}{dz_6} \cdot \frac{dz_6}{dz_5} = \frac{dl}{dz_6} \cdot 1 = 2z_6,\)</span><br />
+<span class="math">\(\frac{dl}{dz_4} = \frac{dl}{dz_5} \cdot \frac{dz_5}{dz_4} = \frac{dl}{dz_5} \cdot e^{z_4} = 2z_6 \cdot e^{z_4},\)</span><br />
+<span class="math">\(\frac{dl}{dz_3} = \frac{dl}{dz_4} \cdot \frac{dz_4}{dz_3} = \frac{dl}{dz_4} \cdot (-1) = 2z_6 \cdot e^{z_4} \cdot (-1),\)</span><br />
+<span class="math">\(\frac{dl}{dz_2} = \frac{dl}{dz_3} \cdot \frac{dz_3}{dz_2} = \frac{dl}{dz_3} \cdot 1 = 2z_6 \cdot e^{z_4} \cdot (-1),\)</span><br />
+<span class="math">\(\frac{dl}{dz_1} = \frac{dl}{dz_3} \cdot \frac{dz_3}{dz_1} = \frac{dl}{dz_3} \cdot 1 = 2z_6 \cdot e^{z_4} \cdot (-1)\)</span></p>
+<ol start="12">
+<li>What is the final gradient of <span class="math">\(l(\theta)\)</span> with respect to <span class="math">\(\theta_1\)</span>?<br />
+(b) <span class="math">\(\frac{\partial l}{\partial z_1}\)</span></li>
+</ol>
+<p><strong>Explanation</strong>:  <span class="math">\(z_1 = \theta_1\)</span> so <span class="math">\(\frac{\partial l}{\partial \theta_1}\)</span> = <span class="math">\(\frac{\partial l}{\partial z_1}\)</span>.<br />
+Note: Based on calculation from problem 11, <span class="math">\(\frac{\partial l}{\partial z_1} = 2z_6 \cdot e^{z_4} \cdot (-1) =  2(e^{-\theta_1 - \theta_2} - 1) \cdot e^{-\theta_1-\theta_2} \cdot (-1)\)</span> which is the same result as problem 5 and 9!</p>
+<ol start="13">
+<li>What is the final gradient of l(\theta) wrt \theta_2?<br />
+(c) <span class="math">\(\frac{\partial l}{\partial z_2}\)</span></li>
+</ol>
+<p><strong>Explanation</strong>:  <span class="math">\(z_2 = \theta_2\)</span> so <span class="math">\(\frac{\partial l}{\partial \theta_2}\)</span> = <span class="math">\(\frac{\partial l}{\partial z_2}\)</span>.<br />
+Note: Based on calculation from problem 11, <span class="math">\(\frac{\partial l}{\partial z_2} = 2z_6 \cdot e^{z_4} \cdot (-1) =  2(e^{-\theta_1 - \theta_2} - 1) \cdot e^{-\theta_1-\theta_2} \cdot (-1)\)</span> which is the same result as problem 6 and 10!</p>
+<ol start="14">
+<li>How many values are kept track of for forward automatic differentiation of <span class="math">\(l(\theta)\)</span>?</li>
+</ol>
+<p><strong>Answer</strong>: 14</p>
+<p><strong>Explanation</strong>:  <span class="math">\(\begin{bmatrix} \frac{\partial z_1}{\partial \theta_1} \\ \frac{\partial z_1}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_2}{\partial \theta_1} \\ \frac{\partial z_2}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_3}{\partial \theta_1} \\ \frac{\partial z_3}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_4}{\partial \theta_1} \\ \frac{\partial z_4}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_5}{\partial \theta_1} \\ \frac{\partial z_5}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_6}{\partial \theta_1} \\ \frac{\partial z_6}{\partial \theta_2} \end{bmatrix}, \begin{bmatrix} \frac{\partial z_7}{\partial \theta_1} \\ \frac{\partial z_7}{\partial \theta_2} \end{bmatrix}\)</span>. We've got 7 intermediate parameters and 2 parameters, so the total is 7*2 = 14 values to maintain.</p>
+<ol start="15">
+<li>How many values are kept track of for backward automatic differentiation of <span class="math">\(l(\theta)\)</span>?</li>
+</ol>
+<p><strong>Answer</strong>: 7</p>
+<p><strong>Explanation</strong>:  <span class="math">\(\frac{dl}{dz_1}, \frac{dl}{dz_2}, \frac{dl}{dz_3}, \frac{dl}{dz_4}, \frac{dl}{dz_5}, \frac{dl}{dz_6}, \frac{dl}{dz_7}\)</span>. We've got 7 intermediate parameters, so the total is 7 values to maintain.</p>
+<p>Note: We need to keep track of less values for backward automatic differentiation.</p>
+<hr />
+<ol start="16">
+<li>Is being able to compute the exact gradient of the loss function enough to efficiently run a gradient-based learning algorithm?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Yes, once the gradient is known, we can easily take the gradient descent step</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Yes, exact values will give the most performant model</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>No, calculating the gradient will take a long time if there are too many data points</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No, the model will be bad if there are not enough data points</li>
+</ul>
+<p><strong>Explanation</strong>: Exact values might help to have performant model and learned model might not be good if there are not enough data points. However, neither of these guarantee that the learning algorithm is going to run in a reasonable amount of time. If the training set size is too big, then calculating the gradient <span class="math">\(\nabla \mathcal{L}(\theta_k) = \nabla \frac{1}{N} \sum_{i=1}^N l(f_\theta(x^{(i)}) , y^{(i)})\)</span> is going to take longer. This means running gradient descent as a whole is going to take a lot of time.</p>
+<ol start="17">
+<li>Which of the following are true for batch selection with replacement?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If we sample multiple batches of n data points, all of the data points must be distinct</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>If we sample a batch of n data points, the batch may have only one unique data point</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If we sample a batch of n data points, all n of them must be distinct</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If we sample multiple batches of data points such that the total amount is the size of the dataset, the sample data points must include all of the data points in the dataset</li>
+</ul>
+<p><strong>Explanation</strong>: If we sample a batch with replacement, then each index is drawn with equal probability. This means that an index can be drawn multiple times, i.e. items in the batch need not be unique.</p>
+<ol start="18">
+<li>Which of the following are true for batch selection without replacement?</li>
+</ol>
+<ul>
+<li>[] If we sample multiple batches of n data points, all of the data points must be distinct</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If we sample a batch of n data points, the batch may have only one unique data point</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>If we sample a batch of n data points, all n of them must be distinct</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If we sample multiple batches of data points such that the total amount is the size of the dataset, the sample data points must include all of the data points in the dataset</li>
+</ul>
+<p><strong>Explanation</strong>: If we sample a batch without replacement, then we drawing sets if distinct indices. So within a batch all items must be distinct. However, across batches they need not be distinct.</p>
+<ol start="19">
+<li>Which of the following are true for batch selection with randomized ordering?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>If we sample multiple batches of n data points, all of the data points must be distinct</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If we sample a batch of n data points, the batch may have only one unique data point</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>If we sample a batch of n data points, all n of them must be distinct</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>If we sample multiple batches of data points such that the total amount is the size of the dataset, the sample data points must include all of the data points in the dataset</li>
+</ul>
+<p><strong>Explanation</strong>: If we sample batches with randomized ordering, then we are reading batches from a pre-shuffled dataset. This means all datapoints must be unique and all datapoints must be drawn once all batches are read.</p>
+<ol start="20">
+<li>What are the tradeoffs for big vs small batch size?<br />
+(d) All of the above</li>
+</ol>
+<p><strong>Explanation</strong>:  Smaller batch size means we are approximating the gradient using fewer data points. Because there are fewer points to calculate the gradient over, it takes less time to compute the gradient. However, because there are fewer datapoints, the estimation is rougher. This also means that the calculated value can vary more across different batches compared to having more datapoints (i.e., bigger batch size).</p>
+<hr />
+<!-- Bonus -->
+
+<ol start="21">
+<li>What are additional ways to improve the speed and accuracy of the learning computation?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Change the learning rate value based on how far along the training process we are</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Use Adam (Adaptive Moment Estimation) for faster convergence</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Use Adam (Adaptive Moment Estimation) for slower convergence</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Remove the learning rate value based on how far along the training process we are</li>
+</ul>
+<p><strong>Explanation</strong>: Implementing a learning rate schedule where you change the learning rate based on how far along the training process you are (e.g. bigger rate at the beginning and smaller rate at the end) can help improve the speed the of the learning process (<a href="https://machinelearningmastery.com/a-gentle-introduction-to-learning-rate-schedulers/">here is an interesting article</a> if you would like to learn more).  Adam (Adaptive Moment Estimation) is a gradient-based optimization that helps with faster convergence and gradient stability. This algorithm is often used at the base of most learning algorithms including those you will use in labs using pytorch! (<a href="https://arxiv.org/pdf/1412.6980">here is the original paper describing Adam not that long ago!</a>)</p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

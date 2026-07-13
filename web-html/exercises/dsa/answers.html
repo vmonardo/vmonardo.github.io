@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Dsa Answers</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <style>
+                ul {
+                list-style: none;
+                padding-left: 0;
+                }
+            </style>
+            <a href="/web-html/exercises.html" class="back-link">← Back to Exercises</a>
+            <a href="index.html" class="back-link">← Back to Dsa</a>
+            <h2>Dsa - Answers</h2>
+            
+            <div class="markdown-content">
+                <ol>
+<li>If we wanted a model to tell us whether there is a black dot in the black and white image with 3 pixels, and our training set is ([1, 1, 0], 1) (0 is black, 1 is white, label 1 means there is a black dot), what could an MLP model with no intermediate layers learn?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If the first pixel is 0, then there is a black dot</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>If the third pixel is 0, then there is a black dot</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If one of the pixels is black, then there is a black dot</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>If the second pixel is 0, then there is a black dot</li>
+</ul>
+<p>Training set: <img src="assets/im1.png" alt="the third pixel is black" /></p>
+<p><strong>Explanation</strong>: An MLP with ReLU activation function and given training set could learn that if third pixel is 0 then there is a black dot because this leads to training loss equal to 0 (classifies the training set correctly). While a model that can say &quot;If one of the pixels is black, then there is a black dot&quot; would also training loss equal to 0, an MLP with no intermediate layers cannot model the behavior &quot;check one of is <em>bla</em>&quot; because it is not equivalent to a linearly separable behavior (<a href="https://www.geeksforgeeks.org/artificial-intelligence/how-neural-networks-solve-the-xor-problem/">this article describes in more detail this problem</a>).</p>
+<ol start="2">
+<li>If we give the shifted image [1, 0, 1] to the model, will it predict that there is a dot or not?<br />
+(b)  No</li>
+</ol>
+<p><img src="assets/im2.png" alt="the second pixel is black" /></p>
+<p><strong>Explanation</strong>: the model will look at third pixel, see that it is bigger than 0 and say that there are no dots in the image.</p>
+<ol start="3">
+<li>What are some problems of using MLP for images?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>MLPs have minimal assumptions built into the model</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Nowadays, image sizes are huge, meaning the input size is also big for the MLP</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Need to include shifted images in the training set for the model to generalize</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Nearby pixels are weighted equally to faraway pixels</li>
+</ul>
+<p><strong>Explanation</strong>: All of the above are true. As discussed in the lecture, MLPs have minimal inductive biases and an unrolled image can be 8 billion pixels. Moreover, as we saw in the previous two examples, we need to include shifted images in the training set so the model can recognize them as well. Finally, MLPs have no sense of locality, which means that pixels near a target object weigh just as much as the pixels further away.</p>
+<ol start="4">
+<li>What are the inductive (assumptions built into the model) biases that we want an image-specific model to have?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Faraway pixels should matter as much as the pixels close to the target object</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Shifting an object should not modify the output of the model</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Nearby pixels should matter more in recognizing the target object</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Shifts and translations of an object should make the model produce distinct results</li>
+</ul>
+<p><strong>Explanation</strong>: As discussed in problem 3, we want to be able to recognize shifted objects just as well as the original ones. We also want to capture spatial dependencies since the neighborhood of pixels has semantic meaning.</p>
+<hr />
+<ol start="5">
+<li>For CNN, what layer is introduced into the architecture that was not present in MLP?<br />
+(b) Convolutions replace the linear layers for a part of the network.</li>
+</ol>
+<p><strong>Explanation</strong>: New type of layer being used for CNNs are convolutional layers. These layers typically replace the linear layers.</p>
+<ol start="6">
+<li>In CNN, what object contains learnable parameters for convolution layers?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Kernel.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Filter.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Stride.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Padding.</li>
+</ul>
+<p><strong>Explanation</strong>: Main object containing the learnable parameters is filter or otherwise called kernel. Once the filters are known, we can apply them to the input image and get desired output.</p>
+<ol start="7">
+<li>Apply the following filter [-1, 1] to image [0, 0, 2, 2, 4, 4, 2, 2, 0, 0] with a stride of 1 and no padding?</li>
+</ol>
+<p><strong>Answer</strong>: [0, 2, 0, 2, 0, -2, 0, -2, 0].</p>
+<p><strong>Explanation</strong>: Apply the convolution operation: <span class="math">\([(-1*0 + 1*0), (-1*0 + 1*2), (-1*2 + 1*2), (-1*2 + 1*4), (-1*4+1*4), (-1*4+1*2), (-1*2+1*2), (-1*2 +1*0), (-1*0+0*0)] = [0, 2, 0, 2, 0, -2, 0, -2, 0]\)</span></p>
+<ol start="8">
+<li>What is the shape of your output?</li>
+</ol>
+<p><strong>Answer</strong>: 9.</p>
+<p><strong>Explanation</strong>: Shape of the output from a 1D image and 1D filter with stride 1 is W - F + 2P + 1 = 10 - 2 + 2*0 + 1 = 9 where W is size of the image, F is size of the filter, and P is size of the padding.</p>
+<ol start="9">
+<li>What does the filter seem to do?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Sum adjacent pixels</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Calculate difference between adjacent pixels</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find pairs of pixels where the later value is bigger than the earlier value</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find pairs of adjacent pixels where the right value is bigger than the left value</li>
+</ul>
+<p><strong>Explanation</strong>: Calculate difference between adjacent pixels because for any adjacent pixels <span class="math">\(p_1, p_2\)</span>, the convolution gives <span class="math">\(-1*p_1+1*p_2 = p_2 - p_1\)</span>. To actually output adjacent pixels where the right value is bigger than the left value we need to add a softmax layer and create an actual classifier.</p>
+<ol start="10">
+<li>Apply the following filter [-1, 1] to image [0, 0, 2, 2, 4, 4, 2, 2, 0, 0] with stride of 1 and 1 layer of zero-padding?</li>
+</ol>
+<p><strong>Answer</strong>: [0, 0, 2, 0, 2, 0, -2, 0, -2, 0, 0].</p>
+<p><strong>Explanation</strong>: With a 1 layer of zero-padding the image becomes [0, 0, 0, 2, 2, 4, 4, 2, 2, 0, 0, 0]. Now, apply the convolution operation: <span class="math">\([(-1*0 + 1*0), (-1*0 + 1*0), (-1*0 + 1*2), (-1*2 + 1*2), (-1*2 + 1*4), (-1*4+1*4), (-1*4+1*2), (-1*2+1*2), (-1*2 +1*0), (-1*0+0*0), (-1*0 + 1*0)] = [0, 0, 2, 0, 2, 0, -2, 0, -2, 0, 0]\)</span></p>
+<ol start="11">
+<li>What is the shape of your output?</li>
+</ol>
+<p><strong>Answer</strong>: 11.</p>
+<p><strong>Explanation</strong>: Shape of the output from a 1D image and 1D filter with stride 1 is W - F + 2P + 1 = 10 - 2 + 2*1 + 1 = 11 where W is size of the image, F is size of the filter, and P is size of the padding.</p>
+<ol start="12">
+<li>How does this output differ from output of 7?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Skip every second pixel</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Border pixels are no longer taken into account</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Border pixels are also taken into account</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No change</li>
+</ul>
+<p><strong>Explanation</strong>: Border pixels are also taken into account now because there is enough padding to include those pixels in the convolution operation twice.</p>
+<ol start="13">
+<li>Apply the following filter [-1, 1] to image [0, 0, 2, 2, 4, 4, 2, 2, 0, 0] with stride of 2 and 1 layer of zero-padding?</li>
+</ol>
+<p><strong>Answer</strong>: [0, 2, 2, -2, -2, 0].</p>
+<p><strong>Explanation</strong>: With a 1 layer of zero-padding the image becomes [0, 0, 0, 2, 2, 4, 4, 2, 2, 0, 0, 0]. When a stride of 2 is applied, all we need to do is instead of moving to next pixel to convolve, move two pixels: <span class="math">\([(-1*0 + 1*0), (-1*0 + 1*2), (-1*2 + 1*4), (-1*4+1*2), (-1*2 +1*0), (-1*0 + 1*0)] = [0, 2, 2, -2, -2, 0]\)</span></p>
+<ol start="14">
+<li>What is the shape of your output?</li>
+</ol>
+<p><strong>Answer</strong>: 6.</p>
+<p><strong>Explanation</strong>: Shape of the output from a 1D image and 1D filter is <span class="math">\(\lfloor \frac{W - F + 2P}{S} \rfloor + 1\)</span> = <span class="math">\(\lfloor \frac{10 - 2 + 2*1}{2} \rfloor + 1\)</span> = 6 where W is size of the image, F is size of the filter, P is size of the padding, and S is the size of the stride.</p>
+<ol start="15">
+<li>How does this output differ from output of 10?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Skip every second pixel</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Border pixels are no longer taken into account</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Border pixels are also taken into account</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No change</li>
+</ul>
+<p><strong>Explanation</strong>: Because the stride is bigger some of the pixel pairs are ignored (get skipped).</p>
+<!-- Note: using the same filter across the image, so the parameters are “shared” -->
+
+<!-- feal like this should be part of something else -->
+
+<ol start="16">
+<li>Apply the following filter [-1, 0, 1] to image [[-1, 0, 1], [1, 2, 2], [1, 0, -1]] with a stride of 1 and no padding?</li>
+</ol>
+<p><strong>Answer</strong>: [[2], [1], [-2]]</p>
+<p><strong>Explanation</strong>: To apply a 1D filter onto a 2D image, we apply the filter on each row same as before: <span class="math">\([[-1*(-1) + 0*0 + 1*1], [-1*1 + 0*2 + 1*2], [-1*1 + 0*0 + 1*(-1)]] = [[2], [1], [-2]]\)</span></p>
+<ol start="17">
+<li>What is the shape of your output?</li>
+</ol>
+<p><strong>Answer</strong>: 3x1.</p>
+<p><strong>Explanation</strong>: For a 2D image, each output dimension is calculated separately. IR - FR + 2P + 1 = 3 - 1 + 2 * 0 + 1 = 3; IC - FC + 2P + 1 = 3 - 3 + 2*0 + 1 = 1, IR and IC are image row and columns, FR and FC are filter row and columns, and P is padding size.</p>
+<ol start="18">
+<li>What does the filter seem to do?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find pairs of pixels where the later value is bigger than the earlier value in each row</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Sum adjacent pixels in each row</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find pairs of adjacent pixels where the right value is bigger than the left value in each row</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Calculate difference between adjacent pixels in each row</li>
+</ul>
+<p><strong>Explanation</strong>: Calculate difference between adjacent pixels in each row since we perform same operation just on each row now.</p>
+<ol start="19">
+<li>Apply the following filter [-1, 0, 1] to image [[-1, 0, 1], [1, 2, 2], [1, 0, -1]] with a stride of 2 and 1 layer of zero-padding?</li>
+</ol>
+<p><strong>Answer</strong>: [[0, 0], [2, -2], [0, 0]].</p>
+<p><strong>Explanation</strong>: With a 1 layer of zero-padding the image becomes [[0, 0, 0, 0, 0], [0, -1, 0, 1, 0], [0, 1, 2, 2, 0], [0, 1, 0, -1, 0], [0, 0, 0, 0, 0]]. To apply a stride of 2 on a 2D image, we move 2 pixels right and when the edge is reached we move to pixels down: <span class="math">\([[(-1*0 + 0*0 + 1*0), (-1*0 + 0*0 + 1*0)], [(-1*0 + 0*1 + 1*2), (-1*2 + 0*2 + 1*0)], [(-1*0 + 0*0 + 1*0), (-1*0 + 0*0 + 1*0)]] = [[0, 0], [2, -2], [0, 0]]\)</span></p>
+<ol start="20">
+<li>What is the shape of your output?</li>
+</ol>
+<p><strong>Answer</strong>: 3x2.</p>
+<p><strong>Explanation</strong>: For a 2D image, each output dimension is calculated separately. <span class="math">\(\lfloor \frac{IR - FR + 2P}{S} \rfloor + 1\)</span> = <span class="math">\(\lfloor \frac{3 - 1 + 2*1}{2} \rfloor + 1\)</span> = 3;  <span class="math">\(\lfloor \frac{IC - FC + 2P}{S} \rfloor + 1\)</span> = <span class="math">\(\lfloor \frac{3 - 3 + 2*1}{2} \rfloor + 1\)</span> = 2, IR and IC are image row and columns, FR and FC are filter row and columns, S is stride size, and P is padding size.</p>
+<ol start="21">
+<li>Apply the following filter [[1, 1, 1], [1, 1, 1], [-1, -1, -1]] to image [[1, 1, 1], [1, 1, 1], [-1, -1, -1]] with a stride of 1 and no padding?</li>
+</ol>
+<p><strong>Answer</strong>: [[9]].</p>
+<p><strong>Explanation</strong>: To apply convolution with a 2D filter, we need to perform element-wise multiplication and summation as before, but now instead of doing across a row, it is done across the rectangle: <span class="math">\(1*1 + 1*1 + 1*1 + 1*1 + 1*1 + 1*1 + (-1)*(-1) + (-1)*(-1) + (-1)*(-1) = 9\)</span>.</p>
+<ol start="22">
+<li>What is the shape of your output?</li>
+</ol>
+<p><strong>Answer</strong>: 1x1.</p>
+<p><strong>Explanation</strong>: For a 2D image, each output dimension is calculated separately. <span class="math">\(IR - FR + 2P + 1\)</span> = <span class="math">\(3 - 3 + 2*0 + 1\)</span> = 1;  <span class="math">\(IC - FC + 2P + 1\)</span> = <span class="math">\(3 - 3 + 2*0 + 1\)</span> = 1, IR and IC are image row and columns, FR and FC are filter row and columns, and P is padding size. As we can see, if image and filter are both 2D square, then only calculating one dimension is enough because both outputs are the same.</p>
+<ol start="23">
+<li>Apply the following filter [[1, 1, 1], [0, 0, 0], [-1, -1, -1]] to image [[1, 1, 1], [1, 1, 1], [-1, -1, -1]] with a stride of 1 and no padding?</li>
+</ol>
+<p><strong>Answer</strong>: [[6]].</p>
+<p><strong>Explanation</strong>: To apply convolution with a 2D filter, we need to perform element-wise multiplication and summation as before, but now instead of doing across a row, it is done across the rectangle: <span class="math">\([[1*1 + 1*1 + 1*1 + 0*1 + 0*1 + 0*1 + (-1)*(-1) + (-1)*(-1) + (-1)*(-1)]] = [[6]]\)</span>.</p>
+<p>Note: we got higher value in question 16 because the filter matched the pattern in the image. This type of filter selection is called pattern-matching and can be used to find specific patterns in images.</p>
+<ol start="24">
+<li>Apply the following filter [[1, 1, 1], [0, 0, 0], [-1, -1, -1]] to image [[1, 1, 1], [1, 1, 1], [-1, -1, -1]] with a stride of 1 and 1 layer of zero-padding?</li>
+</ol>
+<p><strong>Answer</strong>: [[-2, -3, -2], [4, 6, 4], [2, 3, 2]].</p>
+<p><strong>Explanation</strong>: With a 1 layer of zero-padding the image becomes [[0, 0, 0, 0, 0], [0, 1, 1, 1, 0], [0, 1, 1, 1, 0], [0, -1, -1, -1, 0], [0, 0, 0, 0, 0]]. To apply convolution with a 2D filter, we need to perform element-wise multiplication and summation as before and slide the filter, but now instead of doing calculation across a row, it is done across the rectangle:
+$[
+[1<em>0 + 1</em>0 + 1<em>0 + 0</em>0 + 0<em>1 + 0</em>1 + (-1)<em>0 + (-1)</em>1 + (-1)<em>1,
+1</em>0 + 1<em>0 + 1</em>0 + 0<em>1 + 0</em>1 + 0<em>1 + (-1)</em>1 + (-1)<em>1 + (-1)</em>1,
+1<em>0 + 1</em>0 + 1<em>0 + 0</em>1 + 0<em>1 + 0</em>0 + (-1)<em>1 + (-1)</em>1 + (-1)<em>0]
+[1</em>0 + 1<em>1 + 1</em>1 + 0<em>0 + 0</em>1 + 0<em>1 + (-1)</em>0 + (-1)<em>(-1) + (-1)</em>(-1),
+1<em>1 + 1</em>1 + 1<em>1 + 0</em>1 + 0<em>1 + 0</em>1 + (-1)<em>(-1) + (-1)</em>(-1) + (-1)<em>(-1),
+1</em>1 + 1<em>1 + 1</em>0 + 0<em>1 + 0</em>1 + 0<em>0 + (-1)</em>(-1) + (-1)<em>(-1) + (-1)</em>0]
+[1<em>0 + 1</em>1 + 1<em>1 + 0</em>0 + 0<em>(-1) + 0</em>(-1) + (-1)<em>0 + (-1)</em>0 + (-1)<em>0,
+1</em>1 + 1<em>1 + 1</em>1 + 0<em>(-1) + 0</em>(-1) + 0<em>(-1) + (-1)</em>0 + (-1)<em>0 + (-1)</em>0,
+1<em>1 + 1</em>1 + 1<em>0 + 0</em>(-1) + 0<em>(-1) + 0</em>0 + (-1)<em>0 + (-1)</em>0 + (-1)*0]
+] = [[-2, -3, -2][4, 6, 4][2, 3, 2]]$</p>
+<ol start="25">
+<li>What is the shape of your output?</li>
+</ol>
+<p><strong>Answer</strong>: 3x3.</p>
+<p><strong>Explanation</strong>: As we said in problem 22, we only need to calculate one of the dimensions since both filter and image are square. W - F + 2P + 1 = 3 - 3 + 2*1 + 1 = 3 where W is width of the image, F is width of the filter, and P is size of the padding. So the output is 3x3.</p>
+<ol start="26">
+<li>How is the output of 24 different from 23?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Skip every second pixel</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Identifies both rows of 1's not only top one</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Border pixels are also taken into account</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No change</li>
+</ul>
+<p><strong>Explanation</strong>: By adding one layer of zero-padding, filter is able to identify both rows of 1's not only the top one as does question 23.</p>
+<ol start="11">
+<li>How can convolution layers be integrated in CNN?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Have alternating convolution and elementwise nonlinearity layers</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Have only convolution layers</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Always have only one convolution layer and use MLP for the rest</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Have alternating convolution and elementwise nonlinearity layers with additional linear and elementwise nonlinearity layers at the end of the network.</li>
+</ul>
+<p><strong>Explanation</strong>: The convolution layers can be integrated in a neural network by having alternating convolution and elementwise nonlinearity layers. This architecture and its modifications are usually used to get high level representation of an image that can be later used for different tasks. For example, by also adding linear and elementwise nonlinearity layers at the end of the network, we can specialize the network to classify whether the image has a car or not.</p>
+<p>Note: In practice, we also introduce max pooling layers in between convolutions that help reduce the dimensionality, and add linear and elementwise nonlinearity layers at the end of the network for the final task.</p>
+<ol start="12">
+<li>Match aspects of CNNs to inductive biases that they introduce.
+(a) Capture spatial dependencies <!-- convolution -->
+(b) Handle translations <!-- pooling -->
+(c) Compute efficiently <!-- weight sharing --></li>
+</ol>
+<p><strong>Explanation</strong>: The filters in convolutional layers help to capture spatial dependencies like pixel position's semantic meaning. Moreover, since a filter in a layer is shared across the whole image, we get weight-sharing which helps us train and run a model more efficiently for large images. Finally, pooling is a layer that is usually added in between convolution layers and helps to handle object translations (<a href="https://medium.com/@abhishekjainindore24/pooling-and-their-types-in-cnn-4a4b8a7a4611">here is a nice article</a> describing different types of pooling and what they achieve).</p>
+<hr />
+<p><img src="assets/graph.png" alt="Undirected graph representing network of friends" />
+Undirected graph G.</p>
+<p>The first number is just a label for us. The first feature is the name of the user, and the second feature is how many times the user bought an item due to a friend's recommendation. Final edges have a feature specifying how close the two users are as friends (between 0 and 1, where 1 means very, very close friends).</p>
+<ol start="13">
+<li>What are the vertices of G (report only labels)?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>0</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>2</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>3</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>4</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>5</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>7</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>12</li>
+</ul>
+<p><strong>Explanation</strong>: To get the labels, we need to report the first number in each of the circles. So the vertices are {1, 2, 3, 4, 5, 6, 7}.</p>
+<ol start="14">
+<li>What are the edges of G?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>(1, 2)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>(1, 5)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>(1, 3)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>(2, 5)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>(2, 6)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>(5, 4)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>(4, 7)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>(6, 3)</li>
+</ul>
+<p><strong>Explanation</strong>: Edges in a graph are reported by giving pairs of vertices that are directly connected by a line. So for us edges are {(1, 2), (1, 5), (2, 5), (5, 4), (4, 7), (6, 3)}.</p>
+<ol start="15">
+<li>Who are Ann’s neighbors in G?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>2</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>3</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>4</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>5</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>7</li>
+</ul>
+<p><strong>Explanation</strong>: To get the neighbors of a vertex, we need to report vertices that are directly connected by a line to the vertex. For Ann, those are Bob and Ken, so vertices {2, 5}.</p>
+<ol start="16">
+<li>What are possible paths from Ann to Abbi?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>5 -&gt; 1 -&gt; 4</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>4 -&gt; 5 -&gt; 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>1 -&gt; 2 -&gt; 5 -&gt; 4</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>1 -&gt; 5 -&gt; 4</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None</li>
+</ul>
+<p><strong>Explanation</strong>: To get paths from one vertex to another, we need to report vertices such that first vertex is the &quot;from&quot; vertex, last vertex is the &quot;to&quot; vertex, and for any two consecutive vertices, second one is neighbor of the first one. In G, we can reach Abbi from Ann through Ken, then path is 1 -&gt; 5 -&gt; 4. Or by first going to Bob then Ken, so path is 1 -&gt; 2 -&gt; 5 -&gt; 4.</p>
+<ol start="17">
+<li>Is there a path from Ann to Kimi?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>5 -&gt; 1 -&gt; 6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>4 -&gt; 5 -&gt; 6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 -&gt; 2 -&gt; 5 -&gt; 6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>1 -&gt; 5 -&gt; 6</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>None</li>
+</ul>
+<p><strong>Explanation</strong>: There is no way to reach Kimi from Ann since Kimi is only neighbors with Max and Max is only neighbors with Kimi, so there is no connection to Ann or her neighbors.</p>
+<hr />
+<ol start="18">
+<li>What are some problems of using MLP for graphs?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Minimal inductive bias</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Faraway/unrelated vertices affect a vertex as much as close neighbors</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Takes into account relations between vertices for directed graphs</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Big networks (e.g., followers network on Instagram) lead to a big input size for MLP</li>
+</ul>
+<p><strong>Explanation</strong>: As discussed previously, MLPs have minimal built in assumptions about their inputs. Moreover, as we saw in problem 17, Kimi is unrelated to Ann, but MLPs would not be able to detect this, so Kimi would have just as much effect on Ann as her close friend Bob. Finally, big networks like social networks that can contains billions of people lead to big input size, so it is hard to train and use model efficiently.</p>
+<ol start="19">
+<li>For GNN, what concept is introduced into the architecture that was not present in MLP?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Message-passing</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>GNNs are the same as MLPs</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Convolutions replace the linear layers</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<p><strong>Explanation</strong>: To help vertices &quot;communicate&quot; with each other, concept of message-passing is introduced. Specifically, in every layer for each vertex, we calculate value from its neighbors and itself. This way, neighbors can &quot;pass&quot; information to their neighbors and those can pass that information to their neighbors etc.</p>
+<p><img src="assets/graph.png" alt="Undirected graph representing network of friends" />
+Undirected graph G.<br />
+The first number is just a label for us. The first feature is the name of the user, and the second feature is how many times the user bought an item due to a friend's recommendation. Final edges have a feature specifying how close the two users are as friends (between 0 and 1, where 1 means very, very close friends).</p>
+<ol start="20">
+<li>If the first layer is defined as <span class="math">\(h_i^1 = h_i^0 + \frac{1}{|N_i|} \sum_{j \in N_i} h_j^0 * e_{i, j}\)</span> calculate output of the layer for Ann in graph G.<br />
+Hint: <span class="math">\(h_i^0\)</span> is the feature how many times the user bought an item due to a friend's recommendation and <span class="math">\(e_{i,j}\)</span> is the feature of the edge describing how close the two users are as friends.</li>
+</ol>
+<p><strong>Answer</strong>: 3.6</p>
+<p><strong>Explanation</strong>: Ann is node labeled 1. We established that Ann has two neighbors: Bob and Ken, so vertices {2, 5}. From the graph we can see that <span class="math">\(h_1^0 = 3, h_2^0 = 2, h_3^0 = 0\)</span>. Moreover, we can see friendship levels from the graph: <span class="math">\(e_{1,2} = 0.6, e_{1,5} = 0.2\)</span>.  Plugging these in we get <span class="math">\(h_1^1 = h_1^0 + \frac{1}{|N_1|} \sum_{j \in N_1} h_j^0 * e_{1, j} = 3 + \farc{1}{2} (2*0.6 + 0*0.2) = 3.6\)</span></p>
+<ol start="21">
+<li>Apply a nonlinear ReLU to your output.</li>
+</ol>
+<p><strong>Answer</strong>:  3.6</p>
+<p><strong>Explanation</strong>: ReLU(3.6) = max(0, 3.6) = 3.6.</p>
+<ol start="22">
+<li>Did Abbi affect the output of the first layer?<br />
+(b) No.</li>
+</ol>
+<p><strong>Explanation</strong>: The only vertices that affected Ann are Bob and Ken's vertices since they are her direct neighbors.</p>
+<ol start="23">
+<li>After how many layers can Abbi affect Ann?</li>
+</ol>
+<p><strong>Answer</strong>: 2.</p>
+<p><strong>Explanation</strong>: After the first layer, Abbi affects Ken, since Abbi is Ken's direct neighbor. After the second layer, Ken still affects Ann, but now Abbi also indirectly affects Ann because value from Abbi is included in Ken's value after first layer. So after 2 layers, Abbi indirectly affects Ann.</p>
+<ol start="24">
+<li>At least how many layers do we need such that all vertices affect all other vertices that they have a path to?</li>
+</ol>
+<p><strong>Answer</strong>: 3.</p>
+<p><strong>Explanation</strong>: We can see that among vertices that can reach each other the furthest apart are Ann and Toto. Toto is 3 edges away from Ann, so only after 3 layers he can affect Ann's output. After first layer Toto is going to directly affect Abbi. From problem 23, Abbi can affect (indirectly) only after 2 layers, so in total Toto needs 3 layers to start (indirectly) affecting Ann.</p>
+<h2>Note: We need more layers if we want to far-away vertices to still have some effect, so GNNs may need a lot of layers for the receptive field to be high.<br />
+<a href="https://distill.pub/2021/gnn-intro/">here is a nice detailed article</a> if you would like to learn more about GNNs</h2>
+<ol start="25">
+<li>What are some problems of using MLP for sequences?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>MLP cannot deal with inputs of varying sizes out of the box</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Sequences can be very big, meaning the input size is also big for the MLP</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>MLP lacks representation for ordered input</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>All of the above</li>
+</ul>
+<p><strong>Explanation</strong>: MLPs expect a fixed size input. Since sequences can be of varying sizes this is a problem. Moreover, sequences can be very big, e.g., all Shakespeare books combined could be an input. Moreover, similarly to how there is no sense of locality for images in MLPs, there is also no sense of order (but order of sentences in a Shakespeare play matters).</p>
+<ol start="26">
+<li>In RNN setting <span class="math">\(z_t = f_\theta(z_{t-1}, x_t)\)</span>, what is <span class="math">\(z_t\)</span>?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Hidden state</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Element in the input sequence</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Memory</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Element in the output sequence</li>
+</ul>
+<p><strong>Explanation</strong>: <span class="math">\(z_t\)</span> is called the hidden state that tries to store information of all the inputs given so far, which is why it is also sometimes referred to as memory.</p>
+<ol start="27">
+<li>In RNN setting <span class="math">\(z_t = f_\theta(z_{t-1}, x_t)\)</span>, what is <span class="math">\(x_t\)</span>?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Hidden state</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Element in the input sequence</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Memory</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Element in the output sequence</li>
+</ul>
+<p><strong>Explanation</strong>:<span class="math">\(x_t\)</span> is the element in the input sequence. This is one of the main reasons why RNNs are preferred to MLPs: we do not have to feed the whole sequence into our model; instead, we can given one element from the input at a time.</p>
+<ol start="28">
+<li>How many steps are needed to process one word at a time in the sentence “Inductive bias is an assumption about the relationship between input and output of a learning problem that is built into the model.”?</li>
+</ol>
+<p><strong>Answer</strong>: 22.</p>
+<p><strong>Explanation</strong>: there are 22 words in the sentence, so we need to make 22 steps and <span class="math">\(z_{22}\)</span> will try to have the &quot;summary/memory&quot; of the whole sentence.</p>
+<ol start="29">
+<li>What are the advantages and disadvantages of RNNs?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Pro: Natural way to work with sequential data</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Con: Long-range dependencies get lost</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Con: Unstable and difficult to train</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Pro: Only need one term of a sequence at a time to do the computations</li>
+</ul>
+<p><strong>Explanation</strong>: Because we are processing only one element at a time in the given order, it is a natural way to work with sequential data. However, because we try to cram all of the information into one hidden state, we are more likely to lose information from earlier parts making the long-range dependencies get lost. Finally, in practice, RNNs are unstable and difficult to train.</p>
+<ol start="30">
+<li>How does a transformer try to overcome the difficulties of RNNs?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Use MLP instead of RNN</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>A new module called attention</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Take into account all terms prior to the current one</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<p><strong>Explanation</strong>: Instead of trying to compress all the information into one hidden state, transformers introduce a new module called attention (or modification of it called self-attention). This module takes into account all terms prior to the current one and decides how much &quot;attention&quot; to pay to each of those terms. This way important long-range dependencies do not get lost and the architecture is more stable and easier to train.</p>
+<hr />
+<ol start="31">
+<li>What are the advantages of using specialized architectures?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Can use less parameters than if was using MLP</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Can introduce useful inductive biases</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Can overfit to the specific data type</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<p><strong>Explanation</strong>: As we have seen throughout the lecture, creating specialized architectures helps us introduce built in assumptions about input that an MLP would not know. Bu doing so, we can also use less parameters and do computations more efficiently.</p>
+<ol start="32">
+<li>Given problem match to one of the architectures learned so far.<br />
+(a) Find whether there is a car in the image.   <!-- cnn -->
+(b) Given a molecule structure, decide whether it would have a pungent odor.   <!-- gnn -->
+(c) Given information about an apartment, predict the sale price.   <!-- mlp -->
+(d) Given changes in the price of the apartment for the last 2 years, predict the price in the future.  <!-- rnn/transformer --></li>
+</ol>
+<p><strong>Explanation</strong>: First example, deals with images, so it's better to use CNNs. Second example, works with molecules. Usually, a lot of important information about molecules is stored in its structure which can be represented as a graph, so GNNs could be very useful. However, for smaller molecules MLP might be enough. Third example, is a typical MLP problem - there are no special inputs. Final example works with time-series, so sequential data. Therefore, RNNs or transformers would be a good choice.</p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Regression Conceptual Questions</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <a href="/web-html/in-class-problems.html" class="back-link">← Back to Conceptual Questions</a>
+            <h2>Regression</h2>
+
+            <div class="markdown-content">
+                <h1><strong>Problem 1</strong> Linear regression</h1>
+<p>Consider the data set and regression lines in the plot below.<br />
+<img src="assets/regression/regress_grad.png" alt="plot" /></p>
+<ul>
+<li>The equation of the blue (lower) line is: <span class="math">\(y = x\)</span></li>
+<li>The equation of the green (upper) line is: <span class="math">\(y = x + 1\)</span></li>
+<li>The data points (in x, y pairs) are: <span class="math">\([[[1], 3], [[1], 1], [[3], 2], [[3], 6]]\)</span></li>
+</ul>
+<p>a) What is the squared error of each of the points with respect to the <b>blue</b> line? Provide a Python list of four numbers (in the order of the points given above).</p>
+<p><strong>Answer</strong>: [4, 0, 1, 9].</p>
+<p><strong>Explanation</strong>: Given the data points and regression line
+<span class="math">\(y=x\)</span>, we calculate the squared error of each point:
+<br>
+At <span class="math">\(x=1\)</span>, the regression predicts <span class="math">\(\hat{y} = 1\)</span>, so the first two errors
+are <span class="math">\((3-1)^2 = 4\)</span> and <span class="math">\((1-1)^2 = 0\)</span>.
+<br>
+At <span class="math">\(x=3\)</span>, the regression predicts <span class="math">\(\hat{y} = 3\)</span>, so the last two errors
+are <span class="math">\((2-3)^2 = 1\)</span> and <span class="math">\((6-3)^2=9\)</span>.</p>
+<p>b) What is the squared error of each of the points with respect to the <strong>green</strong> line? Provide a list of four numbers (in the order of the points given above).</p>
+<p><strong>Answer</strong>: [1, 1, 4, 4].</p>
+<p><strong>Explanation</strong>: Given data points <span class="math">\(((1,3),(1,1),(3,2),(3,6))\)</span> and green
+regression <span class="math">\(y=x+1\)</span>, we calculate the squared error of each point.
+<br>At <span class="math">\(x=1\)</span>, the regression predicts <span class="math">\(\hat{y} = 2\)</span>, so the first two errors
+are <span class="math">\((3-2)^2 = 1\)</span> and <span class="math">\((1-2)^2 = 1\)</span>.
+<br>At <span class="math">\(x=3\)</span>, the regression predicts <span class="math">\(\hat{y} = 4\)</span>, so the last two errors
+are <span class="math">\((2-4)^2 = 4\)</span> and <span class="math">\((4-3)^2=4\)</span>.</p>
+<h1><strong>Problem 2</strong> Ridge regression</h1>
+<p>In this course, our formulation of ridge regression will penalize <span class="math">\(\theta\)</span> with a regularizer term, <span class="math">\(||\theta||^2\)</span>:</p>
+<p><span class="math">\(J_{\it ridge}(\theta, \theta_0) = \frac{1}{n} \sum_{i = 1}^n \left(\theta^Tx^{(i)} + \theta_0 - y^{(i)}\right)^2 + \lambda (||\theta||^2)\;\;.\)</span></p>
+<p>As is the common practice, we choose to penalize just the <span class="math">\(\theta\)</span> term rather than both
+<span class="math">\(\theta\)</span> and <span class="math">\(\theta_0\)</span>. To get a better visual understanding of why we make this choice,
+we will now explore what happens when we <em>do</em> penalize <span class="math">\(\theta_0\)</span>, and the difference between these two conventions.</p>
+<p>Consider adding a squared-norm regularizer on <em>all</em> parameters (i.e. both <span class="math">\(\theta\)</span> and <span class="math">\(\theta_0\)</span>) to our least squares objective function, producing a modified ridge regression objective:</p>
+<p><span class="math">\(J_{\it ridge,mod}(\theta, \theta_0) = \frac{1}{n} \sum_{i = 1}^n \left(\theta^Tx^{(i)} + \theta_0 - y^{(i)}\right)^2 + \lambda (||\theta||^2+ \theta_0 ^2)\;\;.\)</span></p>
+<p>(Note: Remember from linear algebra that because <span class="math">\(\theta\)</span> is one-dimensional and therefore scalar, <span class="math">\(||\theta||^2 = \theta^2\)</span>).<br />
+<comment>
+Pay careful attention to the fact that the regularization penalty on the vector <span class="math">\(\theta\)</span> might be on either just the scalar <span class="math">\(\theta\)</span>, or on both <span class="math">\(\theta\)</span> and <span class="math">\(\theta_0\)</span> scalars,
+in the cases considered below.
+In practice, we do not have to strictly follow the canonical form of regularizing <span class="math">\(\lambda (||\theta||^2+ \theta_0 ^2).\)</span> Instead, we may add regularization penalty on either just <span class="math">\(\theta\)</span>, or on both <span class="math">\(\theta\)</span> and <span class="math">\(\theta_0.\)</span> We will consider the effect of these various choices of regularization.
+</comment></p>
+<p>The figures below plot linear regression results on the basis of only
+three data points <span class="math">\((x^{(1)},y^{(1)}), (x^{(2)},y^{(2)}), (x^{(3)},y^{(3)})\)</span>.
+We used various types of regularization (ridge and modified ridge regression) to obtain the plots (see below) but got
+confused about which plot corresponds to which regularization
+method. Please assign each plot to one (and only one) of the following
+regularization methods.</p>
+<p>A            |  B
+:-------------------------:|:-------------------------:
+<img src="assets/regression/high.png" alt="" />  |  <img src="assets/regression/lowc.png" alt="" />
+C            |  D
+<img src="assets/regression/low.png" alt="" />  |  <img src="assets/regression/highc.png" alt="" /></p>
+<p>a) <span class="math">\(\frac{1}{3}\sum_{i=1}^3 (y^{(i)} - \theta x^{(i)} - \theta_0)^2 + \lambda ||\theta||^2\)</span> where <span class="math">\(\lambda = 1\)</span> is plot:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>A</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>B</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>C</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>D</li>
+</ul>
+<p><strong>Answer</strong>: B.<br />
+<strong>Explanation</strong>: The regularization term <span class="math">\(\lambda ||\theta||^2\)</span> only
+penalizes the weights but not the offset <span class="math">\(\theta_0\)</span>, so the slope
+of the line becomes closer to 0. When
+<span class="math">\(\lambda\)</span> is small, the regression is nudged to be slightly more
+horizontal, but the <span class="math">\(y\)</span>-intercept does not move downwards (B).</p>
+<p>b) <span class="math">\(\frac{1}{3}\sum_{i=1}^3 (y^{(i)} - \theta x^{(i)} - \theta_0)^2 + \lambda ||\theta||^2\)</span> where <span class="math">\(\lambda = 10\)</span> is plot:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>A</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>B</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>C</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>D</li>
+</ul>
+<p><strong>Answer</strong>: D.<br />
+<strong>Explanation</strong>: The regularization term <span class="math">\(\lambda ||\theta||^2\)</span> only
+penalizes the weights but not the offset <span class="math">\(\theta_0\)</span>, so the slope
+of the line is more strongly nudged to become closer to 0. When
+<span class="math">\(\lambda\)</span> is large, the regression approaches horizontal, but the
+<span class="math">\(y\)</span>-intercept does not approach 0 (D).</p>
+<p>c) <span class="math">\(\frac{1}{3}\sum_{i=1}^3 (y^{(i)} - \theta x^{(i)} - \theta_0)^2 + \lambda (||\theta||^2+\theta_0^2)\)</span> where <span class="math">\(\lambda = 1\)</span> is plot:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>A</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>B</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>C</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>D</li>
+</ul>
+<p><strong>Answer</strong>: C.<br />
+<strong>Explanation</strong>: The regularization term <span class="math">\(\lambda(||\theta||^2+\theta_0^2)\)</span>
+penalizes both weights and bias. When <span class="math">\(\lambda\)</span> is small, the line
+slightly approaches the <span class="math">\(x\)</span> axis, so the <span class="math">\(y\)</span>-intercept dips slightly
+(C).</p>
+<p>d) <span class="math">\(\frac{1}{3}\sum_{i=1}^3 (y^{(i)} - \theta x^{(i)} - \theta_0)^2 + \lambda (||\theta||^2+\theta_0^2)\)</span> where <span class="math">\(\lambda = 10\)</span> is plot:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>A</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>B</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>C</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>D</li>
+</ul>
+<p><strong>Answer</strong>: A.<br />
+<strong>Explanation</strong>: The regularization term <span class="math">\(\lambda(||\theta||^2+\theta_0^2)\)</span>
+penalizes both weights and bias. When <span class="math">\(\lambda\)</span> is large, the entire
+line approaches the <span class="math">\(x\)</span> axis, which has 0 slope and 0 <span class="math">\(y\)</span>-intercept
+(A).</p>
+<h1><strong>Problem 3</strong> A taste of regularization</h1>
+<p>In this problem, we explore how linear regression models can overfit to noise and the importance of regularization in mitigating overfitting. For example, if we change the data to have two added noise dimensions such that
+<span class="math">\(D_{train} = \{ ([1, \epsilon, \epsilon], 2), ([2, \epsilon, \epsilon], 7), ([3, \epsilon, \epsilon], -3), ([4, \epsilon, \epsilon], 1) \}\)</span>
+where the <span class="math">\(\epsilon\)</span> values are all potentially different, randomly chosen independently in the range <span class="math">\((-1 \times 10^{-5}, +1 \times 10^{-5}).\)</span></p>
+<p>We are able to run the analytical regression on this problem, and arrive at a hypothesis with the following parameters:
+<span class="math">\(\theta = \begin{bmatrix} 4.70697\times 10^0\\ -1.28107\times 10^6 \\  1.10581\times 10^7 \end{bmatrix}, \theta_0 = -1.03437\times 10^2 \)</span></p>
+<p>This hypothesis has the following MSE on the training data: <span class="math">\(1.6970 \times 10^{-24}\)</span>.</p>
+<p>Consider a &quot;testing&quot; set, which is <em>very</em> similar to the training set:
+<span class="math">\(D_{test} = \{([1, 0, 0], 2), ([2, 0, 0], 7), ([3, 0, 0], -3), ([4, 0, 0], 1)\}.\)</span></p>
+<p>a) What’s the MSE of the given <code>th</code>, <code>th0</code> on the testing set? (any answer within <span class="math">\(\pm 10 \% \)</span> of the exact MSE will be accepted)<br></p>
+<p><strong>Answer</strong>: 8782.90.</p>
+<p><strong>Explanation</strong>:</p>
+<pre>
+X_aug = np.array([[1,2,3,4], [0, 0, 0, 0], [0, 0, 0, 0]]).T
+Y = np.array([[2,7,-3,1]]).T
+th = np.array([[4.70697],[-1.28107*10**6], [1.10581*10**7]])
+Y_hat = X@th + theta_0
+mse = np.mean((Y-Y_hat)**2)
+</pre>
+
+<p>The resulting mean squared error is 8782.8966.</p>
+<p>b) Now we will look at the effect of adding a regularizer. Using the same data as in the previous question (with two added noise dimensions) but using ridge regression with <span class="math">\(\lambda = 1 \times 10^{-10}\)</span>.</p>
+<p>We get the following parameters:
+<span class="math">\(\theta = \begin{bmatrix} -1.377711 \times 10^0\\ -2.574581 \times 10^5 \\ -5.070563 \times 10^4 \end{bmatrix}, \theta_0 = 7.260269 \times 10^0 \)</span></p>
+<p>Does this hypothesis have higher or lower MSE on the training dataset than the result without ridge regression? (Note that we didn't specify the exact noise values; but you should be able to deduce the answer to this question without explicit evaluation of training error.)</p>
+<p>(a) Higher.<br />
+(b) Lower.</p>
+<p><strong>Answer</strong>: Higher.</p>
+<p><strong>Explanation</strong>: Higher, because with ridge regression, we are
+not minimizing the MSE.</p>
+<p>c) Does this hypothesis have higher or lower MSE on the testing dataset than the result without ridge regression?</p>
+<p>(a) Higher.<br />
+(b) Lower.</p>
+<p><strong>Answer</strong>: Lower.</p>
+<p><strong>Explanation</strong>:</p>
+<pre>
+X = np.array([[1,2,3,4], [0, 0, 0, 0], [0, 0, 0, 0]]).T
+Y = np.array([[2,7,-3,1]]).T
+th = np.array([[-1.377711],[-2.574581*10**5], [-5.070563*10**4]])
+Y_hat = X@th + theta_0
+mse = np.mean((Y-Y_hat)**2)
+</pre>
+
+<p>The resulting mean squared error is 14.85087. Note how regularization in this situation allowed us to get a better testing error.</p>
+<p>d) How does the magnitude of model parameters change after applying regularization, such as ridge regression, compared to before regularization?</p>
+<p>(a) The magnitude of parameters is higher before adding a regularizer.<br />
+(b) The magnitude of parameters is lower before adding a regularizer.</p>
+<p><strong>Answer</strong>: The magnitude of parameters is higher before adding a regularizer.</p>
+<p><strong>Explanation</strong>:
+Recall that the parameters before regularization are:
+<span class="math">\(\theta = \begin{bmatrix} 4.70697\times 10^0\\ -1.28107\times 10^6 \\  1.10581\times 10^7 \end{bmatrix}, \quad \theta_0 = -1.03437\times 10^2 \)</span>
+and after regularization are:
+<span class="math">\(\theta = \begin{bmatrix} -1.377711 \times 10^0\\ -2.574581 \times 10^5 \\ -5.070563 \times 10^4 \end{bmatrix}, \quad \theta_0 = 7.260269 \times 10^0 \)</span></p>
+<p>Clearly, the magnitudes of <span class="math">\(\|\theta\|\)</span> and <span class="math">\(\|\theta_0\|\)</span> are smaller after regularization. This is because with regularization, we added a penalty term in the loss function that penalizes larger values for the parameters, which encourages the model to keep the parameter magnitudes smaller.</p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

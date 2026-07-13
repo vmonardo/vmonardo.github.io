@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Parametric Modeling Conceptual Questions</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <a href="/web-html/in-class-problems.html" class="back-link">← Back to Conceptual Questions</a>
+            <h2>Parametric Modeling</h2>
+
+            <div class="markdown-content">
+                <h1><strong>Problem 1</strong> Successive gradient steps</h1>
+<p>In batch gradient descent, we take steps using a constant learning rate <span class="math">\(\eta,\)</span> so that:</p>
+<div class="math">$$
+\theta^{(t+1)} = \theta^{(t)} - \eta \nabla_\theta f(\theta^{(t)}) \; .
+$$</div>
+<p>In the following, assume that <span class="math">\(f\)</span> is an arbitrary differentiable function.
+Assume that we are considering a single iteration of gradient descent evaluated
+at a fixed value of <span class="math">\(\theta^{(t)}\; \)</span>.</p>
+<p>a) For extremely small <math>\eta</math>, what will generally be true?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(f(\theta^{(t)}) \geq f(\theta^{(t+1)})\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(f(\theta^{(t)}) \leq f(\theta^{(t+1)})\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>cannot say</li>
+</ul>
+<p><strong>Answer</strong>: <span class="math">\(f(\theta^{(t)}) \geq f(\theta^{(t+1)})\)</span>.<br />
+<strong>Explanation</strong>: For extremely small <span class="math">\(\eta\)</span>, the
+gradient descent will never worsen (increase) the value of the
+function it is minimizing.  Intuitively, there will always be a
+small enough learning rate such that a step in the direction of steepest
+descent decreases (or more precisely, does not increase) the
+function value.</p>
+<p>b) For very very big <math>\eta</math>, what will generally be true?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><math>f(\theta^{(t)}) \geq f(\theta^{(t+1)})</math></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><math>f(\theta^{(t)}) \leq f(\theta^{(t+1)})</math></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>cannot say</li>
+</ul>
+<p><strong>Answer</strong>: cannot say.<br />
+<strong>Explanation</strong>: For very very big <math>\eta</math>, we cannot
+say anymore whether the value of the function is going to decrease
+or increase.  (Consider starting at <span class="math">\(x=-1\)</span> along <span class="math">\(f(x) = x^2\)</span> and
+taking <span class="math">\(\eta=100\)</span>.)</p>
+<h1><strong>Problem 2</strong> Descent into Madness</h1>
+<p>Let's consider gradient descent algorithm on a one-dimensional function:</p>
+<div class="math">$$
+f(\theta) = (2\theta + 3)^2 \,\, .
+$$</div>
+<p>Note that here <span class="math">\(\theta\)</span> is one
+dimensional, but gradient descent can find local minima for
+general multi-input scalar-output functions too.</p>
+<p>a) Now let's formulate the update rule that will be executed on every step when performing gradient descent
+on our specific <span class="math">\(f(\theta)\)</span> above, using <span class="math">\(\eta\)</span> as the learning rate parameter. <span class="math">\(\theta_{new} =\)</span> .</p>
+<p><strong>Answer</strong>: <span class="math">\(theta - eta*(8*theta + 12)\)</span>.<br />
+<strong>Explanation</strong>: Using basic rules of differentiation we find
+<span class="math">\(\nabla_{\theta} f(\theta) = \frac{df(\theta)}{d\theta} = 2 \cdot (2\theta +3) \cdot 2\)</span>.  Combining this with the update rule
+<span class="math">\(\theta^{(1)} = \theta^{(0)} - \eta \nabla_{\theta} f(\theta^{(0)})\)</span>, we get the expression above.</p>
+<p>For the rest of the questions in this section, we will start with <span class="math">\(\theta=1\)</span> and <span class="math">\(\eta=0.1\)</span>
+Recall that <span class="math">\(f(\theta) = (2\theta + 3)^2 \,\, .\)</span></p>
+<p>b) What is the value of <span class="math">\(f(\theta)\)</span> before running any iterations of gradient descent?</p>
+<p><strong>Answer</strong>: 25.<br />
+<strong>Explanation</strong>: Plugging into the function: <span class="math">\(f(1) = (2*1+3)^2 = 25\)</span>.</p>
+<p>Recall that <span class="math">\(f(\theta) = (2\theta + 3)^2 \,\, .\)</span></p>
+<p>c) After a single gradient descent update, what is the value of <span class="math">\(\theta\)</span>?</p>
+<p><strong>Answer</strong>: -1.<br />
+<strong>Explanation</strong>: Plugging into the update rule: <span class="math">\(\theta^{(1)} = \theta^{(0)} - \eta(8\theta^{(0)}+12) = 1 - .1(20) = -1\)</span>.</p>
+<p>d) After that update, what is the value of the function <span class="math">\(f(\theta)\)</span>?</p>
+<p><strong>Answer</strong>: 1.<br />
+<strong>Explanation</strong>: Plugging into <span class="math">\(f\)</span> once again: <span class="math">\(f(-1) = (2(-1)+3)^2 = 1\)</span>.</p>
+<h1><strong>Problem 3</strong> 2D gradient descent</h1>
+<p>Let’s consider gradient descent when the dimension of the input is 2:</p>
+<div class="math">$$
+\theta = \begin{bmatrix}
+\theta_1 \\ \theta_2
+\end{bmatrix} \;\;.
+$$</div>
+<p>Suppose we have <span class="math">\(f(\theta)\)</span> and we are trying to find the values of
+<span class="math">\(\theta_1\)</span> and <span class="math">\(\theta_2\)</span> that minimize it. Consider</p>
+<div class="math">$$
+f(\theta) = -3\theta_1 - \theta_1 \theta_2 + 2 \theta_2 + \theta_1^2 + \theta_2^2 \;\;.
+$$</div>
+<p>a) What is the first component of <span class="math">\(\nabla_\theta f(\theta)\)</span> ?</p>
+<p><strong>Answer</strong>: <span class="math">\(-3 - theta_2 + 2*theta_1\)</span>.<br />
+<strong>Explanation</strong>:  $ \frac{\partial}{\partial\theta_1}\left(-3\theta_1 - \theta_1 \theta_2 + 2 \theta_2 + \theta_1^2 + \theta_2^2\right) = -3 - \theta_2 + 2 \theta_1 ; .$</p>
+<p>b) What is the second component of <span class="math">\(\nabla_\theta f(\theta)\)</span> ?</p>
+<p><strong>Answer</strong>: <span class="math">\(-theta_1 + 2 + 2*theta_2\)</span>.<br />
+<strong>Explanation</strong>: <span class="math">\(\frac{\partial}{\partial \theta_2} (-3\theta_1 - \theta_1 \theta_2 + 2 \theta_2 + \theta_1^2 + \theta_2^2) = - \theta_1 + 2 + 2\theta_2 \; .\)</span></p>
+<p>c) What is <span class="math">\(f\left(\begin{bmatrix} 1 \\ 1 \end{bmatrix}\right)\)</span>?</p>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: <span class="math">\(f\left(\begin{bmatrix} 1 \\ 1 \end{bmatrix}\right)= -3(1)-(1)(1)+2(1)+(1)^2 + (1)^2 = -3 - 1 + 2 + 1 + 1 = 0\)</span>.</p>
+<p>d) If we started at <span class="math">\(\theta = \begin{bmatrix} 1 \\ 1 \end{bmatrix}\)</span> and took a step of gradient descent with learning rate 0.1, what would the next value of <span class="math">\(\theta\)</span> be?</p>
+<p><strong>Answer</strong>: [1.2, 0.7].<br />
+<strong>Explanation</strong>:</p>
+<div class="math">$$
+\theta_{new} = \theta_{old} - 0.1 \begin{bmatrix} (-3 -1 + 2) \\ (-1 + 2 + 2) \end{bmatrix} 
+= \begin{bmatrix}1 \\ 1\end{bmatrix} - \begin{bmatrix} -0.2 \\ 0.3 \end{bmatrix} = \begin{bmatrix} 1.2 \\ 0.7 \end{bmatrix}
+$$</div>
+<p>e) What is <span class="math">\(f\left(\begin{bmatrix} 1.2 \\ 0.7 \end{bmatrix}\right)\)</span>?</p>
+<p><strong>Answer</strong>: -1.11.<br />
+<strong>Explanation</strong>:  <span class="math">\(f\left(\begin{bmatrix} 1.2 \\ 0.7 \end{bmatrix}\right) = -3*(1.2)-(1.2)*(0.7)+2*(0.7)+(1.2)^2 + (0.7)^2 = -1.11\)</span></p>
+<p>f) If we started at <span class="math">\(\theta = \begin{bmatrix} 1 \\ 1 \end{bmatrix}\)</span> and took a step of gradient
+descent with learning rate 1.0 instead, what would the next value of <span class="math">\(\theta\)</span> be?</p>
+<p><strong>Answer</strong>: [3, -2].<br />
+<strong>Explanation</strong>: <span class="math">\([1, 1]^T - [-2, 3]^T = [3, -2]^T\)</span>.</p>
+<p>g) What is <span class="math">\(f\left(\begin{bmatrix} 3 \\ -2 \end{bmatrix}\right)\)</span>?</p>
+<p><strong>Answer</strong>: 6.<br />
+<strong>Explanation</strong>: <span class="math">\(f\left(\begin{bmatrix} 3 \\ -2 \end{bmatrix}\right) = -3*(3)-(3)*(-2)+2*(-2)+(3)^2 + (-2)^2 = 6\)</span></p>
+<h1><strong>Problem 4</strong> Hypothesis classes</h1>
+<p>For each of the following hypothesis classes, write down an expression
+for the partial derivative of the <strong>squared loss <span class="math">\(L_2\)</span></strong> on a single
+example <span class="math">\((x, y)\)</span> with respect to parameter vector <span class="math">\(\theta\)</span> using the
+symbols: <code>x</code>, <code>y</code> and <code>theta</code>.</p>
+<p>Remember that you can use <code>*</code> for element-wise multiplication, <code>@</code> for
+dot product, and <code>transpose(a)</code> for transpose of a vector or array:</p>
+<div class="math">$$
+h(x; \theta) = \theta^Tx + \theta^T (x *x)
+$$</div>
+<p>Note that <span class="math">\(x*x\)</span> here is computed from the input vector by squaring each component. In other words,</p>
+<div class="math">$$
+x *x = \begin{bmatrix}x_1^2 \\x_2^2 \\ \vdots \\x_d^2  \end{bmatrix}
+$$</div>
+<p>a) Give expression for <span class="math">\(\nabla_{\theta} \; L_2(h(x; \theta),y)\)</span>?</p>
+<p><strong>Answer</strong>: 2 * (transpose(theta) @ x + transpose(theta)@(x * x) - y)* (x + x*x).<br />
+<strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align}
+L_2(h(x;\theta),y) &amp;= (\theta^Tx + \theta^T(x*x) - y)^2 \\
+\nabla_{\theta} L_2(h(x;\theta),y) &amp;= 2(\theta^Tx + \theta^T(x*x) - y)(x + x^2)\; .
+\end{align}
+$$</div>
+<p>Or indirectly in the following form, which retains <span class="math">\(h(x; \theta)\)</span> in the intermediate steps:</p>
+<div class="math">$$
+\begin{align}
+L_2(h(x;\theta),y) &amp;= (h(x; \theta) - y)^2 \\
+\nabla_{\theta} L_2(h(x;\theta),y) &amp;= 2(h(x; \theta) - y) \cdot \nabla_{\theta} h(x; \theta) \\
+                         &amp;= 2(\theta^Tx + \theta^T(x*x) - y)(x + x^2)\; .
+\end{align}
+$$</div>
+<p>b) if</p>
+<div class="math">$$
+h(x; \theta) = ( \theta^Tx)^2
+$$</div>
+<p>, give expression for <span class="math">\(\nabla_{\theta} \; L_2(h(x; \theta),y)\)</span>?</p>
+<p><strong>Answer</strong>: 2<em>((transpose(theta)@x)** 2 - y)</em> 2<em>(transpose(theta)@x)</em>x.<br />
+<strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align}
+L_2(h(x,\theta),y) &amp;= ((\theta^Tx)^2 - y)^2 \\
+\nabla_{\theta} L_2(h(x,\theta),y) &amp;= 2((\theta^Tx)^2 - y)(2((\theta^Tx)x)) \\
+&amp;= 4((\theta^Tx)^2 - y)(\theta^Tx)x
+\end{align}
+$$</div>
+<p>c) if</p>
+<div class="math">$$
+h(x; \theta) = (\theta*\theta)^T x
+$$</div>
+<p>, give expression for <span class="math">\(\nabla_{\theta} \; L_2(h(x; \theta),y)\)</span>?<br />
+Note that $ \theta*\theta$ here is computed by squaring each component in the paramter vector <span class="math">\(\theta\)</span>. In other words,</p>
+<div class="math">$$
+\theta * \theta = \begin{bmatrix} \theta_1^2 \\ \theta_2^2 \\ \vdots \\ \theta_d^2  \end{bmatrix}
+$$</div>
+<p><strong>Answer</strong>: 2<em>(transpose(theta</em> theta)@x - y)* 2<em>(theta</em>x).<br />
+<strong>Explanation</strong>:</p>
+<div class="math">$$
+\begin{align}
+L_2(h(x;\theta),y) &amp;= (h(x; \theta) - y)^2 \\
+\nabla_{\theta} L_2(h(x;\theta),y) &amp;= 2(h(x; \theta) - y) \cdot \nabla_{\theta} h(x; \theta) \\
+      &amp;= 2((\theta * \theta)^T x - y) \cdot 2 (\theta * x) \;\; .
+\end{align}
+$$</div>
+<p>How did we get <span class="math">\(\nabla_\theta (\theta * \theta)^T x = 2 (\theta * x)\)</span>?</p>
+<p>This can be seen by component-wise expansion of the derivative.
+Without loss of generality, consider the partial derivative of
+<span class="math">\(\left(\theta * \theta \right)^T x\)</span> with respect to its first
+component <span class="math">\(\theta_1\)</span>:</p>
+<div class="math">$$
+\frac{\partial}{\partial \theta_1}(\theta * \theta)^Tx = \frac{\partial}{\partial \theta_1} \sum_{i=1}^{|\theta|}\theta_i^2 x_i = 2\theta_1 x_1.
+$$</div>
+<p>We can then see that the <span class="math">\(i\)</span>th component should be <span class="math">\(2 \theta_i x_i\)</span>, and that the full vector <span class="math">\(\nabla_\theta \left( \theta * \theta \right)^T x = 2\left( \theta * x \right)\)</span>, as desired.</p>
+<h1><strong>Problem 5</strong> Stochastic gradient descent in 1D</h1>
+<p>Consider a 1D regression problem without an offset <span class="math">\(\theta_0\)</span>, which
+forces the graph of the hypothesis to go through the point <span class="math">\(x = 0, y = 0.\)</span>
+There is one parameter <span class="math">\(\theta\)</span> in this model, and our hypothesis
+is <span class="math">\(h(x; \theta) = \theta x\)</span> where we can treat <span class="math">\(x\)</span> and <span class="math">\(\theta\)</span> as
+scalars for simplicity.</p>
+<p>Our data set <span class="math">\(\mathcal{D} = \{ (x^{(i)}, y^{(i)})\}_{i=1}^n\)</span> has <span class="math">\(n=2\)</span>
+data points:</p>
+<div class="math">$$
+\mathcal{D} = \{(1, 1), (1, -1)\}\; .
+$$</div>
+<p>a) What value of <span class="math">\(\theta\)</span> minimizes the mean squared loss for this dataset? (You should be able to solve for this <span class="math">\(\theta\)</span> value by hand.)</p>
+<p><strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>:
+Intuitively, mean squared loss is minimized by the line that cuts
+through the middle of the two points.  More rigorously, we have that
+our mean squared loss is</p>
+<div class="math">$$
+\begin{align}
+\frac{1}{n} \sum_{i=1}^n L_2(x^{(i)}, y^{(i)}; \theta) &amp;= \frac 1 2 \left[\left(h(1;\theta) - 1\right)^2 + \left(h(1;\theta) + 1\right)^2\right]\\
+     &amp;= \frac 1 2 \left[\left(\theta - 1\right)^2 + \left(\theta + 1\right)^2\right]\\
+     &amp;= \frac 1 2\left[2\theta^2 + 2\right]\\
+     &amp;= \theta^2 + 1,
+\end{align}
+$$</div>
+<p>which is minimized when <span class="math">\(\theta=0\)</span>.</p>
+<p>b) Starting with an initial guess of <span class="math">\(\theta = 1\)</span>, and letting learning rate
+be <span class="math">\(\eta = 0.2\)</span>, what are the values of <span class="math">\(\theta\)</span> after the first step
+of batch gradient descent and after the second steps of batch gradient
+descent? (Here, each &quot;batch&quot; will evaluate all points in the dataset
+once, for each step of batch gradient descent.)</p>
+<p><strong>Answer</strong>: [.6,.36].<br />
+<strong>Explanation</strong>: <span class="math">\(\theta' = \theta - \eta \big((\theta - 1) + (\theta + 1)\big)\)</span>
+then we will get <br>
+<span class="math">\(\theta' = 1 - 0.2 * 2 = 0.6\)</span> <br>
+<span class="math">\(\theta'' = 0.6 - 0.2 * (0.6 - 1 + 0.6 + 1) = 0.6 - 0.24 = 0.36\)</span></p>
+<p>c) Now let’s consider a variation on SGD. Each step of SGD will
+pick exactly one datapoint, and will strictly alternate between our two
+data points (rather than randomly pick one datapoint to use).</p>
+<p>We will start with <span class="math">\(\theta = -1/9\)</span> and use a fixed learning rate
+<span class="math">\(\eta = 0.2.\)</span> Assume that we start with the data point <span class="math">\((1, 1)\)</span>. Now, what
+are the values of <span class="math">\(\theta\)</span> resuling from the first four steps of this
+modified SGD?</p>
+<p>Assume that our SGD takes a step of the form:</p>
+<div class="math">$$
+\theta&#x27; = \theta - 2 \eta (\theta x^{(i)}- y^{(i)})  x^{(i)}
+$$</div>
+<p>where <span class="math">\(\theta'\)</span> is the new value for <span class="math">\(\theta\)</span> in each step, and <span class="math">\(i\)</span> is
+selected alternately as described above.</p>
+<p><strong>Answer</strong>: [1/3, -0.2, 0.28, -0.232].<br />
+<strong>Explanation</strong>: We can plug in <span class="math">\(\theta = -\frac{1}{9}, \eta=0.2, x^{(i)} = 1, y^{(i)} = 1\)</span> into the update rule provided above:</p>
+<div class="math">$$
+\begin{align}
+\theta&#x27; &amp;= \theta - 2 *0.2* (\theta - 1) = -1/9 - 0.4 *(-10/9) = 1/3 \\
+\theta&#x27; &amp;= \theta - 2* 0.2 *(\theta + 1) = 1/3 - 0.4* (4/3) = -1/5 = -0.2 \\
+\theta&#x27; &amp;= \theta - 2 *0.2* (\theta - 1) = -1/5 - 0.4 *(-6/5) = 7/25 = 0.28\\
+\theta&#x27; &amp;= \theta - 2* 0.2 *(\theta + 1) = 7/25 - 0.4* (32/25) = -0.232
+\end{align}
+$$</div>
+<h1><strong>Probelm 6</strong> where2meet?</h1>
+<p>A group of friends is planning to host a pset group session over the
+weekend. They want to find a location for the meeting that minimizes
+the sum of <b>squared</b> distances from their rooms to the location
+of the meeting. Assume for now that they can host the gathering at any
+location in the hallway.</p>
+<p>Assuming that the friends live in a 1-dimensional hallway, solve the
+following problems:</p>
+<p>a) Pose this problem as an (unconstrained) optimization problem. Assume
+there are <span class="math">\(n\)</span> friends and the <span class="math">\(i\)</span>-th friend is located at location
+<span class="math">\(l_i\)</span>. Denote the location of the meeting by <span class="math">\(p\)</span>. What is the
+objective as a function of <span class="math">\(p\)</span>? Write it down. If you are having
+trouble deriving the general case, try the <span class="math">\(n=2\)</span> case first.</p>
+<p><strong>Answer</strong>: The objective function is <span class="math">\(J(p) = &Sum_{i=1}^{n}(l_i-p)^2\)</span>, or some multiple of it such as
+<span class="math">\(J(p) = \frac{1}{n}&Sum_{i=1}^{n}(l_i-p)^2\)</span>.</p>
+<p>b) Determine the gradient (write down/show your computation). Use it to
+find the optimal location <span class="math">\(p^{opt}\)</span> for the meeting by setting the
+gradient equal to zero and solving.  Does this match your intution for
+where the optimal location would be?</p>
+<p>(Hint: remember the chain rule!)</p>
+<p><strong>Answer</strong>: <span class="math">\(dJ(p)/dp = 2np - 2 &Sum_{i=1}^{n}l_i\)</span>.</p>
+<p><strong>Explanation</strong>:  The gradient is <span class="math">\(dJ(p)/dp = 2np - 2 &Sum_{i=1}^{n}l_i\)</span>. If we set the
+gradient equal to <span class="math">\(0\)</span>, the solution is when <span class="math">\(p\)</span> is the mean of the
+locations (i.e., <span class="math">\(\frac{1}{n} &Sum_{i=1}^{n} l_i\)</span>).</p>
+<p>c) Let's say the <span class="math">\(j\)</span>-th friend in the group will have some difficulty
+traveling large distances during the planned meeting time.  Will the
+objective function in its current form take into account this detail?
+How might you adjust the objective function such that the optimization
+procedure prioritizes a solution closer to friend <span class="math">\(j\)</span>?</p>
+<p><strong>Answer</strong>: No.<br />
+<strong>Explanation</strong>: The optimization function will not take this into account. We could
+multiply the <span class="math">\((l_j - p)^2\)</span> term in the loss function by a
+constant <span class="math">\(&lambda > 1\)</span>. Higher values of lambda will prioritize a solution
+closer to friend j.</p>
+<h1><strong>Problem 7</strong> Objective Functions</h1>
+<p>We use gradient descent to minimize an objective function. In ML, we
+typically either use a standard objective function, or we design our
+own objective functions for specific applications. The choice of
+objective function is critical, since this specifies our optimization
+target. This choice is one of many technical decisions in which we
+encode human values (with or without intentionality!).</p>
+<p>When we prioritize one objective or value, we inevitably introduce
+trade-offs with others. We’ll take a look at this by considering two
+common objective functions: L1 loss, or Mean Absolute Error (MAE), and
+L2 loss, or Mean Squared Error (MSE).</p>
+<p>Say you have <span class="math">\(n\)</span> data points <span class="math">\((x^{(i)}, y^{(i)})\)</span>, and you’re trying to fit
+the parameters <span class="math">\(\theta\)</span> of a function <span class="math">\(f_\theta(x^{(i)})\)</span> such that you
+can predict <span class="math">\(y^{(i)}\)</span> from <span class="math">\(x^{(i)}\)</span>. When using the L1 objective function,
+we minimize the <b>absolute differences</b> between target values
+<span class="math">\(y^{(i)}\)</span> and predicted values <span class="math">\(f_\theta(x^{(i)})\)</span>.</p>
+<div class="math">$$
+J_1(\theta) = \frac{1}{n}\sum_{i=1}^n |y^{(i)} - f_\theta(x^{(i)})|
+$$</div>
+<p>When using the L2 objective function, we minimize the <b> squared differences </b>
+between target values <span class="math">\(y^{(i)}\)</span> and predicted values <span class="math">\(f_\theta(x^{(i)})\)</span>.</p>
+<div class="math">$$
+J_2(\theta) = \frac{1}{n}\sum_{i=1}^n (y^{(i)} - f_\theta(x^{(i)}))^2
+$$</div>
+<p>a) Which of these loss functions do you think will be more
+sensitive to outliers?</p>
+<p><strong>Answer</strong>: L2.<br />
+<strong>Explanation</strong>: Since the difference is squared, L2 loss is much more sensitive to
+outliers. Imagine you are trying to fit a line to some data, and most
+of your points can be fit to a line with error <span class="math">\(&epsilon &lt 1\)</span>, but
+one point has large error <span class="math">\(&Epsilon>>1\)</span>. While both losses are
+affected by the outlier, the effect is linear in L1 and squared in L2.</p>
+<p>Although absolute error (L1 loss) is not differentiable everywhere
+(the derivative is not defined when the error is 0), it is still
+possible to run gradient-descent methods on it, with some success.
+However, the optimization can be <i>unstable</i> in the sense that it
+doesn’t naturally take smaller steps as it gets close to an optimum.</p>
+<p>b) Consider just minimizing the function <span class="math">\(f_2(\theta) = (3 - \theta)^2\)</span>
+vs optimizing the function <span class="math">\(f_1(\theta) = |3 - \theta|\)</span>.  What is
+the gradient in each case when <span class="math">\(\theta = 4\)</span>?  When <span class="math">\(\theta = 3.1\)</span>?
+When <span class="math">\(\theta = 3.01\)</span>? For the same step-size, which
+function do you think gradient descent will be more likely to
+&quot;overshoot&quot;, if we start at an initial point close to <span class="math">\(\theta = 3\)</span>?</p>
+<p><strong>Explanation</strong>: Gradient descent dynamics associated with the L2 loss are more
+stable, because as we get closer to <span class="math">\(&Theta=3\)</span>, the
+optimum, the magnitude of the L2's gradient <span class="math">\((6-2&Theta)\)</span>
+is getting smaller and smaller, whereas for the L1 loss,
+except for exactly at <span class="math">\(&Theta=3\)</span>, the gradient is always of magnitude 1.</p>
+<p>Given that L1 has larger gradient near <span class="math">\(&Theta=3\)</span>, it is more likely
+to overshoot. To handle overshooting, you can use techniques like
+decaying the learning rate.</p>
+<p>c) Imagine you have a dataset consisting of different patients' reactions
+to a treatment for a certain disease. Suppose that 95% of the population display some
+typical positive response to the treatment, while 5% of the population
+have some genetic trait that causes a life-threatening reaction to the
+treatment. What are some advantages and disadvantages of each of these loss functions if they were used to fit a
+function <span class="math">\(f_\theta\)</span> on the reaction data to determine the dosage level of the medication?</p>
+<p><strong>Answer</strong>: It depends!<br />
+<strong>Explanation</strong>: Would you prefer a “better” model for the 95%? If so,
+there’s an argument to be made for using L1 loss, to minimize the
+effect of the “outlier” 5%. Would you prefer a model which gives more weight
+to the 5% whose lives would be threatened by an incorrect result,
+but which might be worse for the 95% as a
+consequence? If so, L2 loss is likely a better choice.</p>
+<p><br>Note: it’s important that students don’t come away from this
+thinking “L1 is fair” and “L2 is biased”. This choice has pros and
+cons; L1 is less stable and has multiple solutions, and is thus harder
+to fit.</p>
+<p>A note below further comments on the public health perspective on this question,
+and how it might be handled in the real world:</p>
+<p>For people who really build medical applications, they would not likely adopt a decision or support system that “causes a life-threatening reaction” in 5% of the patients.
+Instead, you would try to identify a genetic test that identifies the set of patients for whom the treatment is appropriate.
+There is some threshold level of risk that is considered acceptable (e.g., if the test is imperfect), but it depends on how bad the disease is, how effective the treatment is for the 95%, and how deadly it is for the 5%.
+This often becomes a major public health argument. E.g., polio vaccines that cause polio in a very small fraction of those getting them.
+But usually that fraction needs to be far, far smaller than 5%!</p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

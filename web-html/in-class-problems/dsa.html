@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Dsa Conceptual Questions</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <a href="/web-html/in-class-problems.html" class="back-link">← Back to Conceptual Questions</a>
+            <h2>Dsa</h2>
+
+            <div class="markdown-content">
+                <h1><strong>Problem 1</strong> CNN operations</h1>
+<p>Consider the 1D binary image <em>I</em> and filter <em>F</em> (of size 3) below:</p>
+<div class="inline_imgs">
+
+<img src="assets/dsa/image_and_filter.png" width=50%>
+
+</div>
+
+<p>Suppose there is no padding and no bias. If we apply filter <em>F</em> to
+image <em>I</em> with a stride of 1, we obtain a vector of length <span class="math">\(L_1\)</span>.</p>
+<p>a) What is the length <span class="math">\(L_1\)</span>?</p>
+<p><strong>Answer</strong>: 8.<br />
+<strong>Explanation</strong>: The size after the convolution is reduced to 8,
+because we did not pad the image and the filter cannot be left
+aligned to the last two pixels in <em>I</em>.  In general, for a stride of
+1, the size of the output layer is reduced by <span class="math">\(|F| - 1\)</span> pixels where
+<span class="math">\(|F|\)</span> is the size of the filter.</p>
+<p>b) What is the output of applying the filter to the image? (It should be
+of length <span class="math">\(L_1\)</span>.)</p>
+<p><strong>Answer</strong>: [1, -2, 0, -1, -1, 0, -1, 0].<br />
+<strong>Explanation</strong>: We slide the filter <em>F</em> across <em>I</em>, computing
+the inner product of <em>F</em> and the window of <em>I</em> at each step.  For
+example, the first unit's value =
+$(F_0 \cdot I_0) + (F_1 \cdot  I_1) + (F_2 \cdot I_2) =
+(-1 \cdot  0) + (1 \cdot 1) + (-1 \cdot  0) = -1$.</p>
+<p>Now, take the output from the previous problem and apply the ReLU
+activation to each element. Second, apply a max pooling filter of size
+2 with stride 2. Let the output of the max pooling filter have length <span class="math">\(L_2\)</span>.</p>
+<p>c) What is the length <span class="math">\(L_2\)</span>?</p>
+<p><strong>Answer</strong>: 4.<br />
+<strong>Explanation</strong>: Because we have a max pooling filter of size 2
+and a stride of 2, we are only retaining the max of every 2
+elements, and so our size is reduced by a factor of 2 from 8 to 4.</p>
+<p>d) What is the vector output of the max pool operation?</p>
+<p><strong>Answer</strong>: [1, 0, 0, 0].<br />
+<strong>Explanation</strong>:  This is equivalent to taking the max of every
+two pixels in the output of the ReLU activated convolution.  For
+example, the first value = max(1, 0) = 1.</p>
+<p>e) Finally, consider the output from the previous part. In this part, we
+will apply a fully connected layer with a single output. Every weight
+leading to the output is set to 1 (there are <span class="math">\(|L_2|\)</span> total weights), and
+we have a bias <span class="math">\(b = -0.5\)</span>. To obtain the final output, we use the
+<span class="math">\(\operatorname{step}(z)\)</span> activation function; in particular,
+<span class="math">\(\operatorname{step}(z)\)</span> equals 1 if <span class="math">\(z > 0\)</span>, and
+<span class="math">\(\operatorname{step}(z)\)</span> equals 0 otherwise. What is the value of this
+single output?</p>
+<p><strong>Answer</strong>: 1.<br />
+<strong>Explanation</strong>: We have computed <span class="math">\(\operatorname{step}(z) = \operatorname{step}(1 + 0 + 0 + 0 -.5) = 1\)</span>.</p>
+<p>Think about what the sequence of these three layers (convolution
+layer with ReLU activations, then max pooling, layer then fully connected layer)
+accomplishes. When is the final output 1 and when is it 0?</p>
+<p>This is the magic of CNNs; we have constructed a network that tells
+you whether a binary image contains <em>any</em> instance of an isolated 1,
+regardless of <em>where</em> that instance occurs in the image!</p>
+<h2>CNN concepts</h2>
+<p>Here are the building blocks we will use to build a CNN:</p>
+<ul>
+<li>Convolutional layers</li>
+<li>Max pooling layers</li>
+<li>Fully connected layers</li>
+</ul>
+<p>Assume that the task of our CNN is to detect animals like cats, dogs,
+lizards etc. in an image.</p>
+<p>f) Which type of layer would be best to use to detect low-level features
+(like lines, curves, etc.) of an animal in an image?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Convolutional</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Max pool</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Fully connected</li>
+</ul>
+<p><strong>Answer</strong>: Convolutional.<br />
+<strong>Explanation</strong>: Filters in the first convolutional layers are
+responsible for detecting low-level features (e.g., edges, color,
+contrast). Later convolutional layers are responsible for detecting
+mid-level features (e.g., ears, eyes).</p>
+<p>g) Suppose we are given a set of inputs where each input represents whether
+a useful feature of animals (tail, beak, whiskers, etc.) occurs
+anywhere in an image. Which type of layer would be best to use to turn
+these inputs into a classification of whether the image is a cat, dog,
+lizard, etc.?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Convolutional</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Max pool</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Fully connected</li>
+</ul>
+<p><strong>Answer</strong>: Fully connected.<br />
+<strong>Explanation</strong>: Fully connected layers allow combining features
+from the entire image and provide the final network output.</p>
+<p>h) Suppose you have detected occurrences of some <em>useful</em> low-level
+feature, like a furry tail, throughout your image. You would like to
+use these local detections to figure out whether or not the furry tail
+occurred anywhere within larger regions of the image. Which layer
+would be best to use?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Convolutional</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Max pool</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Fully connected</li>
+</ul>
+<p><strong>Answer</strong>: Max pool.<br />
+<strong>Explanation</strong>: Max pooling layers detect the strongest response
+within a given window. This property allows the network to be less
+sensitive to feature locations.</p>
+<h1><strong>Problem 2</strong> Applying Filters</h1>
+<p>Consider a <span class="math">\(5\times5\)</span> input image where each pixel value is either 0 or 1:</p>
+<p><br><img src="assets/dsa/p2_1.png"></p>
+<p>You are applying filters to this image,
+each with a filter size of <span class="math">\(3\times3\)</span>, an offset, and a stride of 1.</p>
+<p>a) How much padding is needed in order for the output image to maintain the same dimensions (<span class="math">\(5\times5\)</span>) as the input image? Recall that &quot;padding&quot; refers to adding a border of pixels with a value of &quot;0&quot; around the image.</p>
+<p><strong>Answer</strong>: 5.</p>
+<p><strong>Explanation</strong>: Recall that the formula for calculating the output dimensions (height and width) is:
+<span class="math">\(\text{Output dim.} = \left\lceil\frac{\text{Input dim.} + 2 \times \text{Padding} - (\text{Filter size} - 1) }{\text{Stride}}\right\rceil.\)</span>
+As Input dim. <span class="math">\(=5\)</span>, Filter Size <span class="math">\(=3\)</span> and Stride <span class="math">\(=1\)</span>, Padding of 1 is necessary in order for Output dim. = Input dim. <span class="math">\(=5\)</span>.</p>
+<p>b) Suppose that you are given a filter with a size of <span class="math">\(3\times3\)</span>:</p>
+<p><br><img src="assets/dsa/p2_2.png" width=20%></p>
+<p>and an offset of <span class="math">\(-3\)</span>.
+After applying this filter to the (padded) input image, the output is passed through a ReLU activation function.
+What is the value of the upper-left pixel of the output image?</p>
+<p><strong>Answer</strong>: 1.</p>
+<p><strong>Explanation</strong>: $ \text{ReLU}\left(1 + 1 + 1 + 1 - 3\right) = 1$.</p>
+<h1><strong>Problem 3</strong> Pixel effects</h1>
+<p>Suppose we have an input image of size <span class="math">\(5\times5\)</span>.
+Consider two successive convolutional layers, each with a filter with a size of <span class="math">\(3\times3\)</span>, a stride of 1, and padding of 1.
+Focus on the center pixel of the input image.
+<br><img src="assets/dsa/p3_1.png" width=80%></p>
+<p>a) How many pixels in the output of the first convolutional layer are affected by this single pixel in the input image?</p>
+<p><strong>Answer</strong>: 9.</p>
+<p><strong>Explanation</strong>: The center pixel in the input image will affect the central <span class="math">\(3\times3\)</span> region of the first convolutional layer's output, because the filter size is <span class="math">\(3\times3\)</span> and the stride is 1.</p>
+<p>b) How many pixels in the final output of the network (after both convolution layers) are affected by this single pixel in the input image?</p>
+<p><strong>Answer</strong>: 25.</p>
+<p><strong>Explanation</strong>: After the second convolutional layer, all pixels of the <span class="math">\(5\times5\)</span> output image are affected by the center pixel of the input image.</p>
+<p>To summarize:</p>
+<ul>
+<li>The single pixel in the input image will influence 9 pixels in the output of the first layer.</li>
+<li>It will influence all 25 pixels in the output of the second layer.</li>
+</ul>
+<p>c) Instead of using only convolutional layers, let's instead consider max-pooling.
+Suppose that after each convolutional layer, we include a max-pooling filter of size <span class="math">\(3\times3\)</span> with stride 2.
+After one convolutional layer with a <span class="math">\(3\times3\)</span> filter and stride 1 and one max-pooling layer, what is the size of the resulting output image?
+<strong>Answer</strong>: 2x2.</p>
+<p><strong>Explanation</strong>:  The output of the convolutional layer remains <span class="math">\(5\times5\)</span>. Max-pooling will result in a <span class="math">\(2\times2\)</span> output image.</p>
+<p>d) We have an input image of size <span class="math">\(64\times64\)</span> instead of <span class="math">\(5\times5\)</span> .
+We will continue using padding of 1 and <span class="math">\(3\times3\)</span> filters with a stride of 1.
+How many convolutional layers would be necessary in order for the upper-left pixel of the input image to affect <em>all</em> the pixels of the output image?</p>
+<p><strong>Answer</strong>: 63.</p>
+<p><strong>Explanation</strong>: Consider the upper left-most pixel of the input image.
+In order for this pixel to affect the lower right-most pixel of the output image, we would need 63 convolutional layers containing a <span class="math">\(3\times3\)</span> filter with a stride of 1.
+After 1 layer, the upper left pixel affects the upper left <span class="math">\(2\times2\)</span> region of pixels.
+After 2 layers, the region grows to the <span class="math">\(3\times3\)</span> region.</p>
+<p>Note that zero padding is not included when identifying these regions of pixels from the input image.</p>
+<h1><strong>Problem 4</strong> Convolutional Tetris</h1>
+<p>We will explore using convolutional filters on the following Tetris
+dataset <strong>(black pixels are encoded as 1 and white pixels are
+0)</strong>.</p>
+<img  src="assets/dsa/tetris.png"  width=80%/>
+
+<p>Here are two filters:</p>
+<p>(Vertical) Sobel Filter:</p>
+<div class="math">$$
+\frac{1}{8}\times\left[ \begin{array}{c} -1 &amp; 0 &amp; 1\\ -2 &amp; 0 &amp; 2\\ -1 &amp; 0 &amp; 1 \\ \end{array}  \right]
+$$</div>
+<p>(Horizontal) Sobel Filter:</p>
+<div class="math">$$
+\frac{1}{8}\times\left[ \begin{array}{c} 1 &amp; 2 &amp; 1\\ 0 &amp; 0 &amp; 0\\ -1 &amp; -2 &amp; -1 \\ \end{array}  \right]
+$$</div>
+<p>These are called Sobel filters and they help detecting vertical and horizontal edges, respectively.</p>
+<p>Let's try to apply the Sobel filters to Tetris! Imagine we build a CNN with two layers:</p>
+<ul>
+<li>A convolutional layer using one of the 3x3 Sobel filters.</li>
+<li>A max pool layer across all numbers in the output of the previous layer, outputting a single number.</li>
+</ul>
+<p>a) If we input a 3x3 gameboard into this CNN, how many hidden neurons will we use? Do not include bias terms in your calculations. How does your answer change if we use (a) No zero-padding, (b) 1 layer of zero-padding (1 pixel border of zeros), or (c) 2 layer of zero-padding (2 pixel border of zeros)?</p>
+<p><strong>Explanation</strong>:<br />
+The number of hidden neurons depends on the output size of the convolutional layer. With a 3x3 input and 3x3 filter:</p>
+<ul>
+<li>No padding: (3-3+1) x (3-3+1) = 1x1 = 1 unit</li>
+<li>1 layer padding: Input becomes 5x5, so (5-3+1) x (5-3+1) = 3x3 = 9 neurons</li>
+<li>2 layers padding: Input becomes 7x7, so (7-3+1) x (7-3+1) = 5x5 = 25 neurons</li>
+</ul>
+<p>b) For each of the two Sobel filters, identify whih Tetris piece(s) will produce the maximum response. In other words, across all pictures in the dataset, which inputs will produce the maximum possible response from the CNN? How does your answer change if we use (a) No zero-padding, (b) 1 layer of zero-padding (1 pixel border of zeros), or (c) 2 layer of zero-padding (2 pixel border of zeros)?</p>
+<p><strong>Explanation</strong>:<br />
+Vertical and horizontal lines will be identified by the vertical
+edge detection Sobel filter and horizontal edge detection filter,
+respectively, BUT only if there's enough padding (or space in the image) for the filters to detect an edge!</p>
+<p>For example, with NO zero-padding (a), the maximum output for the vertical Sobel filter is for a vertical line on the right of the 3x3 image. With 1 zero-padding (b), the maximum output is for both a vertical line on right and center of the 3x3 image. Finally, with 2 zero-padding (c), the maximum output is for all vertical lines. This also why in practice our filters are smaller than our images -- we need to make sure there's enough space for the filter to overlap with our image in different ways to detect patterns.</p>
+<p>If students are confused, walk them through a
+convolution of a Sobel on a vertical or horizontal line (with a given choice of padding) or explain
+intuitively (Sobel emphasizes differences across vertical or
+horizontal edges).</p>
+<hr />
+<p>It's fun to design convolutional filters by hand, but it is a fairly
+laborious process. Most modern CNNs do not utilize hand-crafted
+convolutional filters. Instead, these filters are learned using back-propagation.</p>
+<p>To separate the Tetris dataset, we decide on the following machine learning architecture:</p>
+<pre><code>Inputs: a 3x3 image of a Tetris block with one channel
+
+1. Convolutional layer with m 3x3 filters, stride 1. Assume zero-padding of
+   size 1 on all sides of the input image
+2. ReLU Activation
+3. Flatten Layer: turns (d1, d2, d3) input into a (d1*d2*d3, 1) shaped input
+4. Output (fully-connected) layer: one single neuron for a scalar output.
+
+Pre-activation Output: A single number z
+Post-activation (final) Output: z is passed through sigmoid activation to
+  produce final output a, 0 &lt; a &lt; 1, that represents the probability that
+  the input image contains a line.
+</code></pre>
+<p>c) Write down the dimensions of the <b>outputs</b> of each layer in the CNN for
+a single training example. You should use <code>m</code>, the number of filters
+in the convolutional layer, in your final answer.</p>
+<p><strong>Answer</strong>:<br />
+Layers:</p>
+<ul>
+<li>Output of layer 1 (convolution): (3, 3, m)</li>
+<li>Output of layer 2 (relu): (3, 3, m) (relu is applied element-wise)</li>
+<li>Output of layer 3 (flatten layer): (3 x 3 x m, 1)</li>
+<li>Output of layer 4 (fully connected layer): just 1 number</li>
+<li>Final Output (after activation): just 1 number</li>
+</ul>
+<h2>One-filter CNN vs. Fully-connected Neural Networks</h2>
+<p>We train a CNN with <strong>one</strong> filter using SGD (learning rate 0.08), negative log likelihood loss (no regularization) for 100 epochs. This network has <strong>20 parameters</strong>.</p>
+<ul>
+<li><strong>Conv layer</strong>: 1 filter of size 3×3 = 9 weights + 1 bias = 10 parameters</li>
+<li><strong>FC layer</strong>: 9 inputs (from 3×3 conv output) → 1 output = 9 weights + 1 bias = 10 parameters</li>
+<li><strong>Total</strong>: 10 + 10 = 20 parameters</li>
+</ul>
+<p>Here are three plots showing the value of the loss as a function of
+the number of training epochs. Each plot was generated by training with a
+different <strong>random</strong> parameter initialization of the CNN on the Tetris
+dataset.</p>
+<img  src="assets/dsa/final_one_filter_convergence.png" width=100%/>
+
+<p>The three trained networks above have the following accuracies on the
+tetris dataset (for all lines vs. corners classification):</p>
+<ul>
+<li>Trained Network 1: 0.7273</li>
+<li>Trained Network 2: 0.9545</li>
+<li>Trained Network 3: 1.0</li>
+</ul>
+<p>Here is a visualization of the filters learned by each of the three
+networks. Each row in the figure below corresponds to the single
+filter learned by each of the three convolutional neural networks.</p>
+<img  src="assets/dsa/final_one_filter_filters.png" width=50% length=50%/>
+
+<p>Now we train a fully-connected (FC) network using the same SGD optimizer (learning rate 0.08), negative log likelihood loss, and no regularization for 100 epochs. This network has <strong>23 parameters</strong>.</p>
+<ul>
+<li><strong>FC layer 1</strong>: 9 inputs → 2 hidden neurons = 9×2 weights + 2 biases = 20 parameters</li>
+<li><strong>FC layer 2</strong>: 2 inputs → 1 output = 2×1 weights + 1 bias = 3 parameters</li>
+<li><strong>Total</strong>: 20 + 3 = 23 parameters</li>
+</ul>
+<p>Here are three plots showing the value of the loss as a function of the number of training epochs. Each plot was generated by training with a different <strong>random</strong> parameter initialization of the FC network on the Tetris dataset.</p>
+<img  src="assets/dsa/fc-nn.png" width=100%/>
+
+<p>d) What do you notice about the difference between the one-filter CNN
+convergence plots and the FC-net convergence plots? Recall that in
+this problem, the one-filter CNNs and the FC Nets have about the same
+number of parameters and the same activation and loss function, so
+what might be an explanation as to why these differences would exist
+using these different structures?</p>
+<p>(Risking reading a bit much into this small-scale experiment) -- what
+could be some potential advantages of CNNs over FC-nets when it comes
+to image-related tasks?</p>
+<p><strong>Explanation</strong>:<br />
+We notice the CNNs seem to achieve lower loss despite having roughly the SAME number of parameters.
+This suggest that HOW the parameters being applied is particularly
+suitable for image-related problems because the weight-sharing scheme:</p>
+<ul>
+<li>cleverly exploit the image/vision-problem structure</li>
+<li>(when applied to larger images) effectively reduces the computational cost, that is, the number of parameters we need to train (in contrast to fully-connected).</li>
+</ul>
+<p>It's important to point out to students that:</p>
+<ul>
+<li>increasing the number of parameters in FC net almost certainly can
+achieve the same performance as CNNs (after all, CNNs are special
+FC-Nets anyway; see Homework 9, Question 2)</li>
+<li>By taking into consideration the &quot;structure&quot; of our data
+(pixels that are close to each other are more important for detecting important features)
+we can more easily learn to detect important trends in our data</li>
+<li>Note that SGD does not always converge to a good solution when
+learning the weights of the filter(s) -- especially when we use too few parameters.</li>
+</ul>
+<p>Another good question to ask students: draw the two neural networks and explain why the CNN has 20 parameters, and the FC-net has 23 parameters.  This is explained in the &quot;click for parameter breakdown&quot; but many won't have read those.</p>
+<h2>One-filter CNN vs. Two-filter CNN</h2>
+<p>We now expand to <strong>two</strong> convolutional filters using the same training setup. This network has <strong>39 parameters</strong>.</p>
+<ul>
+<li><strong>Conv layer</strong>: 2 filters of size 3×3 = 2×(9 weights + 1 bias) = 20 parameters</li>
+<li><strong>FC layer</strong>: 18 inputs (from 3×3×2 conv output) → 1 output = 18 weights + 1 bias = 19 parameters</li>
+<li><strong>Total</strong>: 20 + 19 = 39 parameters</li>
+</ul>
+<p>Here are the convergence plots from three different <strong>random</strong> initializations:</p>
+<img  src="assets/dsa/final_two_filters_convergence.png" width=100%/>
+
+<p>e) What do you notice about the difference between these convergence
+plots and the convergence plots from training models that only have
+one filter? What might be an explanation as to why these differences
+would exist?</p>
+<p><strong>Explanation</strong>:<br />
+In this experiment, there is less variation across
+initializations for the 2 filter models, and the 2 filter models
+converge faster. This could be because two filters can detect two
+features/patterns, not just 1. Also, any individual filter might not
+be initialized in a way that enables gradient descent to find a good
+solution. By having two filters, there might be some &quot;division of
+labor&quot; between them.</p>
+<p>However, it's important to stress that this doesn't mean two filters
+always &quot;win&quot;. Factors like the random initial weights and SGD can come
+to influence the training loss.
+</answer></p>
+<p><em>Note</em>: This example uses 22 examples to learn &gt;22 parameters—not recommended in practice, but useful for illustration.</p>
+<h2>Learned Filter Visualization</h2>
+<p>All three two-filter networks achieve 100% accuracy. Here are the learned filters from each network (each row shows the two filters from one CNN):</p>
+<img  src="assets/dsa/final_two_convergence_filters.png" width=80% length=80%/>
+
+<p>f) What may be some advantages of using back-propagation to find filters
+rather than designing them by hand?</p>
+<p><strong>Explanation</strong>:<br />
+Some advantages include:</p>
+<ul>
+<li>less manual work required, the model can automatically find filters.</li>
+<li>The model can also learn filters that are non-intuitive for people.</li>
+<li>Scales better to more complex computer vision tasks. We are only
+training on a very small dataset and using random initialization
+of weights. However, if you train on a huge dataset with many
+classes, it would be far more difficult to design filters by
+hand.</li>
+<li>The food for thought ties well here; direct them towards
+<a href="https://distill.pub/2017/feature-visualization/">https://distill.pub/2017/feature-visualization/</a>, which shows some
+low, mid, and high-level features that were learned by more
+complex model architectures</li>
+</ul>
+<h1><strong>Problem 5</strong> CNN architectures</h1>
+<p>In order to get practice with the structural choices in a CNN and understand how parameters are shared, we will consider how many separate weights are in NNs of different architectures.</p>
+<p><b>Hint:</b> For all the questions in this section, if you get stuck, try drawing a picture/diagram of what the network would look like.
+<br /><br /></p>
+<p>a) In a fully-connected feedforward network, the number of weights (including biases)
+for one layer with 100 inputs and 80 outputs is:</p>
+<p><strong>Answer</strong>: 8080.<br />
+<strong>Explanation</strong>:  We have 100 inputs, connecting to 80 output units.
+Each of the output units thus has 101 incoming weights (the 100 weights
+from the inputs, plus 1 for the bias for each output), giving 80 x 101
+= 8080 total weights.</p>
+<p>b) Consider a CNN for 1D data. Suppose a convolutional layer receives an input of size 100. This layer has 10 filters, each of size 5. Suppose we use a zero-padding of size 2 on both ends of the input, and a stride of 1. What are the dimensions of the output of this convolutional layer?</p>
+<p><strong>Answer</strong>: [100, 10].<br />
+<strong>Explanation</strong>: Each filter slides across with a stride of 1,
+giving 100 output units for each filter, and we have 10 filters. In terms of the formula given in the notes, we have <span class="math">\(n_l = \lceil(100 + 2*2 - (5-1))/1\rceil = 100\)</span> units for the output of a single filter, where this equation is from Section 8.1 of the notes.</p>
+<p>c) How many weights (including bias) are needed to specify the map from the input to the output of this convolutional layer?
+<strong>Answer</strong>: 60.<br />
+<strong>Explanation</strong>: Including the 5 filter weights in each filter
+and the bias in each filter, we have 6 inputs into each output
+unit. Since we have 10 filters, we need 60 weights to specify the
+feature map.</p>
+<p>d) Now consider a zero-padded max pooling layer with an input of size 100, a pooling filter of size 3, and
+a stride of 2. Assume zero-padding of size 1. What are the dimensions of the output of this pooling layer?</p>
+<p><strong>Answer</strong>: [50].<br />
+<strong>Explanation</strong>: The filter has a stride of 2, meaning we drag
+the filter across the layer in steps of 2; this transforms our vector
+from having 100 elements to having 50 elements. Note that at each
+filter position, we find the maximum value over a size-3 window.</p>
+<p>e) How many weights (including bias) are needed to specify the max pooling
+layer?<br />
+<strong>Answer</strong>: 0.<br />
+<strong>Explanation</strong>: A max pooling layer does not have weights, since
+the operation is just to take a max across values of the input
+image. A stride and filter size completely define a max pooling
+layer.</p>
+<h1><strong>Problem 6</strong> Conversion from Convolutional to Fully Connected</h1>
+<p>Let's now formalize the relationship between convolutional layers and fully connected layers.</p>
+<p>Suppose we have a:</p>
+<ul>
+<li>1D input <span class="math">\(x\)</span> of size 4</li>
+<li>a filter <span class="math">\(f\)</span> of size 3: <span class="math">\((w_1, w_2, w_3)\)</span> with stride of 1 and no bias.</li>
+<li>a 1D output <span class="math">\(z\)</span> of size 4, produced by convolving <span class="math">\(f\)</span> with <span class="math">\(x\)</span>. To preserve size, we use padding of size 1 on both sides.</li>
+</ul>
+<p>Assume that when doing convolutions, inputs that fall outside the
+image indices are treated as zeros.</p>
+<p><strong>The effect of convolving this filter with the input layer <span class="math">\(x\)</span> is actually equivalent to constructing a matrix <span class="math">\(W\)</span> of weights between two layers of a fully connected network</strong>, i.e.,
+$ z = W^\top x;, $ where <span class="math">\(W\)</span> is a 4 by 4 matrix (and there is no bias term). Note though that in the conversion, the same weight may occur more than once in the matrix <span class="math">\(W.\)</span></p>
+<p>Which of the following weight matrices corresponds to <span class="math">\(W^T\)</span> in the equation above? That is, <span class="math">\(z\)</span> was produced using a convolution
+between <span class="math">\(f\)</span> and <span class="math">\(x\)</span>, but if we want to produce <span class="math">\(z\)</span> using <span class="math">\(W\)</span> and <span class="math">\(x\)</span>, as defined above,
+what would <span class="math">\(W^\top\)</span> be?</p>
+<p>Hint: What is the output <span class="math">\(z\)</span>, in terms of the elements of <span class="math">\(w\)</span> and <span class="math">\(x\)</span>?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\left[ \begin{array}{c} w_2 & w_3 & 0 & 0\\w_1 & w_2 & w_3 & 0\\ 0 & w_1 & w_2 & w_3\\0 & 0 & w_1 & w_2\\ \end{array}  \right]\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\left[ \begin{array}{c} w_2 & w_1 & 0 & 0\\w_3 & w_2 & w_1 & 0\\ 0 & w_3 & w_2 & w_1\\0 & 0 & w_3 & w_2\\ \end{array}  \right]\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\left[ \begin{array}{c} w_1 & 0 & 0 & 0\\w_2 & w_1 & 0 & 0\\ w_3 & w_2 & w_1 & 0\\0 & w_3 & w_2 & w_1\\ \end{array}  \right]\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\left[ \begin{array}{c} w_1 & w_2 & w_3 & 0\\ 0 & w_1 & w_2 & w_3\\0 & 0 & w_1 & w_2\\0 & 0 & 0 & w_1\\ \end{array}  \right]\)</span></li>
+</ul>
+<p><strong>Answer</strong>: <span class="math">\(\left[ \begin{array}{c} w_2 & w_3 & 0 & 0\\w_1 & w_2 & w_3 & 0\\ 0 & w_1 & w_2 & w_3\\0 & 0 & w_1 & w_2\\ \end{array}  \right]\)</span>.<br />
+<strong>Explanation</strong>: By looking at the matrix <b>you can see the &quot;sliding&quot; of the filter
+during the convolution</b>.  In a fully-connected network every entry in
+the matrix is a different weight value that has to be learned; in contrast,
+in the convolutional case above you can see that each weight appears
+several times in the matrix (for essentially every output unit) and
+many weights are zero.  <b>The &quot;re-use&quot; of weights is referred to as
+&quot;parameter sharing&quot; or &quot;parameter tying.&quot;</b> This network can be trained
+with error back-propagation as we already understand it; care must
+just be taken to sum over all &quot;error values&quot; that a particular weight
+can contribute to.</p>
+<h1><strong>Problem 7</strong> Kat's Cat</h1>
+<p>In this section, we will train CNNs to classify images. As a warmup, we first look at a CNN with one convolutional layer and one activation layer with a one-dimensional input.</p>
+<ul>
+<li>Assume there is a step activation function. The activation is
+<span class="math">\(\text{step}(z) = 1\)</span> if <span class="math">\(z > 0\)</span>, and <span class="math">\(\text{step}(z)=0\)</span> if <span class="math">\(z <  0\)</span>. For
+this problem we will not allow boundary cases, so an error
+will be raised if <span class="math">\(z=0\)</span> is the input to any <span class="math">\(\text{step}(z)\)</span>.</li>
+<li>Assume we will use zero-padding of size 1 to handle the image boundary.</li>
+<li>Assume a stride of 1.</li>
+</ul>
+<p>a) Provide a 3 x 1 filter and offset that produces the output when applied to the input:</p>
+<pre><code>input:  [0 0 1 1 0 0 1 0]
+output: [0 0 0 0 0 0 1 0]
+</code></pre>
+<p>Enter the weights of a 3 x 1 filter and the bias as a list: <span class="math">\([ w_1, w_2, w_3, b ]\)</span>.</p>
+<p><strong>Answer</strong>: [-2, 1, -2, -0.5].<br />
+<strong>Explanation</strong>: There are many combinations that work; this was checked by actually running the filter.  The one given in the solution is typical, as long as the first and third weights are more negative than the second weight and the bias is a negative number of smaller magnitude than the second weight, the filter should work as specified.</p>
+<p>b) Now, imagine that we take two images:</p>
+<pre>
+[0 0 0 0 0 0 1 0]
+[0 0 0 0 0 1 0 0]
+</pre>
+
+<p>and treat them as two channels that are the outputs of a convolutional layer. We convolve them with a (1 x 1 x 2) tensor filter  <code>[[[1]], [[1]]]</code> to obtain a 1-channel 1D image.  What is the resulting image?</p>
+<p><strong>Answer</strong>: [0, 0, 0, 0, 0, 1, 1, 0].<br />
+<strong>Explanation</strong>: In this case the filter is 1 x 1 in the image dimensions and has dimension 2 in the 'channel' dimension, so it basically just adds up the two channels.</p>
+<hr />
+<p>Kat trains a CNN classifier to recognize their cat, but the cat is always in the lower left quadrant of the 100 x 100 training images, and it usually takes up a 20 x 20 image patch and there is no sub-image of size less than 20 x 20 that will reliably recognize the cat.</p>
+<p>For the rest of this problem, we will be talking about PyTorch.</p>
+<p>c) Kat makes a CNN in Pytorch with layers</p>
+<pre><code class="language-python">[
+    nn.Conv2d(1, 1, kernel_size = (20, 20), stride = 1, padding = 10),
+    nn.ReLU(),
+    nn.MaxPool2d(kernel_size = (100, 100)),
+    nn.Flatten(),
+    nn.Linear(1, 1)
+]
+# Observe that pytorch uses the term &quot;kernel&quot; instead of &quot;filter&quot;. These two terms 
+# are interchangeable. 
+</code></pre>
+<p>and <code>CrossEntropyLoss</code>. It has 100% training accuracy.  Will it have high accuracy on test images with the cat in a 20-pixel window in the upper right quandrant?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Yes</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No</li>
+</ul>
+<p><strong>Answer</strong>: Yes.<br />
+<strong>Explanation</strong>: The CNN kernel is large enough to represent the cat and the pooling over the whole image means that anywhere the kernel detects a cat will produce a 1.</p>
+<p>d) If Kat’s CNN were, instead</p>
+<pre><code class="language-python">[
+    nn.Conv2d(1, 10, kernel_size = (3, 3), stride = 1, padding = 1),
+    nn.ReLU(),
+    nn.Flatten(),
+    nn.Linear(100000, 1)
+]
+</code></pre>
+<p>would we expect it to be possible to train it to reliably recognize the cat in the training data?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Yes</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No</li>
+</ul>
+<p><strong>Answer</strong>: No.<br />
+<strong>Explanation</strong>: The CNN kernel is too small to reliably detect the cat.  The linear combination of those outputs will also not be enough to reliably detect the cat.</p>
+<p>e) If Kat’s CNN were, instead</p>
+<pre><code>[
+    nn.Conv2d(1, 10, kernel_size = (3, 3), stride = 1, padding = 1),
+    nn.ReLU(),
+    nn.MaxPool2d(kernel_size = (3, 3), stride = 3),
+    nn.Conv2d(10, 10, kernel_size = (3, 3), stride = 1, padding = 1),
+    nn.ReLU(),
+    nn.MaxPool2d(kernel_size = (3, 3), stride = 3),
+    nn.Conv2d(10, 1, kernel_size = (3, 3), stride = 1, padding = 1),
+    nn.ReLU(),
+    nn.MaxPool2d(kernel_size = (3, 3), stride = 3),
+    nn.Flatten(),
+    nn.Linear(9, 1)
+]
+</code></pre>
+<p>would we expect it to be possible to train it to reliably recognize the cat in the training data?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Yes</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No</li>
+</ul>
+<p><strong>Answer</strong>: Yes.<br />
+<strong>Explanation</strong>: This is building a 3-layer pyramid of detectors such that each receptive field at the top covers a large enough portion of the image to detect a cat. Note that the convolution kernels in the different channels will detect different features of a cat.</p>
+<p>f) Kat’s housemate Kit thinks a fully-connected network with many layers would be a better idea.
+So Kit makes each <span class="math">\(100 \times 100\)</span> image into a single input vector of size 10,000 and runs it through a standard fully-connected network with 3 hidden layers with non-linear activations and a single output.
+Would it be possible for Kit to train their network to have high training accuracy on Kat’s training data?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Yes</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No</li>
+</ul>
+<p><strong>Answer</strong>: Yes.<br />
+<strong>Explanation</strong>: In principle, any CNN can be converted into a fully-connected network, but with a very large increase in the number of trainable weights and without the implicit generalization across locations that one gets with a CNN. The fully connected network here is able to represent a larger set of functions, so the training accuracy can be greater than or equal to the training accuracy achieved by the CNN, though this will be unlikely.</p>
+<p>g) Would Kit’s network have high accuracy on test data with cats in the upper right quadrant?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Yes</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No</li>
+</ul>
+<p><strong>Answer</strong>: No.<br />
+<strong>Explanation</strong>: While it is possible that the fully connected network can achieve a higher accuracy than the CNN on this test data, it is very unlikely since we never train with cats in the upper right.  This highlights the key advantage of a CNN, namely a filter layer followed by a pooling layer achieves a measure of position invariance for detections.</p>
+<h1><strong>Problem 8</strong> GNN</h1>
+<p>Consider the undirected graph shown in the figure below with nodes {A, B, C, D, E, F}. Node A is the <em>target node</em>.</p>
+<img width=40% src="assets/dsa/p8_1.png">
+
+<p>Each node has an initial scalar feature:</p>
+<p><span class="math">\(h_A = 1, h_B = 2, h_C = 3, h_D = 4, h_E = 5, h_F = 6\)</span>.</p>
+<p>We apply one layer of message passing defined as follows:</p>
+<ol>
+<li>Aggregation:</li>
+</ol>
+<p><span class="math">\(m^{(k)}_{N (v)} = \sum_{u∈N (v)} h^{(k−1)}_u\)</span></p>
+<ol start="2">
+<li>Update:</li>
+</ol>
+<p><span class="math">\(h^{(k)}_v = h^{(k−1)}_v + m^{(k)}_{N (v)}\)</span>.</p>
+<p>(a) List the one-hop neighbors of node A.</p>
+<p><strong>Explanation</strong>: From the graph, the one-hop neighbors of node A are N(A) = {B, C, D}.</p>
+<p>(b) Compute the aggregated message <span class="math">\(m_A\)</span>.</p>
+<p><strong>Explanation</strong>: The aggregated message to node A is</p>
+<p><span class="math">\(m_A = h_B + h_C + h_D = 2 + 3 + 4 = 9.\)</span></p>
+<p>(c) Compute the updated representation <span class="math">\(h^{(1)}_A\)</span>.</p>
+<p><strong>Explanation</strong>: The updated representation of node A is</p>
+<p><span class="math">\(h^{(1)}_A = h_A + m_A = 1 + 9 = 10.\)</span></p>
+<p>(d) If we apply a second message-passing layer, which new nodes could influence A? Briefly explain.</p>
+<p><strong>Explanation</strong>: Nodes E and F influence A after a second message-passing layer because they
+are two hops away.</p>
+<h1><strong>Problem 9</strong> RNN</h1>
+<p>Recurrent neural networks (RNNs) are a type of neural network used for sequential modeling. In this question, we will analyze the forward pass of an RNN and identify what challenges may arise when training it.</p>
+<img width=40% src="assets/dsa/p9_1.png">
+
+<p>A simple RNN architecture. At time t, an RNN computes a hidden state <span class="math">\(h_t\)</span>
+based on the current input <span class="math">\(x_t\)</span> and prior hidden state <span class="math">\(h_{t−1}\)</span> and outputs <span class="math">\(y_t\)</span>.</p>
+<p>Consider the RNN architecture shown in the figure above. At each time step t, the network receives
+an input <span class="math">\(x_t\)</span> ∈ <span class="math">\(R^{d_{in}}\)</span>, updates a hidden state <span class="math">\(h_t\)</span> ∈ <span class="math">\(R^{d_h}\)</span> , and produces an output <span class="math">\(\hat{y_t}\)</span> ∈ <span class="math">\(R^{d_{out}}\)</span>.</p>
+<p>The hidden states and outputs are given by recurrence relations:</p>
+<div class="math">$$
+h_t = φ_h(W_hh_{t−1} + W_xx_t + b_h); \\
+y_t = φ_y(W_yh_t + b_y).
+$$</div>
+<p>The functions <span class="math">\(φ_h(·)\)</span> and <span class="math">\(φ_y(·)\)</span> are arbitrary element-wise non-linearities. The RNN has three weight matrices <span class="math">\(W_h\)</span>, <span class="math">\(W_x\)</span> and <span class="math">\(W_y\)</span> and two bias vectors <span class="math">\(b_h\)</span> and <span class="math">\(b_y\)</span>.
+Assume the initial hidden state is <span class="math">\(h_0\)</span> = 0, the non-linearity <span class="math">\(φ_h(h) = h\)</span>, and the biases <span class="math">\(b_h\)</span> = 0
+and <span class="math">\(b_y\)</span> = 0. After one time step T = 1 we have <span class="math">\(h_1 = W_xx_1\)</span> and <span class="math">\(y_1 = φ_y(W_yW_xx_1)\)</span>.</p>
+<p>(a) Express hidden state <span class="math">\(h_2\)</span> and output <span class="math">\(y_2\)</span> in terms of the weight matrices <span class="math">\(W_y, W_x, W_h\)</span> and inputs <span class="math">\(x_1, x_2\)</span>.</p>
+<p><strong>Explanation</strong>:</p>
+<div class="math">$$
+h_2 = W_hW_xX_1 + W_xX_2, \\
+Y_2 = φ_y(W_yW_hW_xX_1 + W_yW_xX_2)
+$$</div>
+<p>(b) Express hidden state <span class="math">\(h_3\)</span> and output <span class="math">\(y_3\)</span> in terms of the weight matrices <span class="math">\(W_y, W_x, W_h\)</span> and inputs <span class="math">\(x_1, x_2, x_3\)</span>.</p>
+<div class="math">$$
+h_3 = W^2_hW_xX_1 + W_hW_xX_2 + W_xX_3  \\
+Y_3 = φ_y(W_yW^2_hW_xX_1 + W_yW_hW_xX_2 + W_yW_xX_3)
+$$</div>
+<h1><strong>Problem 10</strong> more RNN</h1>
+<!-- TODO maybe, but repetitive -->
+
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

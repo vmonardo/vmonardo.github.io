@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Rl1 Questions</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <style>
+                ul {
+                list-style: none;
+                padding-left: 0;
+                }
+            </style>
+            <a href="/web-html/exercises.html" class="back-link">← Back to Exercises</a>
+            <a href="index.html" class="back-link">← Back to Rl1</a>
+            <h2>Rl1 - Questions</h2>
+            
+            <div class="markdown-content">
+                <ol>
+<li>What is the difference between RL and a typical supervised learning setup?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>RL does not need training (does not learn anything) while supervised learning does</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Supervised learning expects labeled examples while RL does not</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>RL tries different actions and looks at the outcome</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>All of the above</li>
+</ul>
+<ol start="2">
+<li>What are the main distinctive factors of RL?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>In RL, feedback is delayed</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>In RL, there is freedom to select actions from a given set</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>In RL, feedback is immediate</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>In RL, there is freedom to select any action</li>
+</ul>
+<ol start="3">
+<li>For the following setup from the lecture, what is the action set?
+<img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>{Slow, Fast}</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>{Slow, Average, Fast}</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>{Slow}</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>{Fast}</li>
+</ul>
+<ol start="4">
+<li>For the same setup from the lecture, what is the state set?
+<img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>{Warm, Overheated}</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>{Cool, Overheated}</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>{Cool, Warm}</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>{Cool, Warm, Overheated}</li>
+</ul>
+<ol start="5">
+<li>For the same setup from the lecture, which of the following are the correct transition probabilities?
+<img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>T(warm, slow, cool) = 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>T(cool, slow, cool) = 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>T(warm, fast, overheated) = 0.1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>T(overheated, slow, cool) = 0</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>T(warm, fast, overheated) = 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>T(cool, fast, cool) = 0.5</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>T(cool, fast, warm) = 0.5</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>T(warm, slow, cool) = 0.5</li>
+</ul>
+<ol start="6">
+<li>For the same setup from the lecture, which of the following are the correct rewards?
+<img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>R(warm, slow) = 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>R(cool, fast) = -100</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>R(warm, fast) = -100</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>R(cool, slow) = 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>R(cool, fast) = 1</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>R(overheat, slow) = 0</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>R(overheat, fast) = -100</li>
+</ul>
+<ol start="7">
+<li>What is the main distinctive factor of MDP?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>No matter where you start the optimal action is determined by the current state</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Best action depends on the start state</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Next action's result depends on all previous states</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Next action's result only depends on the current state</li>
+</ul>
+<p>|  | slow | fast |
+|--|--|--|
+|cool| 0 | 0 |
+|warm| 0 | 0 |
+|overheated| 0 | 0 |</p>
+<div class="math">$$
+Q_t(s, a) = R(s, a) + \gamma \sum_{s&#x27;} T(s, a, s&#x27;) \max_{a&#x27;} Q_{t-1}(s&#x27;, a&#x27;)
+$$</div>
+<ol start="8">
+<li>For the same setup from the lecture, if the current Q table is the following, in the next iteration, what will be the value of Q(warm, fast) for gamma 0.1?</li>
+</ol>
+<p>|  | slow | fast |
+|--|--|--|
+|cool| 0 | 0 |
+|warm| 0 | 0 |
+|overheated| 0 | 0 |</p>
+<p><img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</p>
+<ol start="9">
+<li>For the same setup from the lecture, if the current Q table is the following, in the next iteration, what will be the value of V(warm) for gamma 0.1?</li>
+</ol>
+<p>|  | slow | fast |
+|--|--|--|
+|cool| 0 | 0 |
+|warm| 0 | 0 |
+|overheated| 0 | 0 |</p>
+<p><img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</p>
+<ol start="10">
+<li>For the same setup from the lecture, if the current Q table is the following, in the next iteration, what will be the value of <span class="math">\(\pi\)</span>(warm) for gamma 0.1?</li>
+</ol>
+<p>|  | slow | fast |
+|--|--|--|
+|cool| 0 | 0 |
+|warm| 0 | 0 |
+|overheated| 0 | 0 |</p>
+<p><img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>slow</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>fast</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>depends</li>
+</ul>
+<ol start="11">
+<li>For the same setup from the lecture, if the current Q table is the following, in the next iteration, what will be the value of Q(cool, fast) for gamma 0.9?</li>
+</ol>
+<p>|  | slow | fast |
+|--|--|--|
+|cool| 0.5 | 0.6 |
+|warm| 0.6 | -1 |
+|overheated| 0 | 0 |</p>
+<p><img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</p>
+<ol start="12">
+<li>For the same setup from the lecture, if the current Q table is the following, in the next iteration, what will be the value of V(cool) for gamma 0.9?</li>
+</ol>
+<p>|  | slow | fast |
+|--|--|--|
+|cool| 0.5 | 0.6 |
+|warm| 0.6 | -1 |
+|overheated| 0 | 0 |</p>
+<p><img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</p>
+<ol start="13">
+<li>For the same setup from the lecture, if the current Q table is the following, in the next iteration, what will be the value of <span class="math">\(\pi\)</span>(cool) for gamma 0.9?</li>
+</ol>
+<p>|  | slow | fast |
+|--|--|--|
+|cool| 0.5 | 0.6 |
+|warm| 0.6 | -1 |
+|overheated| 0 | 0 |</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>slow</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>fast</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>depends</li>
+</ul>
+<p><img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</p>
+<ol start="14">
+<li>For the same setup from the lecture and gamma=0, what is Q(warm, slow) after 1 iteration?</li>
+</ol>
+<p><img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</p>
+<ol start="15">
+<li>For the same setup from the lecture and gamma=0, what is Q(warm, slow) after 2 iterations?</li>
+</ol>
+<p><img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</p>
+<ol start="16">
+<li>For the same setup from the lecture and gamma=0, what is Q(warm, slow) after 3 iterations?</li>
+</ol>
+<p><img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</p>
+<ol start="17">
+<li>For the same setup from the lecture and gamma=0, what is Q(warm, slow) after 1000 iterations?</li>
+</ol>
+<p><img src="./assets/car_state.png" alt="Car states" />
+You get +1 reward for becoming warm or cool and -100 reward if you overheat.
+Once you overheat, the car is broken, so you cannot do anything and get no reward from that state.</p>
+<ol start="18">
+<li>What is the main difference between MDP and RL?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Tranistion probabilities are known in MDP and unknown in RL</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Tranistion probabilities are unknown in MDP and known in RL</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Reward is known in MDP and unknown in RL</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Reward is unknown in MDP and known in RL</li>
+</ul>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

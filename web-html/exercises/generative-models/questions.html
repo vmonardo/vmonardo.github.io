@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Generative-Models Questions</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <style>
+                ul {
+                list-style: none;
+                padding-left: 0;
+                }
+            </style>
+            <a href="/web-html/exercises.html" class="back-link">← Back to Exercises</a>
+            <a href="index.html" class="back-link">← Back to Generative Models</a>
+            <h2>Generative Models - Questions</h2>
+            
+            <div class="markdown-content">
+                <ol>
+<li>In the scenario of taking multiple MIT students and measuring their heights to get an average height of an MIT student, what is an example of a sample?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Any student</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Any MIT student</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Any MIT student whose height was measured</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<ol start="2">
+<li>In the scenario of taking multiple MIT students and measuring their heights to get an average height of an MIT student, what is an example of a density function?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Normal distribution with mean equal to the average of measured heights</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>f(x) = 1/|students whose height was measured|</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>All of the above</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<hr />
+<ol start="3">
+<li>What are the differences between the data-generating distribution <span class="math">\(p(x)\)</span>, the parametric model <span class="math">\(p_\theta(x)\)</span>, and the empirical distribution <span class="math">\(\hat{p}(x)\)</span>?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(p(x)\)</span> is the underlying distribution, <span class="math">\(p_\theta(x)\)</span> is our approximation of <span class="math">\(p(x)\)</span>, and <span class="math">\(\hat{p}(x)\)</span> is the real-world distribution we cannot measure</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(p(x)\)</span> is the underlying distribution, <span class="math">\(p_\theta(x)\)</span> is our approximation of <span class="math">\(p(x)\)</span>, and <span class="math">\(\hat{p}(x)\)</span> is the real-world distribution we can measure</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(p(x)\)</span> is the underlying distribution, <span class="math">\(p_\theta(x)\)</span> is the real-world distribution we can measure, and <span class="math">\(\hat{p}(x)\)</span> is our approximation of <span class="math">\(p(x)\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(p(x)\)</span> is the real-world distribution we can measure, <span class="math">\(p_\theta(x)\)</span> is the underlying distribution, and <span class="math">\(\hat{p}(x)\)</span> is our approximation of <span class="math">\(p(x)\)</span></li>
+</ul>
+<ol start="4">
+<li>What is the main property we want <span class="math">\(p_\theta(x)\)</span> to have?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Be as close to <span class="math">\(\hat{p}(x)\)</span> as possible</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Be as close to <span class="math">\(p(x)\)</span> as possible</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Be as different from <span class="math">\(p(x)\)</span> as possible</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Be as different from <span class="math">\(\hat{p}(x)\)</span> as possible</li>
+</ul>
+<ol start="5">
+<li><p>Can we measure data-generating distribution <span class="math">\(p(x)\)</span>?<br />
+(a) Yes.<br />
+(b) No.</p>
+</li>
+<li><p>How do we evaluate how good <span class="math">\(p_\theta(x)\)</span> is?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Measure the distance to <span class="math">\(p(x)\)</span>, want small</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Measure the distance to <span class="math">\(p(x)\)</span>, want big</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Measure the distance to <span class="math">\(\hat{p}(x)\)</span>, want small</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Measure the distance to <span class="math">\(\hat{p}(x)\)</span>, want big</li>
+</ul>
+<ol start="7">
+<li><p>In the modified setting, <span class="math">\(x = f_\theta(z)\)</span>, what is <span class="math">\(z\)</span>?<br />
+(a) Sample.<br />
+(b) Random noise.<br />
+(c) Parameter vector.<br />
+(d) Feature vector.</p>
+</li>
+<li><p>In the modified setting, <span class="math">\(x = f_\theta(z)\)</span>, what is <span class="math">\(\theta\)</span>?<br />
+(a) Sample.<br />
+(b) Random noise.<br />
+(c) Parameter vector.<br />
+(d) Feature vector.</p>
+</li>
+<li><p>In the modified setting, <span class="math">\(x = f_\theta(z)\)</span>, what is <span class="math">\(x\)</span>?<br />
+(a) Sample.<br />
+(b) Random noise.<br />
+(c) Parameter vector.<br />
+(d) Feature vector.</p>
+</li>
+</ol>
+<p>—---</p>
+<ol start="10">
+<li>What do latent variant models try to do?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Map simple data to a latent space with a more complex structure</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Map complex data to a latent space with a simpler structure</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Cram data into a smaller space</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Cram data into a bigger space</li>
+</ul>
+<p><img src="assets/roll.png" alt="Swiss roll to 2D to swiss roll" /></p>
+<ol start="11">
+<li><p>Given the example above, what do you call going from <span class="math">\(x\)</span> to <span class="math">\(a\)</span>?
+(a) Encoding.<br />
+(b) Decoding.<br />
+(c) None of the above.</p>
+</li>
+<li><p>Given the example above, what do you call going from <span class="math">\(a\)</span> to <span class="math">\(x'\)</span>?<br />
+(a) Encoding.<br />
+(b) Decoding.<br />
+(c) None of the above.</p>
+</li>
+<li><p>Given the example above, what is the main goal in representation learning?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find an encoder</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find a decoder</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Find an encoder and decoder</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<ol start="14">
+<li>What is an architecture that can be used for representation learning?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Just MLP</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>NN, where the first half decreases the dimension of the input till bottleneck is reached, and the second half increases the dimension of the bottleneck</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Autoencoder</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Just CNN</li>
+</ul>
+<p><img src="assets/ae.png" alt="Simple autoencoder. Bottleneck is a = \(f^1((W^1)^T x)\). Reconstruction is x' = \(f^2((W^2)^T a)\)" /></p>
+<ol start="15">
+<li>Given the above simple autoencoder, which of the following describe(s) the reconstruction loss?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(L = \frac{1}{N} \sum_i^N (||\hat{x} - x||^2)\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(L = \frac{1}{N} \sum_i^N (||f^2((W^1)^T f^1((W^2)^T x)) - x||^2)\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(L = \frac{1}{N} \sum_i^N (||f^2((W^2)^T f^1((W^1)^T x)) - x||^2)\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(L = \frac{1}{N} \sum_i^N (||f^1((W^1)^T f^2((W^2)^T x)) - x||^2)\)</span></li>
+</ul>
+<ol start="16">
+<li>Given the above simple autoencoder, if <span class="math">\(x \in \mathbb{R}^10\)</span>, which of the following dimensions for <span class="math">\(a\)</span> does not make sense?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>3</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>7</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>10</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>13</li>
+</ul>
+<ol start="17">
+<li>What is one of the main potential problems with an autoencoder?<br />
+(a) Can get an arbitrarily simple latent space.<br />
+(b) Can get an arbitrarily complex latent space.<br />
+(c) The architecture is hard to train.<br />
+(d) The architecture is easy to train.</li>
+</ol>
+<hr />
+<ol start="18">
+<li>How is the problem of arbitrarily complex latent space solved?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Remove a  constraint from the latent space</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Variational autoencoders. (VAE)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Introduce an additional constraint to the latent space</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<ol start="19">
+<li><p>What is the process for going from <span class="math">\(x\)</span> to its reconstruction in VAE?<br />
+(a) Run encoder on <span class="math">\(x\)</span>. It will produce the mean <span class="math">\(\mu\)</span>. Run <span class="math">\(\mu\)</span> through the decoder to get the reconstruction.<br />
+(b) Run encoder on <span class="math">\(x\)</span>. It will produce a mean <span class="math">\(\mu\)</span> and standard deviation <span class="math">\(\sigma\)</span>. Sample random number from <span class="math">\(\mathcal{N}\)</span>(<span class="math">\(\mu, \sigma^2I\)</span>). Run that number through the decoder to get the reconstruction.<br />
+(c) Run encoder on <span class="math">\(x\)</span>. It will produce the mean <span class="math">\(\mu\)</span> and standard deviation <span class="math">\(\sigma\)</span>. Run those numbers through the decoder to get the reconstruction.<br />
+(d) None of the above.</p>
+</li>
+<li><p>What are the properties that we want a learned VAE to have?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Good reconstruction of input.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Want mean to be close to 0 and variance to be big.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Want mean to be close to 0 and variance to be small.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Want mean to be close to 0 and variance to be close to 1.</li>
+</ul>
+<ol start="21">
+<li>What are some problems with VAE?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Can get an arbitrarily complex latent space</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>The encoder is very complicated</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>The architecture is hard to train</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>The architecture is easy to train</li>
+</ul>
+<hr />
+<ol start="22">
+<li><p>What is the main function we want a diffusion model to have?<br />
+(a) Want a model that can undo noise (denoising).<br />
+(b) Want a model that can add noise.<br />
+(c) Want a model that generates images.<br />
+(d) None of the above.</p>
+</li>
+<li><p>How can a diffusion model be used to generate random (realistic) images?<br />
+(a) Sample a noisy image from gaussian.<br />
+(b) Sample a noisy image from gaussian and repeatedly denoise.<br />
+(c) Sample a noisy image from gaussian and denoise once.<br />
+(d) None of the above.</p>
+</li>
+<li><p>How is the denoiser trained in practice?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Predict the denoised image</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Predict the noise added to the input</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Predict any image</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<ol start="25">
+<li>What architecture is typically used?<br />
+(a) Just CNN.<br />
+(b) Unet.<br />
+(c) Just MLP.<br />
+(d) None of the above.</li>
+</ol>
+<hr />
+<ol start="26">
+<li><p>What is a token in text generation?<br />
+(a) A coin.<br />
+(b) A small piece of text, like a word or a syllable.<br />
+(c) A number.<br />
+(d) None of the above.</p>
+</li>
+<li><p>What is the goal of a text generative model?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Predict a sentence</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Predict multiple words at a time</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Next token prediction</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<ol start="28">
+<li>Why is the next-token prediction model called autoregressive?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>We repeatedly call f_\theta on the output from the last step, attached to the input of the last step</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>We repeatedly call f_\theta on the output from the last step, attached to the initial input</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>We repeatedly call f_\theta on the initial input</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>None of the above</li>
+</ul>
+<ol start="29">
+<li><p>How is text represented for text-generative models?<br />
+(a) As token embeddings in numerical space.<br />
+(b) As word embeddings in numerical space.<br />
+(c) As an array of words.<br />
+(d) As a big matrix of one-hot vectors for each word.</p>
+</li>
+<li><p>What are the main properties of word embeddings?</p>
+</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Map sentences to a lower-dimensional space</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Map words to a lower-dimensional space</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Words that are close in meaning are close in space</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Sentences that are close in meaning are close in space</li>
+</ul>
+<ol start="31">
+<li><p>How is the context of the text taken into account in text generative models?<br />
+(a) Input contains the full text that has the context.<br />
+(b) Context is ignored.<br />
+(c) The model predicts the context.<br />
+(d) None of the above.</p>
+</li>
+<li><p>What architecture is typically used for text generative models?<br />
+(a) Just MLP.<br />
+(b) RNN.<br />
+(c) Just CNN.<br />
+(d) attention/transformers.</p>
+</li>
+</ol>
+<hr />
+<p>Bonus:
+33. Evaluation is hard since no ground truth to compare to. What is typically used?</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Sample quality (does it look real)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Sample diversity (samples should not repeat)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Sample coverage (all possibilities covered)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Faithfulness to the data (too creative)</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Human evaluation</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Proxy metrics</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Downstream tasks</li>
+</ul>
+<ol start="34">
+<li>What are some ethical problems?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Data sourcing/attribution</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Deep fakes</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Data privacy</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Bias amplification</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>environment/energy cost</li>
+</ul>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

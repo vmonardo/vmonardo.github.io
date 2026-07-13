@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Regression Answers</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <style>
+                ul {
+                list-style: none;
+                padding-left: 0;
+                }
+            </style>
+            <a href="/web-html/exercises.html" class="back-link">← Back to Exercises</a>
+            <a href="index.html" class="back-link">← Back to Regression</a>
+            <h2>Regression - Answers</h2>
+            
+            <div class="markdown-content">
+                <ol>
+<li>In the crop yield example, which of the following is/are independent variable(s)?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Acidity</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Temperature</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Rainfall</li>
+</ul>
+<p><strong>Explanation</strong>: Acidity, Temperature and Rainfall are the features used to predict Crop Yield.</p>
+<ol start="2">
+<li>In the real estate example, which of the following is/are the dependent variable(s)?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Sale price</li>
+</ul>
+<p><strong>Explanation</strong>: In this example, we try to predict sale price based on # of rooms, Square footage, age of the home.</p>
+<ol start="3">
+<li>Given a parametric model, which of the following are we trying to find through training a model?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\theta\)</span> - parameter vector</li>
+</ul>
+<p><strong>Explanation</strong>: We are trying to fing <span class="math">\(\theta\)</span> that would minimize <span class="math">\(\mathcal{L}(\theta)\)</span> on training data which is pairs of features and tru predictions.</p>
+<ol start="3">
+<li>Which of the following parametric models are linear?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(Ax\)</span></li>
+</ul>
+<p><strong>Explanation</strong>: <span class="math">\(Ax\)</span> is a linear model while <span class="math">\(Ax+b\)</span> is an affine model otherwise called a linear model with bias.</p>
+<!-- TODO: double check terminology used.   -->
+
+<hr />
+<ol start="4">
+<li>Which of the following graphs describes a model underfitting the data?<br />
+(b) <img src="./assets/underfitting_b.png" alt="Underfitting question option b" /></li>
+</ol>
+<p><strong>Explanation</strong>: Graph b is the only one that underfits the data. The other two options fit the given data points perfectly.</p>
+<ol start="5">
+<li>Which of the following is an <strong>incorrect</strong> way to describe a model that overfits?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>A model that does not perform well on the training dataset</li>
+</ul>
+<p><strong>Explanation</strong>: If a model overfits, it tries to follow the training data too closely, so it does not generalize well.</p>
+<p><img src="./assets/error_pairs.png" alt="Error on training and withheld data for different models" /></p>
+<ol start="6">
+<li>Which of the following bargraph pairs describes overfitting?<br />
+(a) a</li>
+</ol>
+<h2><strong>Explanation</strong>: If a model overfits, it performs well on the training data, but performs poorly on the withheld data.</h2>
+<p><img src="./assets/outlier.png" alt="Error on training and withheld data for different models" /></p>
+<ol start="7">
+<li>Calculate <span class="math">\(L^1\)</span> loss for the following data [(1, 1), (2, 10), (3, 3), (4, 4), (5, 5)] <span class="math">\(f_\theta(x) = x\)</span></li>
+</ol>
+<p><span class="math">\(\frac{8}{5} = 1.6\)</span></p>
+<p><strong>Explanation</strong>: <span class="math">\(L^1(\theta) = \frac{1}{N} \sum_{i=1}^N |f_{\theta}(x^{(i)}) - y^{(i)}|\)</span>.</p>
+<p><span class="math">\(L^1(\theta) = \frac{|1-1|+|2-10|+|3-3|+|4-4|+|5-5|}{5} = \frac{8}{5}\)</span></p>
+<ol start="8">
+<li>Calculate <span class="math">\(L^1\)</span> loss for the following data [(1, 1), (2, 10), (3, 3), (4, 4), (5, 5)] <span class="math">\(g_\theta(x) = 0.2x+4\)</span></li>
+</ol>
+<p><span class="math">\(2.24\)</span></p>
+<p><strong>Explanation</strong>: <span class="math">\(L^1(\theta) = \frac{1}{N} \sum_{i=1}^N |f_{\theta}(x^{(i)}) - y^{(i)}|\)</span>.</p>
+<p><span class="math">\(L^1(\theta) = \frac{|4.2-1|+|4.4-10|+|4.6-3|+|4.8-4|+|5-5|}{5} = 2.24\)</span></p>
+<ol start="9">
+<li>Which of the following models would you choose based on the <span class="math">\(L^1\)</span> losses calculated?</li>
+</ol>
+<p>(a) <span class="math">\(f_\theta\)</span></p>
+<p><strong>Explanation</strong>: <span class="math">\(f_\theta\)</span> produced a smaller error (1.6) compared to <span class="math">\(g_\theta\)</span> (2.24), so <span class="math">\(f_\theta\)</span> is better according to <span class="math">\(L^1\)</span> loss.</p>
+<ol start="10">
+<li>Calculate <span class="math">\(L^2\)</span> loss for the following data [(1, 1), (2, 10), (3, 3), (4, 4), (5, 5)] <span class="math">\(f_\theta(x) = x\)</span></li>
+</ol>
+<p><span class="math">\(\frac{64}{5} = 12.8\)</span></p>
+<p><strong>Explanation</strong>: <span class="math">\(L^2(\theta) = \frac{1}{N} \sum_{i=1}^N (f_{\theta}(x^{(i)}) - y^{(i)})^2\)</span>.</p>
+<p><span class="math">\(L^2(\theta) = \frac{(1-1)^2+(2-10)^2+(3-3)^2+(4-4)^2+(5-5)^2}{5} = \frac{64}{5}\)</span></p>
+<ol start="11">
+<li>Calculate <span class="math">\(L^2\)</span> loss for the following data [(1, 1), (2, 10), (3, 3), (4, 4), (5, 5)] <span class="math">\(g_\theta(x) = 0.2x+4\)</span></li>
+</ol>
+<p><span class="math">\(\frac{64}{5} = 8.96\)</span></p>
+<p><strong>Explanation</strong>: <span class="math">\(L^2(\theta) = \frac{1}{N} \sum_{i=1}^N (f_{\theta}(x^{(i)}) - y^{(i)})^2\)</span>.</p>
+<p><span class="math">\(L^2(\theta) = \frac{(4.2-1)^2+(4.4-10)^2+(4.6-3)^2+(4.8-4)^2+(5-5)^2}{5} = 8.96\)</span></p>
+<ol start="12">
+<li>Which of the following models would you choose based on the <span class="math">\(L^2\)</span> losses calculated?</li>
+</ol>
+<p>(b) <span class="math">\(g_\theta\)</span></p>
+<p><strong>Explanation</strong>: <span class="math">\(g_\theta\)</span> produced a smaller error (8.96) compared to <span class="math">\(f_\theta\)</span> (12.8), so <span class="math">\(g_\theta\)</span> is better according to <span class="math">\(L^2\)</span> loss.</p>
+<ol start="13">
+<li>Which of the following losses would you use to train a model so the model tries to minimize the effect of the outliers?</li>
+</ol>
+<p>(a) <span class="math">\(L^1\)</span></p>
+<h2><strong>Explanation</strong>: Since <span class="math">\(L^1\)</span> loss is less sensitive to outliers, it was able to produce model that follows more closely our intuition on what the right linear model would be for the given datapoints. Compared to <span class="math">\(L^2\)</span> loss, model trained with <span class="math">\(L^1\)</span> loss tries to minimize the effect of the outliers more.</h2>
+<ol start="14">
+<li>How to minimize ignorance of the minority group in mean-squared loss?<br />
+(b) Use a weighted average, where the minority is weighted more</li>
+</ol>
+<h2><strong>Explanation</strong>: By weighing more the data points that are represented less in the training dataset, we make the loss more sensitive to these datapoints. If we weigh all data points equally, then majority group can overpower the minority by driving loss closer to zero.</h2>
+<ol start="15">
+<li>In the following formula, what can we <strong>not</strong> say about <span class="math">\(\lambda\)</span>?</li>
+</ol>
+<p><span class="math">\(\mathcal{L} (\theta) = \frac{1}{N} \sum_{i=1}^N (f_{\theta}(x^{(i)}) - y^{(i)})^2 + \lambda \mathcal{R} (\theta) \)</span></p>
+<ul>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" type="checkbox" disabled checked/>As a result of training our model, we find <span class="math">\(\theta\)</span> and <span class="math">\(\lambda\)</span></p>
+<p><strong>Explanation</strong>: As a result of training a model with a regularized loss, we still only find <span class="math">\(\theta\)</span>. <span class="math">\(\lambda\)</span> is only a hyperparameter used to help find an optimal <span class="math">\(\theta\)</span> and is not used for model prediction.</p>
+</li>
+</ul>
+<ol start="16">
+<li>What are the main ways we learned how to fix overfitting in this class?</li>
+</ol>
+<ul>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Add a regularizer to the loss</p>
+</li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Use Early stopping</p>
+<p><strong>Explanation</strong>: Increasing complexity of a model usually can lead to more overfitting, unless we reach complexity of deep neural networks, which will be discussed in later videos. <a href="https://datasciencedojo.com/blog/deep-double-descent/">For more (bonus) information, here is an article explaining how increasing complexity of a model can lead to a better model</a>. Mean-squared error is not regularized, so it would produce the same model that overfits.</p>
+</li>
+</ul>
+<ol start="17">
+<li>Which of the following regularizers encourages <span class="math">\(\theta_i \rightarrow 0\)</span> for some i.</li>
+</ol>
+<ul>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\sum_{i=1}^k |\theta_i|\)</span></p>
+</li>
+<li class="task-list-item"><p><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(L^1\)</span> Regularization</p>
+<p><strong>Explanation</strong>: <strong><span class="math">\(L^1\)</span> Regularization</strong> is <span class="math">\(\sum_{i=1}^k |\theta_i|\)</span> (otherwise, called Sparsity Regularization) and it encourages sparse <span class="math">\(theta\)</span> so <span class="math">\(\theta_i \rightarrow 0\)</span> for some i. <strong>Weight Decay Regularization</strong> is <span class="math">\(\sum_{i=1}^k \theta_i^2\)</span> and it makes sure all the weights are on a similar scale.</p>
+</li>
+</ul>
+<p><img src="./assets/error_lambda.png" alt="Error on withheld data for different \(\lambda\) selections" /></p>
+<ol start="18">
+<li>Which lambda would you choose, given the following graph for error output on the withheld data?</li>
+</ol>
+<p>(c) 0.25</p>
+<p><strong>Explanation</strong>: <span class="math">\(\lambda\)</span> is chosen such that error is minimized on withheld data. In this case, the error is minimized when <span class="math">\(\lambda=0.25\)</span>.</p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

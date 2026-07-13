@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Classification Conceptual Questions</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <a href="/web-html/in-class-problems.html" class="back-link">← Back to Conceptual Questions</a>
+            <h2>Classification</h2>
+
+            <div class="markdown-content">
+                <h1><strong>Problem 1</strong></h1>
+<p>We would like to analyze a multiclass linear logistic classifier with <span class="math">\(K=3\)</span> classes.
+For this part of the problem, we are working with only 2 input features <span class="math">\((x_1, x_2)\)</span>, <span class="math">\(\theta = [\theta_1, \theta_2]^T\)</span>, and <span class="math">\(\theta_0\)</span>. So, in this framing, let <span class="math">\(x\)</span> be a data point, <span class="math">\(x=[x_1, x_2]^T\)</span>. Our <span class="math">\(\theta\)</span> will be a <span class="math">\(3\times2\)</span> matrix and let <span class="math">\(z = \theta^T x + \theta_0\)</span> be a <span class="math">\(3 \times 1\)</span> vector with <span class="math">\(z = [z_1,z_2,z_3]^T\)</span>.</p>
+<p>Then, the output of the model will be defined as,
+<span class="math">\(g=\mathrm{softmax}(z)= \begin{bmatrix} \exp(z_1)/\sum_{i=1}^3 \exp(z_i) \\ \exp(z_2)/\sum_{i=1}^3 \exp(z_i) \\ \exp(z_3)/\sum_{i=1}^3 \exp(z_i) \end{bmatrix}.\)</span></p>
+<p>Recall that the vector <span class="math">\(g\)</span> represents the likelihood assigned to each of the three classes, and the class prediction is the made from the largest element of <span class="math">\(g\)</span>.</p>
+<p>a) Suppose that we have a model defined by the following matrix:
+<span class="math">\(\theta = \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \end{bmatrix},\)</span>
+<span class="math">\(\theta_0 = \begin{bmatrix} 0 \\  1 \\  1 \end{bmatrix}.\)</span></p>
+<p>Consider the data point <span class="math">\(x = [1,-1,1]^T.\)</span> Compute <span class="math">\(z = \theta^T x\)</span> and determine which class will be assigned to <span class="math">\(x\)</span>.</p>
+<p><strong>Answer</strong>: Class 1.<br />
+<strong>Explanation</strong>: <span class="math">\(z = [1,-1,0]^T\)</span>. Since first number is biggest, <span class="math">\(x\)</span> will be assigned to class 1.</p>
+<p>b) Examine the classification problem represented by the graph below, where points are labeled with their class: <span class="math">\(1, 2,\)</span> or <span class="math">\(3\)</span>. Also given below is a model represented by the matrix <span class="math">\(\theta\)</span> and vector <span class="math">\(\theta_0\)</span>.</p>
+<p><img src="assets/classification/plot_1b.png" alt="" /></p>
+<p><span class="math">\(\theta=\left [ \begin{array}{ccc} -1 & 0 \\ 0 & 0 \\ -3 & 0 \end{array}\right ]\)</span>
+<span class="math">\(\theta_0=\left [ \begin{array}{ccc} 1 \\ 0 \\ 0 \end{array}\right ]\)</span></p>
+<p>Does the provided model defined by <span class="math">\(\theta\)</span> perfectly separate the data as desired in the graph above? Explain.</p>
+<p><strong>Answer</strong>: Yes.<br />
+<strong>Explanation</strong>:
+Yes; we have that <span class="math">\(z = [-x_1 - 3, 0,x_1]^T.\)</span> This implies that we will get a label of class 1 when <span class="math">\(x_1 \leq -3\)</span>, class 2 when <span class="math">\(x_1>-3\)</span> and <span class="math">\(x_1\leq 0\)</span>, class 3 when <span class="math">\(x_1>0\)</span>.</p>
+<p>c) Examine the classification problem represented by the graph below, where points are labelled with their class: <span class="math">\(1, 2,\)</span> or <span class="math">\(3\)</span>. Also given below is a model represented by the matrix <span class="math">\(\theta\)</span> and vector <span class="math">\(\theta_0\)</span>.</p>
+<p><img src="assets/classification/plot_1c.png" alt="" /></p>
+<p><span class="math">\(\theta=\left [ \begin{array}{ccc} 0 & 1 \\ -1 & 0 \\ 0 & 0 \end{array}\right ]\)</span>
+<span class="math">\(\theta_0=\left [ \begin{array}{ccc}  -1 \\ 0 \\ 0 \end{array}\right ]\)</span></p>
+<p>Does the provided model defined by <span class="math">\(\theta\)</span> perfectly separate the data as desired in the graph above? Explain.</p>
+<p><strong>Answer</strong>: No.<br />
+<strong>Explanation</strong>:
+No; we have that <span class="math">\(z = [-x_2, x_1,-x_1]^T.\)</span> This implies that we will get a label of class 1 when <span class="math">\(x_2 \leq 0\)</span> and <span class="math">\(|x_1| < -x_2\)</span>, class 2 when <span class="math">\(x_1 \ge 0\)</span> and <span class="math">\(x_1 > -x_2\)</span>, class 3 either when <span class="math">\(x_1<0\)</span> and <span class="math">\(x_2>0\)</span> or when <span class="math">\(x_2<0\)</span> and <span class="math">\(x_1<x_2\)</span>. The misclassified regions are indicated in the figure below.</p>
+<p><img src="assets/classification/plot_1c_sltn.png" alt="" /></p>
+<h1><strong>Problem 2</strong> Linear Logistic Regression</h1>
+<p>Recall that the output of a linear logistic regression model given an input <span class="math">\(x\)</span> has the form:
+<span class="math">\(g = \sigma(\theta^{T}x + \theta_0)\)</span> where <span class="math">\(\sigma(z) = \frac{1}{1+e^{-z}}\)</span> is the sigmoid function.
+You start with the following set of points in two dimensions.</p>
+<p>Inputs <span class="math">\(x^{(i)}\)</span>        | Labels <span class="math">\(y^{(i)}\)</span>
+:---------------------: | :----------------:
+<span class="math">\([1, 1]^T\)</span>              | <span class="math">\(0\)</span>
+<span class="math">\([0, 0]^T\)</span>              | <span class="math">\(0\)</span>
+<span class="math">\([1, 0]^T\)</span>              | <span class="math">\(1\)</span>
+<span class="math">\([0, 1]^T\)</span>              | <span class="math">\(0\)</span></p>
+<p>For the following questions, assume <span class="math">\(\theta = [1, 0]^T\)</span> and <span class="math">\(\theta_0 = -0.5.\)</span> You may find it useful to sketch the dataset and the linear separator <span class="math">\(\theta, \theta_0.\)</span></p>
+<p>a) What are the values of <span class="math">\(z=\theta^{T}x + \theta_0\)</span> for
+each value of <span class="math">\(x^{(i)}\)</span>? Give an answer as a list of four numbers
+(to max of two decimal places).</p>
+<p><strong>Answer</strong>: [0.5, -0.5, 0.5, -0.5].<br />
+<strong>Explanation</strong>: We plug each <span class="math">\(x\)</span> into the formula <span class="math">\(z=\theta^{T}x + \theta_0\)</span>
+with <span class="math">\(\theta = [1,0]^T\)</span> and <span class="math">\(\theta_0 = -0.5\)</span>. Plotting
+the separator reveals that it is a vertical line in <span class="math">\((x_1, x_2)\)</span>
+space at <span class="math">\(x_1 = 0.5.\)</span> Also plotting the points <span class="math">\((x,y)\)</span> reveals that
+the points to the left of the line have a negative <span class="math">\(z\)</span> value, and
+the points to the right of the line have a positive <span class="math">\(z\)</span> value. Food
+for thought: what <span class="math">\(\theta_0\)</span> and <span class="math">\(\theta\)</span> combination would yield
+the same <span class="math">\(z\)</span> values but exactly opposite signs?</p>
+<p>b) What are the corresponding values of <span class="math">\(\sigma(z)\)</span>? Give
+an answer as a list of four numbers (to max of two decimal
+places)?</p>
+<p><strong>Answer</strong>: [0.62245933, 0.37754067, 0.62245933, 0.37754067].<br />
+<strong>Explanation</strong>: Plugging into the formula <span class="math">\(\sigma(z) =\frac{1}{1+e^{-z}}\)</span> where <span class="math">\(z\)</span>'s are found in part a of this problem.
+Remember that in linear logistic regression, we can interpret these <span class="math">\(\sigma(z)\)</span> values as modeling the probability of the point having a label of 1.</p>
+<p>c) With the threshold at <span class="math">\(0.5\)</span>, what are the
+corresponding predicted labels of these points? Give an answer as a
+list of four numbers (and recall that the label options are 1 or 0).</p>
+<p><strong>Answer</strong>: [1, 0, 1, 0].<br />
+<strong>Explanation</strong>: Points whose <span class="math">\(\sigma(z) \leq 0.5\)</span> are classified
+as 0. Points whose <span class="math">\(\sigma(z) > 0.5\)</span> are classified as 1.</p>
+<!-- this was not taught -->
+
+<!-- Recall from the [notes](https://introml.mit.edu/notes/classification.html#sec-classification-logistic), that -->
+
+<p>d) The average negative log-likelihood (NLL) loss over <span class="math">\(n\)</span> data points
+has the form:</p>
+<div class="math">$$
+\frac{1}{n} \sum \mathcal{L}_{nll}(g^{(i)}, y^{(i)}) =
+-\frac{1}{n}\sum_{i = 1}^n \left[ y^{(i)} \log g^{(i)} + (1 - y^{(i)})
+\log (1 - g^{(i)}) \right] .
+$$</div>
+<p>Remember that <span class="math">\(g^{(i)} = \sigma(\theta^{T}x^{(i)} + \theta_0)\)</span> is our
+model's output (before thresholding) for training example <span class="math">\(i\)</span>, and
+<span class="math">\(y^{(i)}\)</span> is the true label (+1 or 0).  For our purposes in this
+problem, <span class="math">\(\log\)</span> <strong>indicates the natural logarithm</strong>.</p>
+<p>What is the value of the average NLL loss over the
+data -- given the particular values of <span class="math">\(\theta, \theta_0\)</span> and the
+data given above (to max of two decimal places)?</p>
+<p><strong>Answer</strong>: 0.599075.<br />
+<strong>Explanation</strong>: Plugging into the formula, we get:</p>
+<p><span class="math">\(\frac{1}{n} \sum \mathcal{L}_{nll}(g^{(i)}, y^{(i)}) = \\ -\frac{1}{4}\Big(\log(1-0.6225) + \log(1-0.3775) + \log(0.6225) + \log(1-0.3775)\Big)\)</span></p>
+<p>e) We have been considering mostly linearly separable cases so far. What
+would happen if a dataset is not linearly separable?
+Consider the following plots of decision boundaries for a nonlinearly
+separable 2D dataset. Assume that we used the linear logistic regression
+function: <span class="math">\(\sigma(\theta^T x + \theta_0)\)</span></p>
+<p>A            |  B
+:-------------------------:|:-------------------------:
+<img src="assets/classification/lr_decisionlinear.png" alt="" />  |  <img src="assets/classification/lr_decision_greedy.png" alt="" /></p>
+<p>Which of the following is true:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Only plot A shows the decision boundary that could
+have been learned by linear logistic regression algorithm.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Only plot B shows the decision boundary that could
+have been learned by linear logistic regression algorithm.</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Both plots show the decision boundary that could have
+been learned by linear logistic regression algorithm. They have
+different shape (one is linear and one is curvy)
+because they might have been learned with different
+hyperparameters.</li>
+</ul>
+<p><strong>Answer</strong>: Only plot A shows the decision boundary that could
+have been learned by linear logistic regression algorithm.<br />
+<strong>Explanation</strong>: For the linear logistic regression algorithm, remember
+that the threshold for being considered positive is when
+<span class="math">\(\sigma(\theta^T x + \theta_0) >0.5\)</span>. This happens when <span class="math">\(\theta^T x + \theta_0>0\)</span>.
+And as we've seen before, the decision boundary
+<span class="math">\(\theta^T x + \theta_0 = 0\)</span> defines a hyperplane, and when the data
+is 2D, that hyperplane is a line. So the classification boundary
+must be a (single) line! Therefore, only plot A shows a feasible
+decision boundary learned by the linear logistic regression algorithm.</p>
+<h1><strong>Problem 3</strong> Linear Separability</h1>
+<p>Below we plot three data sets. The <span class="math">\(x_1\)</span> and <span class="math">\(x_2\)</span> axes are the features available for training. Data points marked with black triangles are labelled as &quot;1&quot;; data points marked with white squares are labelled as &quot;0&quot;. We want to train a model that can predict the class given the features.</p>
+<p><img src="assets/classification/linearclass1.png" alt="" /></p>
+<!-- TODO: potentially modify so the step function is same here as in class notes -->
+
+<p>Which of these data sets are linearly separable? For those that are linearly separable, choose any vector <span class="math">\(\theta\)</span> and scalar <span class="math">\(\theta_0\)</span> (written as [[<span class="math">\(\theta_1\)</span>, <span class="math">\(\theta_2\)</span>], <span class="math">\(\theta_0\)</span>]) such that the classifier defined by <span class="math">\(h(\theta^T x+\theta_0)\)</span> classifies every point correctly. For those that are not separable, choose &quot;not separable&quot;. <span class="math">\(h\)</span> is the step function</p>
+<div class="math">$$
+h(x) = \begin{cases}
+  \text{1} &amp; \text{if } \theta^Tx + \theta_0 \geq 0 \\
+  \text{0} &amp; \text{otherwise }
+\end{cases}
+$$</div>
+<p>.</p>
+<p>a) A:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[2, 1], 0]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[1, 2], 4]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>not separable</li>
+</ul>
+<p><strong>Answer</strong>: [[1, 2], 4].<br />
+<strong>Explanation</strong>: One possible hyperplane that separates the data is oriented along the normal vector [1, 2] with an offset of 4. This corresponds to the line <span class="math">\(x_2 = (-1/2)*x_1 - 2\)</span>. Two points on the boundary defined by this hyperplane are (-4, 0) and (4, -4). One possible way to solve this is by creating the lines for example <span class="math">\(1x_1 + 2x_2 + 4 = 0\)</span> then solve for <span class="math">\(x_2\)</span> and see if that line separates the data.</p>
+<p>b) B:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[1, 0], 0]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[0, 1], 0]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>not separable</li>
+</ul>
+<p><strong>Answer</strong>: not separable.<br />
+<strong>Explanation</strong>: There is no way to linearly separate the data.</p>
+<p>c) C:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[1, 0], 0]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[0, 1], 0]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>not separable</li>
+</ul>
+<p><strong>Answer</strong>: not separable.<br />
+<strong>Explanation</strong>: There is no way to linearly separate the data.</p>
+<p>The plots from the previous question had omitted one of the features available in the raw data. Below we plot all three features (in a 3D plot). Given that 3D plots shown in 2D can be confusing, each column plots the same data set viewed from different angles.</p>
+<p><img src="assets/classification/linearclass2.png" alt="" /></p>
+<p>Given this new third feature, which of the data sets are linearly separable? For those that are, choose the vector <span class="math">\(\theta\)</span> and scalar <span class="math">\(\theta_0\)</span> (written as [[<span class="math">\(\theta_1\)</span>, <span class="math">\(\theta_2\)</span>, <span class="math">\(\theta_3\)</span>], <span class="math">\(\theta_0\)</span>]) defining the classifier by <span class="math">\(h(\theta^T x+\theta_0)\)</span>. For those that are not separable, choose &quot;not separable&quot;.</p>
+<p>d) A:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[1, 2, 0], 0]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[1, 2, 0], 4]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>not separable</li>
+</ul>
+<p><strong>Answer</strong>: [[1, 2, 0], 4].<br />
+<strong>Explanation</strong>: We can use the same hyperplane as before with the <span class="math">\(\theta_{3} = 0\)</span> because the classification is insensitive to <span class="math">\(x_3\)</span>.</p>
+<p>e) B:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[1, 0, 0], 0]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[0, 1, 0], 0]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>not separable</li>
+</ul>
+<p><strong>Answer</strong>: not separable.<br />
+<strong>Explanation</strong>: Each data point has the same value for the third feature, <span class="math">\(x_3 =0.\)</span> Therefore, since the data was not linearly separable in <span class="math">\((x_1,x_2),\)</span> the data is still not linearly separate with the added feature.</p>
+<p>f) C:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[0, 1, 0], 0]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>[[0, 0, 1], 0]</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>not separable</li>
+</ul>
+<p><strong>Answer</strong>: [[0, 0, 1], 0].<br />
+<strong>Explanation</strong>: We can now separate the data along the <span class="math">\(x_3\)</span> feature. The classifier is <span class="math">\(h(x_3)\)</span>.</p>
+<h1><strong>Problem 4</strong> Feature Mapping</h1>
+<p>Consider the following dataset of 3 data points:</p>
+<div class="math">$$
+\mathcal{D} = \{ (-1,+1), (0,0), (1, +1) \}\; .
+$$</div>
+<p>Each data point has a one-dimensional feature, and a binary label. For instance, the first data point has a feature of -1 and a label of +1.
+This data set is not linearly separable in its original form.</p>
+<p>a) Which of these feature transformations lead to a separable problem? (Mark all that apply)</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\phi(x) = 0.5*x\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\phi(x) = |x|\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\phi(x) = x^3\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\phi(x) = x^4\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\phi(x) = x^{2k}\)</span> for any positive integer <span class="math">\(k\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\phi(x) = x^{2k+1}\)</span> for any positive integer <span class="math">\(k\)</span></li>
+</ul>
+<p><strong>Answer</strong>: <span class="math">\(\phi(x) = |x|\)</span>, <span class="math">\(\phi(x) = x^4\)</span>, <span class="math">\(\phi(x) = x^{2k}\)</span> for any positive integer <span class="math">\(k\)</span>.<br />
+<strong>Explanation</strong>: The original dataset has a point in class <span class="math">\(0\)</span>
+at the origin and two points in class <span class="math">\(+1\)</span> at <span class="math">\(\pm 1\)</span>.
+<br>1. <span class="math">\(\phi(x) = 0.5 \cdot x\)</span> scales the points down by 0.5, such
+that the <span class="math">\(+1\)</span> points are still on opposite sides of the origin, so
+(1) does not separate the data. A linearly inseparable dataset will
+remain inseparable after any linear transformation is applied to the
+data.  <br>2. <span class="math">\(\phi(x) = |x|\)</span> maps the class <span class="math">\(+1\)</span> labelled points to <span class="math">\(1\)</span>
+and the class <span class="math">\(0\)</span> labelled point to <span class="math">\(0\)</span>, so (2) separates the data.
+<br>3. <span class="math">\(\phi(x) = x^3\)</span> maps the data to itself, so it does not
+separate the data.  <br>4. <span class="math">\(\phi(x) = x^4\)</span> performs the same feature
+mapping as (2).  <br>5. <span class="math">\(\phi(x) = x^{2k}\)</span> performs the same feature
+mapping as (2), regardless of the integer <span class="math">\(k\)</span>.  <br>6. $\phi(x) =
+x^{2k+1}$ maps the data to itself the same as (3), regardless of the
+integer <span class="math">\(k\)</span>.</p>
+<p>b) Your friend Kernelius uses feature transformation <span class="math">\(\phi(x) = [x, x^2]^T\)</span>
+on the data from the previous problem. In the new space, the linear
+classifier with <span class="math">\(\theta=[0,1]^T\)</span> and <span class="math">\(\theta_0=-0.25\)</span> achieves perfect
+accuracy. What points from the original feature space (<span class="math">\(x \in \mathbb{R}\)</span>) will get
+classified as members of the negative class? (It may be helpful to
+find the equation of the separator.)</p>
+<p>Enter a Python list denoting the inclusive range <span class="math">\([a, b]\)</span>
+such that all values of <span class="math">\(x\in [a, b]\)</span> are classified to be members of
+the negative class (points on the separator are classified negative):  </p>
+<p><strong>Answer</strong>: [-0.5, 0.5].<br />
+<strong>Explanation</strong>: With <span class="math">\(\theta = [\theta_1, \theta_2]^T = [0,1]^T\)</span> and <span class="math">\(\theta_0 = -0.25\)</span>,
+our separator is the line <span class="math">\(\theta_2 = 0.25\)</span> in <span class="math">\(\mathbb{R}^2\)</span>. From our
+original space <span class="math">\(\mathbb{R}\)</span>, points mapped onto the separator are
+those for which <span class="math">\(x^2=0.25\)</span>, leading to <span class="math">\(x=\pm 0.5\)</span> on the
+separator. Then, either points inside the range <span class="math">\([-0.5, 0.5]\)</span> are
+going to be class <span class="math">\(0\)</span> or points outside the range <span class="math">\([-0.5, 0.5]\)</span> are
+class <span class="math">\(0\)</span>. We can see that if <span class="math">\(|x| \leq 0.5\)</span>, the equation $x^2 -
+0.25$ will be negative. Hence, points <span class="math">\(x\)</span> in the range <span class="math">\([-0.5, 0.5]\)</span>
+will be classified as members of class 0.</p>
+<h1><strong>Problem 5</strong> More Feature Transformation</h1>
+<p>Consider the two-dimensional data points shown below. Instead of using the original features <span class="math">\([x_1,x_2]^T\)</span> we will consider transformations of them that might be able to make the data separable in the new feature space.</p>
+<p><img src="assets/classification/linearclass3.png" alt="" /></p>
+<p>Consider the following new features:</p>
+<ul>
+<li><span class="math">\(\phi_1([x_1,x_2]^T) = \sqrt{x^2_1 + x^2_2}\)</span></li>
+<li><span class="math">\(\phi_2([x_1,x_2]^T) = x_1-x_2\)</span></li>
+<li><span class="math">\(\phi_3([x_1,x_2]^T) = |x_1+x_2|\)</span></li>
+<li><span class="math">\(\phi_4([x_1,x_2]^T) = |x_1|+|x_2|\)</span></li>
+</ul>
+<p>For each of the features <span class="math">\(r_1 = \phi_1 ([x_1,x_2]^T)\)</span>, <span class="math">\(r_2 = \phi_2 ([x_1,x_2]^T)\)</span>, <span class="math">\(r_3 = \phi_3 ([x_1,x_2]^T)\)</span>, and <span class="math">\(r_4 = \phi_4 ([x_1,x_2]^T)\)</span>, indicate whether a one-dimensional linear classifier can perfectly separate the transformed data.</p>
+<p>a) <span class="math">\(r_1\)</span>:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>separable</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>not separable</li>
+</ul>
+<p><strong>Answer</strong>: separable.<br />
+<strong>Explanation</strong>: This feature transformation gives the distance
+from the point to the origin. We see that the square points are all
+less than some distance, <span class="math">\(R\)</span>, from the origin, and the triangle
+points are all greater than <span class="math">\(R\)</span> from the origin. The equation of the
+separator would be <span class="math">\(r_1 = R\)</span>, and points with <span class="math">\(r_1 > R\)</span> would be
+classified as triangles, and those with <span class="math">\(r_1 \leq R\)</span> would be
+classified as squares.</p>
+<p>b) <span class="math">\(r_2\)</span>:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>separable</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>not separable</li>
+</ul>
+<p><strong>Answer</strong>: not separable.<br />
+<strong>Explanation</strong>: Separators take the form <span class="math">\(r_2 = R\)</span> for some <span class="math">\(R\)</span>,
+as our transformed points are in 1-D. In order to perfectly separate
+the data, we would require that <span class="math">\(x_1-x_2 > R\)</span> for every point in one
+of the classes, and <span class="math">\(x_1-x_2 \leq R\)</span> for every point in the other
+class. This does not hold. For example, consider, approximately, the
+square point at <span class="math">\((2, 0)\)</span>, which gets transformed to <span class="math">\((2)\)</span>, and the
+triangle points at <span class="math">\((4, 0)\)</span> and <span class="math">\((-4, 0)\)</span> which get transformed to
+<span class="math">\((4)\)</span> and <span class="math">\((-4)\)</span> respectively.</p>
+<p>c) <span class="math">\(r_3\)</span>:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>separable</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>not separable</li>
+</ul>
+<p><strong>Answer</strong>: not separable.<br />
+<strong>Explanation</strong>: Separators take the form <span class="math">\(r_3 = R\)</span> for some <span class="math">\(R\)</span>,
+as our transformed points are in 1-D. In order to perfectly separate
+the data, we would require that <span class="math">\(|x_1+x_2| > R\)</span> for every point in
+one of the classes, and <span class="math">\(|x_1+x_2| \leq R\)</span> for every point in the
+other class. This does not hold. For example, consider,
+approximately, the square point at <span class="math">\((2, 0)\)</span>, which gets transformed
+to <span class="math">\((2)\)</span>, and the triangle points at <span class="math">\((2\sqrt{2}, -2\sqrt{2})\)</span> and
+<span class="math">\((4, 0)\)</span>, which get transformed to <span class="math">\((0)\)</span> and <span class="math">\((4)\)</span> respectively.</p>
+<p>d) <span class="math">\(r_4\)</span>:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>separable</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>not separable</li>
+</ul>
+<p><strong>Answer</strong>: separable.<br />
+<strong>Explanation</strong>: The decision boundary would be a diamond shape. Roughly like <img src="assets/classification/r4.png" alt="" /> <img src="assets/classification/r4-3d.png" alt="" /></p>
+<h1><strong>Problem 6</strong></h1>
+<p>Let's assume that a problem has a feature vector with three features <span class="math">\([x_1,x_2, x_3]^T\)</span>. For the following datasets, consider whether they are separable in either the feature space <span class="math">\([x_1,x_2]^T\)</span>, <span class="math">\(x_3\)</span> or <span class="math">\([x_1,x_2,x_3]^T\)</span>? Consider drawing the labelled data points in 3D.</p>
+<p>a) Consider the dataset <span class="math">\(\mathcal{D} = \{([0,0,0]^T, 0), ([1,1,0]^T, 0), ([1,0,1]^T, 1), ([0,1,1]^T, 1)\}. \)</span> Select all that apply.</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\([x_1,x_2]^T\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\(x_3\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\([x_1,x_2,x_3]^T\)</span></li>
+</ul>
+<p><strong>Answer</strong>: Separable in <span class="math">\(x_3\)</span> and <span class="math">\([x_1,x_2,x_3]^T\)</span>.<br />
+<strong>Explanation</strong>: It is not separable in <span class="math">\([x_1,x_2]^T\)</span> as this is
+the classic XOR problem we saw in the feature representation
+notes. It is separable if we include <span class="math">\(x_3\)</span> because all the points
+with label <span class="math">\(0\)</span> have <span class="math">\(x_3 = 0\)</span> and all the points with label <span class="math">\(1\)</span> have
+<span class="math">\(x_3 = 1\)</span>.</p>
+<p>b) Consider the dataset <span class="math">\(\mathcal{D} = \{([0,0,0]^T, 0), ([1,1,1]^T, 0), ([1,0,0]^T, 1), ([0,1,0]^T, 1)\}. \)</span> Select all that apply.</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\([x_1,x_2]^T\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\(x_3\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\([x_1,x_2,x_3]^T\)</span></li>
+</ul>
+<p><strong>Answer</strong>: Separable in <span class="math">\([x_1,x_2,x_3]^T\)</span>.<br />
+<strong>Explanation</strong>: It is not separable in <span class="math">\([x_1,x_2]^T\)</span> as this is
+the classic XOR problem we saw in the feature representation
+notes. It is not separable in <span class="math">\(x_3\)</span> because points with the same
+<span class="math">\(x_3\)</span> value have different labels. It is separable in
+<span class="math">\([x_1,x_2,x_3]^T\)</span> with <span class="math">\(\theta = [2, 2, -4]^T, \theta_0 = -1\)</span>. It's
+also somewhat possible to mentally visualize this dataset and see
+the separability directly, since all points lie on the unit cube.</p>
+<p>c) Consider the dataset <span class="math">\(\mathcal{D} = \{([0,0,1]^T, 0), ([0,1,0]^T, 0), ([1,1,1]^T, 1), ([1,0,0]^T, 1)\}. \)</span> Select all that apply.</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\([x_1,x_2]^T\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\(x_3\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\([x_1,x_2,x_3]^T\)</span></li>
+</ul>
+<p><strong>Answer</strong>: Separable in <span class="math">\([x_1,x_2]^T\)</span> and <span class="math">\([x_1,x_2,x_3]^T\)</span>.<br />
+<strong>Explanation</strong>: It is not separable in <span class="math">\(x_3\)</span> because points with
+the same <span class="math">\(x_3\)</span> value have different labels. It is separable in
+<span class="math">\([x_1,x_2]^T\)</span> with <span class="math">\(\theta = [3, -1]^T, \theta_0 = -1\)</span>. If it is
+separable in <span class="math">\([x_1,x_2]^T\)</span> it will be separable in
+<span class="math">\([x_1,x_2,x_3]^T\)</span>, as we can set <span class="math">\(\theta_3 = 0\)</span> and ignore that
+feature.</p>
+<p>d) Consider the dataset <span class="math">\(\mathcal{D} = \{([1,0,0]^T, 0), ([1,1,0]^T, 0), ([0,1,1]^T, 1), ([0,0,1]^T, 1)\}. \)</span> Select all that apply.</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\([x_1,x_2]^T\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\(x_3\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Separable in <span class="math">\([x_1,x_2,x_3]^T\)</span></li>
+</ul>
+<p><strong>Answer</strong>: Separable in <span class="math">\([x_1,x_2]^T\)</span>, <span class="math">\(x_3\)</span>, and <span class="math">\([x_1,x_2,x_3]^T\)</span>.<br />
+<strong>Explanation</strong>: Any feature space with <span class="math">\(x_1\)</span> in it will be
+separable because all points with <span class="math">\(x_1 = 1\)</span> have label <span class="math">\(0\)</span> and all
+points with <span class="math">\(x_1 = 0\)</span> have label <span class="math">\(1\)</span>. Any feature space with <span class="math">\(x_3\)</span>
+in it will be separable because all points with <span class="math">\(x_3 = 0\)</span> have label
+<span class="math">\(0\)</span> and all points with <span class="math">\(x_3 = 1\)</span> have label <span class="math">\(1\)</span>.</p>
+<p>e) Drew has obtained a new dataset. Each data point in this dataset is expressed by a feature vector <span class="math">\([x_1,x_2]^T\)</span>. Upon closer inspection, data points with the positive label have the following relationship between their features: <span class="math">\(x_2 = x_1^2+2\)</span>. For points with the negative label, we observe that <span class="math">\(x_2 = x_1^2 - 1\)</span>. Which of the following transformations of the original feature space make sure that any data set satisfying these relationships between <span class="math">\(x_1\)</span> and <span class="math">\(x_2\)</span> are linearly separable.</p>
+<p>Select feature transformations that make the problem linearly separable:</p>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\([x_1^2 +x_2, x_2]^T\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\([-x_1^2 + x_2]^T\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\([x_1^2, x_2^2]^T\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\([x_1,x_1^2 - x_2]^T\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\([x_1^2 -1, x_1^2 + 2]^T\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\([x_1, x_2, x_1 - x_1^2]^T\)</span></li>
+</ul>
+<p><strong>Answer</strong>: Separable after <span class="math">\([x_1^2 +x_2, x_2]^T\)</span>, <span class="math">\([-x_1^2 + x_2]^T\)</span>, <span class="math">\([x_1,x_1^2 - x_2]^T\)</span>, and <span class="math">\([x_1, x_2, x_1 - x_1^2]^T\)</span>.<br />
+<strong>Explanation</strong>: Because <span class="math">\(x_2 = x_1^2 + 2\)</span> if the data point has
+a positive label, and <span class="math">\(x_2 = x_1^2 -1\)</span> if the data point has a
+negative label, then <span class="math">\(x_2-x_1^2 = 2\)</span> for positive points and
+<span class="math">\(x_2 - x_1^2 = -1\)</span> for negative points. So, if <span class="math">\(x_2 - x_1^2\)</span>, or any linear
+combination of it, is included as a feature, then the data will be
+linearly separable. If <span class="math">\(x_2 - x_1^2\)</span> is a feature, we can separate
+the data via a separator with the equation
+<span class="math">\(1 \cdot (x_2 - x_1^2) = 0\)</span>. The features in the two incorrect
+options don't give us enough information to tell which of these
+equations (the equation the positive points satisfy, and the
+equation the negative points satisfy) hold. For all the correct
+options, you can get <span class="math">\(x_2 - x_1^2\)</span> from some linear combination of
+the features:</p>
+<p>For the first choice: We can take any linear combination of the two
+features, <span class="math">\(x_1^2 + x_2, x_2\)</span>. Consider
+<span class="math">\(2*(x_2) - 1* (x_1^2 + x_2) = x_2 - x_1^2\)</span> as desired.</p>
+<p>For the second choice: The second feature is already in the form
+<span class="math">\(x_2 - x_1^2\)</span>.</p>
+<p>For the fourth choice: The linear combination to obtain the desired
+<span class="math">\(x_2 - x_1^2\)</span> is simply -1*(second feature).</p>
+<p>For the sixth choice: We can take any linear combination of the
+three features, <span class="math">\(x_1, x_2, x_1 - x_1^2\)</span>. Consider
+<span class="math">\(-1 *(x_1) + 1* (x_2) + 1 * (x_1 - x_1^2) = x_2 - x_1^2\)</span> as desired.</p>
+<p>You can also think about this graphically: plot all of the possible
+positive labeled and negative labeled points given the feature set
+and see if it is linearly separable. For option 3, we can place
+<span class="math">\(x_1^2\)</span> on the x-axis and <span class="math">\(x_2^2\)</span> on the y-axis. For positive
+labels, we have points described by <span class="math">\([x_1^2, (x_1^2 + 2)^2]^T\)</span>,
+which when plotted is the right half of plotting <span class="math">\(y = (x+2)^2\)</span>.
+Similarly, for negative labels, we get the right half of
+the plot of <span class="math">\(y = (x-1)^2\)</span>. There is no linear classifier that
+separates the two curves described by these two plots. A similar
+process can be done for option 5.</p>
+<h1><strong>Problem 7</strong> Multiclass!</h1>
+<p>Assume we are doing multi-class logistic regression with three possible categories.</p>
+<p>a) What probability distribution over the categories is represented by <span class="math">\(z = [-1, 0, 1]^T\)</span>, where <span class="math">\(z\)</span> is the vector of inputs to the softmax transformation? Enter a distribution (a list of three non-negative numbers adding up to 1) for the three categories. Your answers should be numeric (please enter numbers, and do not use the symbol <span class="math">\(e\)</span>):</p>
+<p><strong>Answer</strong>: [0.090, 0.245, 0.665].<br />
+<strong>Explanation</strong>: We will plug into the formula for the softmax function. First, compute the numerators <span class="math">\(e^{z_1} = 0.368\)</span>, <span class="math">\(e^{z_2} = 1\)</span>, <span class="math">\(e^{z_3} = 2.718\)</span>. The outputs of the softmax are <span class="math">\(g_1\)</span>, <span class="math">\(g_2\)</span>, and <span class="math">\(g_3\)</span> below:</p>
+<div class="math">$$
+g_1 = \frac{e^{z_1}}{e^{z_1} + e^{z_2} + e^{z_3}} = 0.368 / (0.368 + 1 + 2.718) = 0.09
+$$</div>
+<div class="math">$$
+g_2 = \frac{e^{z_2}}{e^{z_1} + e^{z_2} + e^{z_3}} = 1 / (0.368 + 1 + 2.718) = 0.245
+$$</div>
+<div class="math">$$
+g_3 = \frac{e^{z_3}}{e^{z_1} + e^{z_2} + e^{z_3}}  = 2.718 / (0.368 + 1 + 2.718) = 0.665
+$$</div>
+<p>b) If our output <span class="math">\(g = [.3, .5, .2]^T\)</span> and <span class="math">\(y = [0, 0, 1]^T\)</span>, what is <span class="math">\(\mathcal{L}_{\text{NLLM}}(g, y)\)</span> on this one point? Enter an expression involving <code>log(.)</code> (for natural log) and constants:<br />
+<strong>Answer</strong>: -log(0.2).<br />
+<strong>Explanation</strong>: Plugging into the NLL formula, we have:</p>
+<div class="math">$$
+-(0 * \log{0.3} + 0 * \log{0.5} + 1 * \log{0.2}) = -\log{0.2}
+$$</div>
+<p>In general, the <span class="math">\(\mathcal L_{\text{NLLM}}(g,y)\)</span> will be negative log of the probability assigned to the label class, so in the above we could also just directly read off the answer by seeing that <span class="math">\(y_3 = 1\)</span> and taking <span class="math">\(-\log(g_3)\)</span>.</p>
+<p>c) Suppose we are doing multi-class logistic regression with input dimension <span class="math">\(d = 2\)</span> and number of classes <span class="math">\(K = 3\)</span>. Let the parameter matrix be</p>
+<div class="math">$$
+\theta = \begin{bmatrix}
+           1 &amp; -1 &amp; -2 \\
+           -1 &amp; 2 &amp; 1
+           \end{bmatrix}.
+$$</div>
+<p>Assume <span class="math">\(\theta_0 = [0,0,0]^T\)</span>, the input <span class="math">\(x = [1, 1]^T\)</span>, and the target output <span class="math">\(y = [0, 1, 0]^T\)</span>.  These are numpied for your convenience below:</p>
+<pre><code>th = np.array([[1, -1, -2], [-1, 2, 1]])
+x = np.array([[1, 1]]).T
+y = np.array([[0, 1, 0]]).T
+</code></pre>
+<p>What is the predicted probability (confidence) that <span class="math">\(x\)</span> is in class 1, before any
+gradient updates?  (Assume we have classes 0, 1, and 2.) Enter a number (to at least 3 decimal places):
+<strong>Answer</strong>: .665.<br />
+<strong>Explanation</strong>:</p>
+<pre>
+th = np.array([[1, -1, -2], [-1, 2, 1]])
+x = np.array([[1, 1]]).T
+y = np.array([[0, 1, 0]]).T
+
+def softmax(z):
+    return np.exp(z) / np.sum(np.exp(z))
+
+z = th.T @ x
+g = softmax(z)
+print(g[1])
+</pre>
+
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>

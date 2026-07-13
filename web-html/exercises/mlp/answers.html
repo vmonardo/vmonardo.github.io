@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Educators - Mlp Answers</title>
+    <!-- KaTeX for Math Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"
+        onload='renderMathInElement(document.body, {
+            delimiters: [
+                {left: "$$", right: "$$", display: true},
+                {left: "\\[", right: "\\]", display: true},
+                {left: "\\(", right: "\\)", display: false},
+                {left: "$", right: "$", display: false}
+            ],
+            throwOnError: false
+        });'></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .resource-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .resource-card {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .resource-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .resource-card h3 {
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+        }
+        
+        .resource-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        .resource-card a {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .resource-card a:hover {
+            background-color: #2980b9;
+        }
+        
+        nav {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+        }
+        
+        nav a {
+            display: inline-block;
+            margin-right: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: #d5dbdb;
+        }
+        
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .coming-soon {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-top: 1rem;
+        }
+        
+        .markdown-content {
+            line-height: 1.8;
+        }
+        
+        .markdown-content h1 {
+            font-size: 1.8rem;
+            margin: 1.5rem 0 1rem 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .markdown-content h2 {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content h3 {
+            font-size: 1.2rem;
+            margin: 1.2rem 0 0.6rem 0;
+            color: #34495e;
+        }
+        
+        .markdown-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .markdown-content ul, .markdown-content ol {
+            margin: 1rem 0 1rem 2rem;
+        }
+        
+        .markdown-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .markdown-content code {
+            background-color: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        .markdown-content pre {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content pre code {
+            background-color: transparent;
+            color: inherit;
+            padding: 0;
+            border-radius: 0;
+        }
+        
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+        }
+        
+        .markdown-content table th {
+            background-color: #3498db;
+            color: white;
+            padding: 0.8rem;
+            text-align: left;
+        }
+        
+        .markdown-content table td {
+            border: 1px solid #ddd;
+            padding: 0.8rem;
+        }
+        
+        .markdown-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .markdown-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin-left: 0;
+            color: #666;
+            font-style: italic;
+        }
+        
+        /* Image Sizing */
+        .markdown-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1rem 0;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }.back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #d5dbdb;
+        }
+        
+        /* Math Rendering */
+        .math-display {
+            display: block;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-left: 3px solid #3498db;
+            text-align: center;
+            overflow-x: auto;
+        }
+        
+        .math-inline {
+            margin: 0 0.2rem;
+        }
+        
+        /* Checkbox Styling */
+        .markdown-content input[type="checkbox"] {
+            margin-right: 0.5rem;
+            cursor: pointer;
+            accent-color: #3498db;
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+        }
+        
+        .markdown-content li input[type="checkbox"] {
+            margin-right: 0.5rem;
+        }
+        
+        /* Notebook Styling */
+        .notebook-content {
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .notebook-content > div {
+            background-color: white;
+        }
+        
+        /* Override nbconvert styles for better integration */
+        .notebook-content .rendered_html {
+            font-family: inherit;
+        }
+        
+        .notebook-content .input {
+            margin: 1rem 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f8f8f8;
+        }
+        
+        .notebook-content .prompt {
+            background-color: #f0f0f0;
+            border-right: 1px solid #ddd;
+            padding: 0.5rem 1rem;
+            min-width: 100px;
+            text-align: right;
+            color: #666;
+        }
+        
+        .notebook-content .input_prompt, 
+        .notebook-content .output_prompt {
+            color: #8b5a00;
+            font-weight: bold;
+        }
+        
+        .notebook-content pre {
+            background-color: #f5f5f5;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        
+        .notebook-content code {
+            font-family: 'Courier New', monospace;
+        }
+        
+        .notebook-content .output {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-left: 3px solid #e0e0e0;
+            background-color: #fafafa;
+        }
+        
+        .notebook-content .output.error {
+            border-left-color: #ff6b6b;
+            background-color: #ffe0e0;
+        }
+        
+        .notebook-content .output.stream {
+            background-color: #f0f0f0;
+            border-left-color: #666;
+        }
+        
+        /* Index Page Lists */
+        .index-section {
+            margin-top: 3rem;
+            padding: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .index-section h3 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .index-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .index-section li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .index-section a {
+            display: inline-block;
+            padding: 0.6rem 1.2rem;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s, transform 0.2s;
+            font-weight: 500;
+        }
+        
+        .index-section a:hover {
+            background-color: #2980b9;
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Educators Platform</h1>
+        <p>Learning materials and resources for AI/ML education</p>
+    </header>
+    
+    <div class="container">
+        <nav>
+            <a href="/web-html/index.html">Home</a>
+            <a href="/web-html/exercises.html">Exercises</a>
+            <a href="/web-html/in-class-problems.html">Conceptual Questions</a>
+            <a href="/web-html/coding-homework.html">Coding Homework</a>
+            <a href="/web-html/labs.html">Labs</a>
+            <a href="/web-html/videos.html">Videos</a>
+            <a href="/web-html/demos.html">Demos</a>
+        </nav>
+        
+        <div class="content">
+            
+            <style>
+                ul {
+                list-style: none;
+                padding-left: 0;
+                }
+            </style>
+            <a href="/web-html/exercises.html" class="back-link">← Back to Exercises</a>
+            <a href="index.html" class="back-link">← Back to Mlp</a>
+            <h2>Mlp - Answers</h2>
+            
+            <div class="markdown-content">
+                <ol>
+<li>Why is composing simple functions a good strategy for nonlinear maps?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Can build complicated models out of simple ones</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Gradient descent is easy to implement as long as the simple functions are differentiable</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Parameters are never reused</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Inefficient GPU implementations for simple differentiable functions</li>
+</ul>
+<p><strong>Explanation</strong>: When composing simple function there is a potential for parameter reuse depending on how the functions are composed. Moreover, there are efficient implementations for simple differentiable functions.</p>
+<hr />
+<ol start="2">
+<li>For <span class="math">\(x \longmapsto z_1(x, \theta) \longmapsto z_2(z_1, \theta) \longmapsto ... \longmapsto z_M(z_{M-1}, \theta) \longmapsto f_\theta(x) \)</span> which of the following terminology is accurate for the lecture?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(x\)</span> is a feature vector</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\theta\)</span> contains all parameters used across layers</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(z_i(z_{i-1}, \theta)\)</span> is intermediate layer</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(z_i\)</span> as a function is an intermediate feature</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(f_{\theta}(x)\)</span> is the decision variable</li>
+</ul>
+<p><strong>Explanation</strong>:  The numeric value <span class="math">\(z_i(z_{i-1}, \theta)\)</span> is an intermediate feature, while <span class="math">\(z_i\)</span> as a function is an intermediate layer. <span class="math">\(\theta\)</span> contains all parameters used across layers, and each layer uses parts of <span class="math">\(\theta\)</span> for computation. <span class="math">\(f_{\theta}(x)\)</span> is the decision variable that can be used as is for numeric predictions or as a label for classification depending on use case.</p>
+<ol start="3">
+<li>What are two key types of layers discussed for function composition?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Classification</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Linear</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Elementwise nonlinearity</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Regression</li>
+</ul>
+<p><strong>Explanation</strong>:  The main types of layers discussed in this class are linear and elementwise nonlinearity (or activations). Classification and regression are not layer types, they are problem types.</p>
+<ol start="4">
+<li>For the following linear layer <span class="math">\(W \cdot z + b\)</span>, if the input shape of <span class="math">\(z\)</span> is <span class="math">\(\mathbb{R}^{3}\)</span> and the output shape is <span class="math">\(\mathbb{R}^{6}\)</span>, what must be the shape of <span class="math">\(b\)</span>?</li>
+</ol>
+<p>(b) <span class="math">\(\mathbb{R}^{6}\)</span></p>
+<p><strong>Explanation</strong>:  Since output shape is <span class="math">\(\mathbb{R}^{6}\)</span>, <span class="math">\(d_2 = 6\)</span>. Shape of <span class="math">\(b\)</span> is always <span class="math">\(\mathbb{R}^{d_2}\)</span>, so it must be also <span class="math">\(\mathbb{R}^{6}\)</span>.<br />
+Another way to look at this is: the only way to get a vector of shape <span class="math">\(\mathbb{R}^{6}\)</span> from a sum of two vectors is only if both vectors are also of shape <span class="math">\(\mathbb{R}^{6}\)</span>.</p>
+<ol start="5">
+<li>For the following linear layer <span class="math">\(W \cdot z + b\)</span>, if the input shape of <span class="math">\(z\)</span> is <span class="math">\(\mathbb{R}^{3}\)</span> and the output shape is <span class="math">\(\mathbb{R}^{6}\)</span>, what must be the shape of <span class="math">\(W\)</span>?</li>
+</ol>
+<p>(b) <span class="math">\(\mathbb{R}^{6 \times 3}\)</span></p>
+<p><strong>Explanation</strong>:  Since input shape is <span class="math">\(\mathbb{R}^{3}\)</span>, <span class="math">\(d_1 = 3\)</span>. Since output shape is <span class="math">\(\mathbb{R}^{6}\)</span>, <span class="math">\(d_2 = 6\)</span>. Shape of <span class="math">\(W\)</span> is always <span class="math">\(\mathbb{R}^{d_2 \times d_1}\)</span>, so it must be <span class="math">\(\mathbb{R}^{6 \times 3}\)</span>.<br />
+Another way to look at this is: the only way to get a vector of shape <span class="math">\(\mathbb{R}^{6}\)</span> from a sum of two vectors is only if both vectors are also of shape <span class="math">\(\mathbb{R}^{6}\)</span>. So <span class="math">\(W \cdot z\)</span> must have shape <span class="math">\(\mathbb{R}^{6}\)</span>. This means <span class="math">\(W\)</span> must have 6 rows. For the multiplication <span class="math">\(W \cdot z\)</span> to be valid, <span class="math">\(W\)</span> must have same number of columns as number of rows of <span class="math">\(z\)</span> which is 3. So <span class="math">\(W\)</span> must have shape <span class="math">\(\mathbb{R}^{6 \times 3}\)</span>.</p>
+<ol start="6">
+<li>For the following linear layer <span class="math">\(W \cdot z + b\)</span>, if the input shape of <span class="math">\(z\)</span> is <span class="math">\(\mathbb{R}^{3}\)</span> and the output shape is <span class="math">\(\mathbb{R}^{6}\)</span>, how many parameters does the learning algorithm need to find?</li>
+</ol>
+<p>(c) 24</p>
+<p><strong>Explanation</strong>:  The parameters in this layer are <span class="math">\(W\)</span> and <span class="math">\(b\)</span>. This means total number parameters depends on the shape of <span class="math">\(W\)</span> and <span class="math">\(b\)</span>. Specifically, number of parameters are <span class="math">\(d_1*d_2 + d_2 = 3*6 + 6 = \)</span> <strong>24</strong> where <span class="math">\(d_1*d_2\)</span> is number of parameters that comes from W and <span class="math">\(d_2\)</span> is number of parameters that comes from <span class="math">\(b\)</span>.</p>
+<ol start="7">
+<li>Calculate <span class="math">\(\begin{bmatrix} 1 & 2 \\ 3 & 4 \\ 5 & 6 \end{bmatrix} \cdot \begin{bmatrix} 1 \\ 2 \end{bmatrix} + \begin{bmatrix} 3 \\ 4 \\ 5\end{bmatrix}\)</span>.</li>
+</ol>
+<p><strong>Answer</strong>:  <span class="math">\(\begin{bmatrix} 8 \\ 15 \\ 22 \end{bmatrix}\)</span></p>
+<p><strong>Explanation</strong>:</p>
+<p><span class="math">\(\begin{bmatrix} 1 & 2 \\ 3 & 4 \\ 5 & 6 \end{bmatrix} \cdot \begin{bmatrix} 1 \\ 2 \end{bmatrix} + \begin{bmatrix} 3 \\ 4 \\ 5\end{bmatrix} = \begin{bmatrix} 1 \cdot 1 + 2 \cdot 2 \\ 3 \cdot 1 + 4 \cdot 2 \\ 5 \cdot 1 + 6 \cdot 2 \end{bmatrix} + \begin{bmatrix} 3 \\ 4 \\ 5\end{bmatrix} \\ = \begin{bmatrix} 8 \\ 15 \\ 22 \end{bmatrix}\)</span>.</p>
+<ol start="8">
+<li>Calculate <span class="math">\(\begin{bmatrix} 1 & 2 & 3 \\ 3 & 4 & 4 \\ 5 & 6 & 5 \end{bmatrix} \cdot \begin{bmatrix} 1 \\ 2 \\ 1\end{bmatrix}\)</span>.</li>
+</ol>
+<p><strong>Answer</strong>:  <span class="math">\(\begin{bmatrix} 8 \\ 15 \\ 22 \end{bmatrix}\)</span></p>
+<p><strong>Explanation</strong>:<br />
+<span class="math">\(\begin{bmatrix} 1 & 2 & 3 \\ 3 & 4 & 4 \\ 5 & 6 & 5 \end{bmatrix} \cdot \begin{bmatrix} 1 \\ 2 \\ 1\end{bmatrix} = \begin{bmatrix} 1 \cdot 1 + 2 \cdot 2 + 3 \cdot 1 \\ 3 \cdot 1 + 4 \cdot 2 + 4 \cdot 1 \\ 5 \cdot 1 + 6 \cdot 2 + 5 \cdot 1 \end{bmatrix} \\ = \begin{bmatrix} 8 \\ 15 \\ 22 \end{bmatrix}\)</span>.</p>
+<p>Note: adding 1 helps omit separate bias and formulate linear layer as just matrix-vector multiplication: <span class="math">\(\begin{pmatrix} W & b \end{pmatrix} \cdot \begin{pmatrix} x \\ 1 \end{pmatrix}\)</span></p>
+<ol start="9">
+<li>How to convert <span class="math">\(\begin{bmatrix} 3  \\ 4 \end{bmatrix} \cdot \begin{bmatrix} 1  \\ 2 \end{bmatrix} + 5\)</span> into specifically <span class="math">\(W \cdot z + b\)</span> format (where <span class="math">\(W\)</span> is a matrix and <span class="math">\(z, b\)</span> are vectors)?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\begin{bmatrix} 3  \\ 4 \end{bmatrix} \cdot \begin{bmatrix} 1  \\ 2 \end{bmatrix} + 5\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/><span class="math">\(\begin{bmatrix} 3  & 4 \end{bmatrix} \cdot \begin{bmatrix} 1  \\ 2 \end{bmatrix} + 5\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\begin{bmatrix} 1  \\ 2 \end{bmatrix} \cdot \begin{bmatrix} 3  \\ 4 \end{bmatrix} + 5\)</span></li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/><span class="math">\(\begin{bmatrix} 3  \\ 4 \\ 5 \end{bmatrix} \cdot \begin{bmatrix} 1  \\ 2 \\ 1 \end{bmatrix}\)</span></li>
+</ul>
+<p><strong>Explanation</strong>:  <span class="math">\(\begin{bmatrix} 3  \\ 4 \end{bmatrix} \cdot \begin{bmatrix} 1  \\ 2 \end{bmatrix}\)</span> is equivalent to <span class="math">\(\begin{bmatrix} 3  & 4 \end{bmatrix} \cdot \begin{bmatrix} 1  \\ 2 \end{bmatrix}\)</span> as they both produce value <span class="math">\(3 \cdot 1 + 4 \cdot 2\)</span>. So <span class="math">\(\begin{bmatrix} 3  \\ 4 \end{bmatrix} \cdot \begin{bmatrix} 1  \\ 2 \end{bmatrix} + 5 = \begin{bmatrix} 3  & 4 \end{bmatrix} \cdot \begin{bmatrix} 1  \\ 2 \end{bmatrix} + 5\)</span>.</p>
+<p>Note: Dot-product layer with scalar output <span class="math">\(a \cdot z + b\)</span> is just a special case of a linear layer and can be represented in the original format <span class="math">\(W \cdot z + b\)</span> by just transposing vector <span class="math">\(a\)</span>.</p>
+<ol start="10">
+<li>Does composing two linear layers introduce additional complexity to the learned model?<br />
+(b) No, composing two linear layers is equivalent to a single linear layer</li>
+</ol>
+<p><strong>Explanation</strong>:  As discussed in the lecture, <span class="math">\(x \longmapsto W_1 x \longmapsto W_2 (W_1 x)\)</span> is equivalent to <span class="math">\(x \longmapsto W x\)</span> where <span class="math">\(W = W_2 \cdot W_1\)</span>. This means that composing two linear layers is same as having one linear layer.</p>
+<p>Note: this is why just linear layers are not enough and we need elementwise nonlinearity to produce more interesting results.</p>
+<hr />
+<ol start="11">
+<li>How many hyperparameters and learnable parameters does the following activation layer have <span class="math">\(\begin{bmatrix} e^{z_0}  \\ e^{z_1} \\ e^{z_2} \end{bmatrix}\)</span> where <span class="math">\(z = \begin{bmatrix} z_0 \\ z_1 \\ z_2 \end{bmatrix}\)</span>?</li>
+</ol>
+<p>(d) 0 hyperparameters and 0 learnable parameters</p>
+<p><strong>Explanation</strong>:  There are no hyperparameters or learnable parameters in this layer: given intermediate feature vector <span class="math">\(z\)</span> we can calculate the elementwise nonlinearity.</p>
+<ol start="12">
+<li>Which criteria are considered when choosing an activation function?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Smooth functions help with gradient descent on the loss function</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Vanishing derivatives are good for finishing learning fast with good quality output</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Linear activation is good for its smoothness and simplicity</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Complicated functions can be bad for their computational expense</li>
+</ul>
+<p><strong>Explanation</strong>:<br />
+Smooth functions are important during training for using gradient descent, so choosing smooth activation functions can help with gradient descent on the loss function.<br />
+Vanishing derivatives are bad for training using gradient descent. Specifically, because the derivative is so close to 0, which means the gradient is close to 0, the <strong>descent</strong> part of gradient descent does not happen and the algorithm gets stuck.<br />
+While linear layer is smooth and simple, as discussed in problem 10, it is not a good activation function because it does not introduce more complexity/nonlinearity.<br />
+Computing derivatives of complicated functions can be computationally expensive, making training a model with these layers too expensive to be realistic.</p>
+<ol start="13">
+<li>What is special about the <span class="math">\(softmax\)</span> function as an activation function?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Has multiple hyperparameters</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Has multiple learnable parameters</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Nothing special</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Not-just-elementwise nonlinearity</li>
+</ul>
+<p><strong>Explanation</strong>:  Remember that <span class="math">\(softmax(z)_i = \frac{e^{z_i}}{\sum_{j=1}^m e^{z_j}}. \\\)</span>
+<span class="math">\(softmax\)</span> activation function does not introduce any hyperparameters or learnable parameters, but it is not just elementwise nonlinearity because we use all elements to compute <span class="math">\(softmax\)</span> for each element.</p>
+<hr />
+<ol start="14">
+<li>What is the main difference between a Multilayer Perceptron (MLP) and a feedforward neural network (FNN)?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>MLP has linear layers, while FNN does not</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>MLP has elementwise activations, while FNN does not</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>MLP has both linear layers and elementwise activations, while FNN does not</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>The two are the same</li>
+</ul>
+<p><strong>Explanation</strong>:  MLP and FNN are different names for the same concept: composition of functions such that we interleave linear layers with elementwise activations!</p>
+<ol start="15">
+<li>If an MLP has 1 layer of size 4, its input is in <span class="math">\(\mathbb{R}^{2}\)</span>, what is the total number of learnable parameters?</li>
+</ol>
+<p><strong>Answer</strong>:  12.</p>
+<p><strong>Explanation</strong>:  MLP with one layer is equivalent to <span class="math">\(x \longmapsto \sigma_1 (W_1 \cdot x + b_1)\)</span>. Therefore, the total number of learnable parameters is number of parameters from <span class="math">\(W_1\)</span> + number of parameters from <span class="math">\(b_1\)</span>. We know that x <span class="math">\(\in \mathbb{R}^{2}\)</span> and layer size is 4, so according to our notation <span class="math">\(d_0 = 2, d_1 = 4\)</span>. Since <span class="math">\(W_1 \in \mathbb{R}^{d_1 \times d_0}\)</span> and <span class="math">\(b_1 \in \mathbb{R}^{d_1}\)</span>, <span class="math">\(W_1\)</span> has <span class="math">\(d_1*d_0 = 4*2 = 8\)</span> parameters and <span class="math">\(b_1\)</span> has <span class="math">\(d_1 = 4\)</span> parameters. So this MLP has 8+4 = <strong>12</strong>  learnable parameters</p>
+<ol start="16">
+<li>If an MLP has 3 layers each of size 4, its input is in <span class="math">\(\mathbb{R}^{2}\)</span>, what is the total number of learnable parameters?</li>
+</ol>
+<p><strong>Answer</strong>:  52.</p>
+<p><strong>Explanation</strong>:<br />
+MLP with 3 layers is equivalent to <span class="math">\(x \longmapsto z_1 = \sigma_1 (W_1 \cdot x + b_1) \longmapsto z_2 = \sigma_2 (W_2 \cdot z_1 + b_2) \longmapsto \sigma_3 (W_3 \cdot z_2 + b_3)\)</span>.<br />
+All the learnable parameters come from <span class="math">\(W_1, b_1, W_2, b_2, W_3, b_3\)</span>.<br />
+We know that x <span class="math">\(\in \mathbb{R}^{2}\)</span> and layer size is 4, so according to our notation <span class="math">\(d_0 = 2, d_1 = d_2 = d_3 = 4\)</span>.<br />
+Since <span class="math">\(W_1 \in \mathbb{R}^{d_1 \times d_0}\)</span>, <span class="math">\(b_1 \in \mathbb{R}^{d_1}\)</span>, <span class="math">\(W_2 \in \mathbb{R}^{d_2 \times d_1}\)</span>, <span class="math">\(b_2 \in \mathbb{R}^{d_2}\)</span>, <span class="math">\(W_3 \in \mathbb{R}^{d_3 \times d_2}\)</span>, <span class="math">\(b_3 \in \mathbb{R}^{d_3}\)</span>,<br />
+<span class="math">\(W_1\)</span> has <span class="math">\(d_1*d_0 = 4*2 = 8\)</span> parameters, <span class="math">\(b_1\)</span> has <span class="math">\(d_1 = 4\)</span> parameters,<br />
+<span class="math">\(W_2\)</span> has <span class="math">\(d_2*d_1 = 4*4 = 16\)</span> parameters, <span class="math">\(b_2\)</span> has <span class="math">\(d_2 = 4\)</span> parameters,<br />
+<span class="math">\(W_3\)</span> has <span class="math">\(d_3*d_2 = 4*4 = 16\)</span> parameters, and <span class="math">\(b_3\)</span> has <span class="math">\(d_3 = 4\)</span> parameters.<br />
+So this MLP has 8 + 4 + 16 + 4 + 16 + 4 = 52 parameters.</p>
+<ol start="17">
+<li>Evaluate MLP for feature vector <span class="math">\(\begin{bmatrix} 1  \\ 2 \end{bmatrix}\)</span>, where MLP has following hyperparameters: <span class="math">\(L = 2, d_0=2, d_1=3, d_2=3\)</span>, <span class="math">\(W_1 = \begin{bmatrix} 1 & 0 \\ 0 & -1 \\ -1 & -1 \end{bmatrix}, b_1 = \begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix}, W_2 = \begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & -1 \\ 0 & 0 & -1 \end{bmatrix}, b_2 = \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}\)</span> using ReLU activations for all layers.</li>
+</ol>
+<p><strong>Answer</strong>:  <span class="math">\(\begin{bmatrix} 2 \\ 0 \\ 0 \end{bmatrix}\)</span></p>
+<p><strong>Explanation</strong>:<br />
+<span class="math">\(L = 2\)</span> means there are 2 layers. MLP with 2 layers is equivalent to <span class="math">\(x \longmapsto z_1 = ReLU(W_1 \cdot x + b_1) \longmapsto ReLU(W_2 \cdot z_1 + b_2)\)</span>.<br />
+<span class="math">\(z_1 = ReLU(W_1 \cdot x + b_1) = ReLU(\begin{bmatrix} 1 & 0 \\ 0 & -1 \\ -1 & -1 \end{bmatrix} \cdot \begin{bmatrix} 1  \\ 2 \end{bmatrix} + \begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix}) = ReLU(\begin{bmatrix} 1 \\ -2 \\ -3 \end{bmatrix} + \begin{bmatrix} 1 \\ 1 \\ 1 \end{bmatrix}) = ReLU(\begin{bmatrix} 2 \\ -1 \\ -2 \end{bmatrix}) = \begin{bmatrix} 2 \\ 0 \\ 0 \end{bmatrix}\)</span>.</p>
+<p><span class="math">\(z_2 = ReLU(W_2 \cdot z_1 + b_2) = ReLU(\begin{bmatrix} 1 & 0 & 0 \\ 0 & 1 & -1 \\ 0 & 0 & -1 \end{bmatrix} \cdot \begin{bmatrix} 2 \\ 0 \\ 0 \end{bmatrix} + \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}) = ReLU(\begin{bmatrix} 2 \\ 0 \\ 0 \end{bmatrix} + \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}) = \begin{bmatrix} 2 \\ 0 \\ 0 \end{bmatrix}\)</span>.</p>
+<p>So the result is <span class="math">\(\begin{bmatrix} 2 \\ 0 \\ 0 \end{bmatrix}\)</span>.</p>
+<ol start="18">
+<li>What are the advantages and disadvantages of increasing the width vs. the depth of MLP?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Increasing depth (number of layers) can lead to vanishing gradients, while increasing width (size of a layer) can lead to large weight matrices</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Increasing depth (size of a layer) can lead to vanishing gradients, while increasing width (number of layers) can lead to large weight matrices</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>More depth (number of layers) leads to a hierarchical structure, while a bigger width (size of a layer) compared to depth can lead to simpler training</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>More depth (size of a layer) leads to a hierarchical structure, while a bigger width (number of layers) compared to depth can lead to simpler training</li>
+</ul>
+<p><strong>Explanation</strong>:  Depth is number of layers and width is a size of a layer. Increasing width means increasing size of a layer which means increasing the size of weight matrix <span class="math">\(W\)</span>. so if we increase the width a lot it can lead to large weight matrices. On the other hand, because these matrices used in linear layers increasing width compared to depth can lead to simpler training. Specifically, increasing depth would involve having more non-linear functions and therefore increasing difficulty of training. Increasing depth can also lead to vanishing gradients because if any of the nonlinearities in any layer vanishes the whole gradient vanishes. But increasing depth can also lead to hierarchical structure where each layer is &quot;responsible&quot; for different parts of a task (more on this during CNN discussion in future lectures).</p>
+<hr />
+<ol start="19">
+<li>Which of the following are true about Multilayer Perceptrons?</li>
+</ol>
+<ul>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>Gradient descent can no longer be used for training MLP models</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>MLPs are computationally expensive to train</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>For a wide class of functions f(x), can get arbitrarily close to the f(x) function f_\theta(x) with just an MLP</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled checked/>Additional training techniques like Dropout and Batch normalization can help reduce overfitting and speed up training, respectively</li>
+</ul>
+<p><strong>Explanation</strong>:<br />
+Gradient descent can still be used to train MLPs because we can still define a loss that measure how well it performs.<br />
+MLPs can be computationally expensive to train, especially if width or depth is too large.<br />
+There are theoretical and practical proofs (that you are not expected to know) showing that continuous functions are well-approximated by MLPs with any nonpolynomial activation function (might not find right parameters during training but they exist).<br />
+<a href="https://www.jmlr.org/papers/volume15/srivastava14a/srivastava14a.pdf?utm_content=buffer79b4">Dropout</a> can empirically improve overfitting, and <a href="https://arxiv.org/abs/1502.03167">batch normalization</a> can empirically stabilize/accelerate training.</p>
+
+            </div>
+        
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 AI Educators. All rights reserved.</p>
+    </footer>
+</body>
+</html>
