@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Discounted Return Lab</title>
+    <title>Why Later Rewards Count Less</title>
     <style>
       :root {
   --bg: #f4f6f9;
@@ -271,6 +271,646 @@ input[type="range"] {
   min-height: var(--demo-plot-min-height, 280px);
 }
 
+.demo-inspector-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-inspector-main-plot {
+  min-height: var(--demo-inspector-main-height, 560px);
+}
+
+.demo-inspector-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-inspector-support-plot {
+  min-height: var(--demo-inspector-support-height, 280px);
+}
+
+.demo-text-inspector-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-document-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: #f8fafc;
+}
+
+.demo-document-source {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-document-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-document-meta {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-token-stream {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 6px;
+  line-height: 1.8;
+}
+
+.demo-token {
+  padding: 3px 6px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.demo-token:hover {
+  transform: translateY(-1px);
+  border-color: #cbd5e1;
+}
+
+.demo-token.selected {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
+}
+
+.demo-legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.demo-legend-chip {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: #334155;
+}
+
+.demo-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-metric-columns, 3), minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.demo-metric-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+}
+
+.demo-metric-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.demo-metric-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.demo-workspace-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-workspace-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.demo-workspace-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-workspace-column {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-image-frame {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.demo-image-frame canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-inline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demo-inline-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: #334155;
+}
+
+.demo-inline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.demo-summary-box {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+.demo-summary-box h3 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+}
+
+.demo-summary-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.demo-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-gallery-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-gallery-tile {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff;
+  display: grid;
+  gap: 8px;
+}
+
+.demo-gallery-thumb {
+  width: 100%;
+  border-radius: 10px;
+  background: #eef2f7;
+  border: 1px solid var(--border);
+}
+
+.demo-gallery-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-gallery-meta {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.demo-gallery-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.demo-prediction-list {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-prediction-row {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.demo-prediction-row:hover {
+  transform: translateY(-1px);
+}
+
+.demo-prediction-row.active {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.06);
+  background: #f8fafc;
+}
+
+.demo-prediction-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.demo-prediction-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-prediction-prob {
+  font-size: 13px;
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-prediction-track {
+  height: 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.demo-prediction-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.demo-prediction-note {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.demo-helper-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-helper-pill {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.demo-practice-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-prompt-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-section-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-section-copy {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.demo-answer-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-answer-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-answer-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-answer-field label {
+  font-size: 13px;
+}
+
+.demo-answer-field input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.demo-answer-field input.correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.demo-answer-field input.incorrect {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.demo-small-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-report-stage {
+  padding: 12px;
+}
+
+.demo-report-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-report-columns, 2), minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-report-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-report-card h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-report-card h3 {
+  margin: 12px 0 8px 0;
+  font-size: 16px;
+}
+
+.demo-report-textarea {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+.demo-report-input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-report-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.demo-report-row label {
+  font-size: 13px;
+}
+
+.demo-report-row .demo-report-input {
+  width: auto;
+}
+
+.demo-report-result {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.demo-report-meta {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.demo-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.demo-report-table th,
+.demo-report-table td {
+  text-align: left;
+  padding: 6px 4px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.demo-report-table th {
+  font-weight: 600;
+}
+
+.demo-report-image-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 12px;
+}
+
+.demo-report-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+}
+
+.demo-canvas-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-canvas-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-canvas-columns, 2), minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-canvas-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-canvas-card h2,
+.demo-canvas-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-canvas-note {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.demo-canvas-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-canvas {
+  width: 100%;
+  max-width: var(--demo-canvas-max-width, 260px);
+  aspect-ratio: 1 / 1;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  image-rendering: pixelated;
+}
+
+.demo-image-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-image-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.demo-image-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.demo-image-card {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-image-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.demo-image-stack {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.demo-image-stack img,
+.demo-image-stack canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-image-stack img {
+  object-fit: cover;
+}
+
+.demo-image-stack canvas {
+  pointer-events: none;
+}
+
+.demo-mini-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-mini-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #f8fafc;
+}
+
+.demo-mini-label {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.demo-mini-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.demo-mini-note {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+}
+
 .demo-stage-pad {
   padding: 12px;
 }
@@ -495,6 +1135,41 @@ input[type="range"] {
   }
 }
 
+@media (max-width: 920px) {
+  .demo-inspector-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .demo-metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-workspace-main-grid,
+  .demo-workspace-support-grid,
+  .demo-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-answer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-report-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-canvas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-image-compare-grid,
+  .demo-image-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 700px) {
   .demo-gridworld {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -526,45 +1201,45 @@ input[type="range"] {
     </div>
   </section>
   <aside class="demo-panel">
-    <h1>Discounted Return Lab</h1>
-    <div class="demo-howto">The chapter defines utility as a discounted sum of future rewards. Use the controls to change the reward sequence and gamma, then compare the raw rewards, the weighted contributions, and the resulting utility curve over gamma.</div>
+    <h1>Why Later Rewards Count Less</h1>
+    <div class="demo-howto">Each future reward counts a little less than the one before it. Change the reward pattern and how much the future counts, then compare the raw rewards, their weighted versions, and the running total.</div>
     <div class="demo-controls" style="--demo-control-columns: 2;">
       <div class="demo-control demo-field span-2">
-        <label class="demo-control-label" for="scenarioSelect">Reward sequence</label>
+        <label class="demo-control-label" for="scenarioSelect">Reward pattern</label>
         <select id="scenarioSelect">
-          <option value="delayed_goal" selected="selected">Sparse delayed goal</option>
-          <option value="upfront_cost">Upfront cost, later payoff</option>
-          <option value="dense_progress">Dense progress rewards</option>
-          <option value="tempting_loop">Tempting short-term rewards</option>
-          <option value="noisy_mission">Noisy mission rewards</option>
+          <option value="delayed_goal" selected="selected">Big reward at the end</option>
+          <option value="upfront_cost">Pay a cost now, win later</option>
+          <option value="dense_progress">Small rewards all along</option>
+          <option value="tempting_loop">Tempting early rewards</option>
+          <option value="noisy_mission">Messy, up-and-down rewards</option>
         </select>
       </div>
       <div class="demo-control demo-field">
-        <label class="demo-control-label demo-slider-label" for="horizonRange"><span>Horizon</span><span id="horizonValue" class="demo-slider-value"></span></label>
+        <label class="demo-control-label demo-slider-label" for="horizonRange"><span>How many steps</span><span id="horizonValue" class="demo-slider-value"></span></label>
         <input id="horizonRange" type="range" value="10" min="6" max="18" step="1">
       </div>
       <div class="demo-control demo-field">
-        <label class="demo-control-label demo-slider-label" for="gammaRange"><span>Discount factor gamma</span><span id="gammaValue" class="demo-slider-value"></span></label>
+        <label class="demo-control-label demo-slider-label" for="gammaRange"><span>How much the future counts</span><span id="gammaValue" class="demo-slider-value"></span></label>
         <input id="gammaRange" type="range" value="0.92" min="0.0" max="0.99" step="0.01">
       </div>
     </div>
     <div class="demo-button-row" style="--demo-button-columns: 2;">
-      <button id="resampleBtn" type="button">Resample rewards</button>
-      <button id="highGammaBtn" type="button">Jump to gamma = 0.98</button>
+      <button id="resampleBtn" type="button">New rewards</button>
+      <button id="highGammaBtn" type="button">Make the future count a lot</button>
     </div>
     <div class="demo-card">
-      <h3>Interpretation</h3>
+      <h3>What To Notice</h3>
       <div >
     <div id="noteLines" class="demo-lines"></div>
     <div class="demo-pill-row">
-      <div class="demo-pill">gamma near 0 = short-sighted</div>
-      <div class="demo-pill">gamma near 1 = future-aware</div>
-      <div class="demo-pill">discounting guarantees finite utility</div>
+      <div class="demo-pill">low = only cares about now</div>
+      <div class="demo-pill">high = plans ahead</div>
+      <div class="demo-pill">later rewards always count less</div>
     </div>
     </div>
     </div>
     <div class="demo-card">
-      <h3>Current Utility Summary</h3>
+      <h3>The Numbers Right Now</h3>
       <div id="statLines" class="demo-lines"></div>
     </div>
   </aside>
@@ -573,11 +1248,11 @@ input[type="range"] {
   <div class="discussion-card">
     <h3>Discussion Questions</h3>
     <ul>
-      <li>Why can two trajectories with the same undiscounted sum have different utilities once gamma is below 1?</li>
-<li>Which reward patterns become much less attractive when the learner is short-sighted?</li>
-<li>What does the chapter gain mathematically by insisting on gamma < 1?</li>
-<li>How would your interpretation of gamma change if rewards were arriving every millisecond instead of every few seconds?</li>
-<li>Which scenario here feels most similar to reinforcement learning with delayed sparse rewards?</li>
+      <li>Two reward patterns can add up to the same total. Why might one still be worth more when the future counts less?</li>
+<li>Which reward patterns lose the most value when we mostly care about the near future?</li>
+<li>Why is it usually a good idea to make later rewards count a little less at all?</li>
+<li>Would your answer change if rewards arrived every second instead of every few minutes?</li>
+<li>Which pattern here feels most like a real goal you only reach after many steps?</li>
     </ul>
   </div>
 </section>
@@ -587,6 +1262,10 @@ input[type="range"] {
     <script>
       (() => {
   const SVG_NS = "http://www.w3.org/2000/svg";
+  const PLOTLY_DEFAULT_CONFIG = { responsive: true, displayModeBar: false };
+  const PLOTLY_DEFAULT_LAYOUT = { paper_bgcolor: "#ffffff", plot_bgcolor: "#ffffff" };
+  const PLOTLY_BOTTOM_LEGEND = { orientation: "h", x: 0, y: -0.2, yanchor: "top" };
+  const PLOTLY_BOTTOM_LEGEND_MARGIN = 88;
 
   function resolve(target) {
     if (typeof target === "string") {
@@ -674,6 +1353,30 @@ input[type="range"] {
     return node ? [...node.querySelectorAll(selector)] : [];
   }
 
+  function isPlainObject(value) {
+    return value !== null && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function mergeObjects(...sources) {
+    const result = {};
+    sources.forEach((source) => {
+      if (!isPlainObject(source)) {
+        return;
+      }
+      Object.entries(source).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          result[key] = value.slice();
+        } else if (isPlainObject(value)) {
+          const currentValue = isPlainObject(result[key]) ? result[key] : {};
+          result[key] = mergeObjects(currentValue, value);
+        } else {
+          result[key] = value;
+        }
+      });
+    });
+    return result;
+  }
+
   function formatNumber(value, digits = 4) {
     return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
   }
@@ -694,6 +1397,38 @@ input[type="range"] {
 
   function clamp(value, minValue, maxValue) {
     return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function plotConfig(overrides = {}) {
+    return mergeObjects(PLOTLY_DEFAULT_CONFIG, overrides);
+  }
+
+  function plotLayout(options = {}) {
+    const { legendBottom = false, ...rest } = options;
+    const layout = mergeObjects(PLOTLY_DEFAULT_LAYOUT, rest);
+    if (!legendBottom) {
+      return layout;
+    }
+
+    const legendOptions = legendBottom === true ? {} : mergeObjects({}, legendBottom);
+    const minBottom = Number.isFinite(Number(legendOptions.minBottom))
+      ? Number(legendOptions.minBottom)
+      : PLOTLY_BOTTOM_LEGEND_MARGIN;
+    delete legendOptions.minBottom;
+
+    layout.legend = mergeObjects(PLOTLY_BOTTOM_LEGEND, layout.legend, legendOptions);
+    const margin = isPlainObject(layout.margin) ? { ...layout.margin } : {};
+    const currentBottom = Number.isFinite(Number(margin.b)) ? Number(margin.b) : 0;
+    margin.b = Math.max(currentBottom, minBottom);
+    layout.margin = margin;
+    return layout;
+  }
+
+  function renderPlot(target, traces, layout = {}, config = {}) {
+    if (typeof Plotly === "undefined" || typeof Plotly.react !== "function") {
+      throw new Error("Plotly is not available on this page.");
+    }
+    return Plotly.react(resolve(target), traces, plotLayout(layout), plotConfig(config));
   }
 
   function renderItems(target, items, options = {}) {
@@ -759,9 +1494,14 @@ input[type="range"] {
     createHtml,
     formatFixed,
     formatNumber,
+    isPlainObject,
+    mergeObjects,
+    plotConfig,
+    plotLayout,
     query,
     queryAll,
     readNumber,
+    renderPlot,
     renderItems,
     renderLines,
     renderList,
@@ -809,24 +1549,24 @@ function mulberry32(seed) {
 function scenarioMeta(key) {
   const meta = {
     delayed_goal: {
-      title: "Sparse delayed goal",
-      text: "Most reward arrives late. Lower gamma makes the distant payoff matter much less.",
+      title: "Big reward at the end",
+      text: "Almost all the reward comes at the very end. If the future barely counts, that big payoff is worth much less.",
     },
     upfront_cost: {
-      title: "Upfront cost, later payoff",
-      text: "This is the shape of many planning problems: pay a cost now to unlock larger future reward.",
+      title: "Pay a cost now, win later",
+      text: "You take a hit early to unlock a bigger reward later — the shape of many real plans.",
     },
     dense_progress: {
-      title: "Dense progress rewards",
-      text: "Dense reward spreads utility across many steps, so the learner gets frequent feedback.",
+      title: "Small rewards all along",
+      text: "Steady small rewards the whole way, so there is feedback at every step.",
     },
     tempting_loop: {
-      title: "Tempting short-term rewards",
-      text: "Immediate positive rewards can dominate the utility when gamma is too small, even if a later penalty arrives.",
+      title: "Tempting early rewards",
+      text: "Nice rewards early can win out when the future barely counts, even if a penalty comes later.",
     },
     noisy_mission: {
-      title: "Noisy mission rewards",
-      text: "Individual rewards wiggle, but the discount still determines how strongly distant outcomes affect utility.",
+      title: "Messy, up-and-down rewards",
+      text: "The rewards jump around, but how much the future counts still decides how much the far ones matter.",
     },
   };
   return meta[key];
@@ -896,11 +1636,11 @@ function renderNotes(meta, gamma, discounted) {
   const share = Math.abs(totalUtility) < 1e-8 ? 0 : earlyShare / totalUtility;
   const lines = [
     `${meta.title}: ${meta.text}`,
-    `With gamma = ${gamma.toFixed(2)}, the effective planning horizon is about ${(1 / Math.max(1e-6, 1 - gamma)).toFixed(1)} steps.`,
-    `The first three rewards account for ${(100 * share).toFixed(1)}% of the current utility.`,
+    `The future counts ${gamma.toFixed(2)} per step, so the model mostly looks about ${(1 / Math.max(1e-6, 1 - gamma)).toFixed(1)} steps ahead.`,
+    `The first three rewards make up ${(100 * share).toFixed(0)}% of the total value.`,
   ];
   if (horizon <= 8) {
-    lines.push("Short horizons make terminal rewards easier to reach, so discounting matters less dramatically.");
+    lines.push("With only a few steps, the far reward is easy to reach, so it barely gets shrunk.");
   }
   Demo.renderLines("noteLines", lines);
 }
@@ -915,12 +1655,12 @@ function renderStats(rewards, discounted, gammaSweep, gamma) {
   const maxUtility = Math.max(...gammaSweep.utilities);
   const maxGamma = gammaSweep.gammas[gammaSweep.utilities.indexOf(maxUtility)];
   Demo.renderLines("statLines", [
-    `Undiscounted sum: ${formatSigned(undiscounted)}`,
-    `Discounted utility: ${formatSigned(utility)}`,
-    `Largest discounted contribution occurs at t = ${bestIndex}`,
-    `Final cumulative utility after t = ${rewards.length - 1}: ${formatSigned(cumulative[cumulative.length - 1])}`,
-    `Best utility on the gamma sweep is ${formatSigned(maxUtility)} at gamma = ${maxGamma.toFixed(2)}`,
-    `Current gamma = ${gamma.toFixed(2)} is ${utility >= undiscounted ? "amplifying early gains" : "down-weighting distant rewards"}.`,
+    `Plain sum of all rewards: ${formatSigned(undiscounted)}`,
+    `Total value (later rewards counted less): ${formatSigned(utility)}`,
+    `The step that adds the most value: step ${bestIndex}`,
+    `Running total at the last step: ${formatSigned(cumulative[cumulative.length - 1])}`,
+    `Total value is highest (${formatSigned(maxUtility)}) when the future counts ${maxGamma.toFixed(2)}`,
+    `Right now the future counts ${gamma.toFixed(2)}, which ${utility >= undiscounted ? "keeps early rewards strong" : "shrinks the far-off rewards"}.`,
   ]);
 }
 
@@ -930,7 +1670,7 @@ function renderPlots(rewards, discounted, gammaSweep, gamma) {
   const discountedColors = discounted.map((value) => (value >= 0 ? "#2563eb" : "#ef4444"));
   const cumulative = cumulativeSum(discounted);
 
-  Plotly.react(
+  Demo.renderPlot(
     rewardPlot,
     [
       {
@@ -943,17 +1683,14 @@ function renderPlots(rewards, discounted, gammaSweep, gamma) {
       },
     ],
     {
-      title: "1. Raw rewards over time",
+      title: "1. The rewards, step by step",
       margin: { l: 56, r: 18, t: 46, b: 46 },
-      paper_bgcolor: "#ffffff",
-      plot_bgcolor: "#ffffff",
-      xaxis: { title: "time step t", dtick: 1 },
-      yaxis: { title: "R_t", zerolinecolor: "#c7d2e0" },
-    },
-    { responsive: true, displayModeBar: false }
+      xaxis: { title: "step", dtick: 1 },
+      yaxis: { title: "reward", zerolinecolor: "#c7d2e0" },
+    }
   );
 
-  Plotly.react(
+  Demo.renderPlot(
     contributionPlot,
     [
       {
@@ -961,8 +1698,8 @@ function renderPlots(rewards, discounted, gammaSweep, gamma) {
         x: xs,
         y: discounted,
         marker: { color: discountedColors, line: { color: "#e5e7eb", width: 0.8 } },
-        name: "Discounted contribution",
-        hovertemplate: "t=%{x}<br>gamma^t R_t=%{y:.3f}<extra></extra>",
+        name: "weighted reward",
+        hovertemplate: "step %{x}<br>weighted=%{y:.3f}<extra></extra>",
       },
       {
         type: "scatter",
@@ -972,24 +1709,21 @@ function renderPlots(rewards, discounted, gammaSweep, gamma) {
         line: { color: "#111827", width: 3 },
         marker: { size: 7, color: "#111827" },
         yaxis: "y2",
-        name: "Cumulative utility",
-        hovertemplate: "t=%{x}<br>U up to t=%{y:.3f}<extra></extra>",
+        name: "running total",
+        hovertemplate: "step %{x}<br>total=%{y:.3f}<extra></extra>",
       },
     ],
     {
-      title: "2. Discounted contributions and running utility",
-      margin: { l: 56, r: 56, t: 46, b: 46 },
-      paper_bgcolor: "#ffffff",
-      plot_bgcolor: "#ffffff",
-      xaxis: { title: "time step t", dtick: 1 },
-      yaxis: { title: "gamma^t R_t", zerolinecolor: "#c7d2e0" },
-      yaxis2: { title: "cumulative utility", overlaying: "y", side: "right" },
-      legend: { orientation: "h", x: 0, y: 1.12 },
-    },
-    { responsive: true, displayModeBar: false }
+      title: "2. Weighted rewards and running total",
+      margin: { l: 56, r: 56, t: 46, b: 88 },
+      xaxis: { title: "step", dtick: 1 },
+      yaxis: { title: "weighted reward", zerolinecolor: "#c7d2e0" },
+      yaxis2: { title: "running total", overlaying: "y", side: "right" },
+      legendBottom: true,
+    }
   );
 
-  Plotly.react(
+  Demo.renderPlot(
     gammaPlot,
     [
       {
@@ -998,7 +1732,7 @@ function renderPlots(rewards, discounted, gammaSweep, gamma) {
         x: gammaSweep.gammas,
         y: gammaSweep.utilities,
         line: { color: "#7c3aed", width: 3 },
-        name: "Utility as gamma changes",
+        name: "total value",
       },
       {
         type: "scatter",
@@ -1006,19 +1740,16 @@ function renderPlots(rewards, discounted, gammaSweep, gamma) {
         x: [gamma],
         y: [discounted.reduce((a, b) => a + b, 0)],
         marker: { color: "#ef4444", size: 11, line: { color: "#7f1d1d", width: 1 } },
-        name: "Current gamma",
-        hovertemplate: "gamma=%{x:.2f}<br>utility=%{y:.3f}<extra></extra>",
+        name: "right now",
+        hovertemplate: "future counts %{x:.2f}<br>total=%{y:.3f}<extra></extra>",
       },
     ],
     {
-      title: "3. Utility as gamma varies",
+      title: "3. Total value vs. how much the future counts",
       margin: { l: 56, r: 18, t: 46, b: 46 },
-      paper_bgcolor: "#ffffff",
-      plot_bgcolor: "#ffffff",
-      xaxis: { title: "gamma", range: [0, 1] },
-      yaxis: { title: "utility", zerolinecolor: "#c7d2e0" },
-    },
-    { responsive: true, displayModeBar: false }
+      xaxis: { title: "how much the future counts", range: [0, 1] },
+      yaxis: { title: "total value", zerolinecolor: "#c7d2e0" },
+    }
   );
 }
 

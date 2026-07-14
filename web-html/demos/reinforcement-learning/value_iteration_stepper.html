@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bellman Backup Stepper</title>
+    <title>Planning: How Good Squares Spread from the Goal</title>
     <style>
       :root {
   --bg: #f4f6f9;
@@ -271,6 +271,646 @@ input[type="range"] {
   min-height: var(--demo-plot-min-height, 280px);
 }
 
+.demo-inspector-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-inspector-main-plot {
+  min-height: var(--demo-inspector-main-height, 560px);
+}
+
+.demo-inspector-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-inspector-support-plot {
+  min-height: var(--demo-inspector-support-height, 280px);
+}
+
+.demo-text-inspector-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-document-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: #f8fafc;
+}
+
+.demo-document-source {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-document-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-document-meta {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-token-stream {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 6px;
+  line-height: 1.8;
+}
+
+.demo-token {
+  padding: 3px 6px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.demo-token:hover {
+  transform: translateY(-1px);
+  border-color: #cbd5e1;
+}
+
+.demo-token.selected {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
+}
+
+.demo-legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.demo-legend-chip {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: #334155;
+}
+
+.demo-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-metric-columns, 3), minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.demo-metric-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+}
+
+.demo-metric-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.demo-metric-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.demo-workspace-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-workspace-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.demo-workspace-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-workspace-column {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-image-frame {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.demo-image-frame canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-inline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demo-inline-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: #334155;
+}
+
+.demo-inline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.demo-summary-box {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+.demo-summary-box h3 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+}
+
+.demo-summary-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.demo-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-gallery-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-gallery-tile {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff;
+  display: grid;
+  gap: 8px;
+}
+
+.demo-gallery-thumb {
+  width: 100%;
+  border-radius: 10px;
+  background: #eef2f7;
+  border: 1px solid var(--border);
+}
+
+.demo-gallery-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-gallery-meta {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.demo-gallery-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.demo-prediction-list {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-prediction-row {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.demo-prediction-row:hover {
+  transform: translateY(-1px);
+}
+
+.demo-prediction-row.active {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.06);
+  background: #f8fafc;
+}
+
+.demo-prediction-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.demo-prediction-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-prediction-prob {
+  font-size: 13px;
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-prediction-track {
+  height: 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.demo-prediction-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.demo-prediction-note {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.demo-helper-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-helper-pill {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.demo-practice-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-prompt-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-section-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-section-copy {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.demo-answer-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-answer-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-answer-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-answer-field label {
+  font-size: 13px;
+}
+
+.demo-answer-field input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.demo-answer-field input.correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.demo-answer-field input.incorrect {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.demo-small-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-report-stage {
+  padding: 12px;
+}
+
+.demo-report-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-report-columns, 2), minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-report-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-report-card h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-report-card h3 {
+  margin: 12px 0 8px 0;
+  font-size: 16px;
+}
+
+.demo-report-textarea {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+.demo-report-input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-report-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.demo-report-row label {
+  font-size: 13px;
+}
+
+.demo-report-row .demo-report-input {
+  width: auto;
+}
+
+.demo-report-result {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.demo-report-meta {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.demo-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.demo-report-table th,
+.demo-report-table td {
+  text-align: left;
+  padding: 6px 4px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.demo-report-table th {
+  font-weight: 600;
+}
+
+.demo-report-image-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 12px;
+}
+
+.demo-report-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+}
+
+.demo-canvas-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-canvas-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-canvas-columns, 2), minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-canvas-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-canvas-card h2,
+.demo-canvas-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-canvas-note {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.demo-canvas-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-canvas {
+  width: 100%;
+  max-width: var(--demo-canvas-max-width, 260px);
+  aspect-ratio: 1 / 1;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  image-rendering: pixelated;
+}
+
+.demo-image-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-image-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.demo-image-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.demo-image-card {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-image-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.demo-image-stack {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.demo-image-stack img,
+.demo-image-stack canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-image-stack img {
+  object-fit: cover;
+}
+
+.demo-image-stack canvas {
+  pointer-events: none;
+}
+
+.demo-mini-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-mini-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #f8fafc;
+}
+
+.demo-mini-label {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.demo-mini-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.demo-mini-note {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+}
+
 .demo-stage-pad {
   padding: 12px;
 }
@@ -495,6 +1135,41 @@ input[type="range"] {
   }
 }
 
+@media (max-width: 920px) {
+  .demo-inspector-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .demo-metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-workspace-main-grid,
+  .demo-workspace-support-grid,
+  .demo-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-answer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-report-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-canvas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-image-compare-grid,
+  .demo-image-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 700px) {
   .demo-gridworld {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -522,10 +1197,10 @@ input[type="range"] {
     <div class="demo-visual-stack vi-visuals">
       <section class="demo-surface-card">
         <div class="demo-surface-head">
-          <h2>State Values After Each Sweep</h2>
+          <h2>How Good Each Square Is (After Each Round)</h2>
           <p class="demo-surface-copy">
-            Click any non-terminal state. The displayed numbers are the current value estimates V_i(s),
-            and the arrows are greedy with respect to the current sweep.
+            Click any square. The number is how good that square is right now, and the arrow is the
+            best move found so far.
           </p>
         </div>
         <div class="demo-surface-body">
@@ -536,10 +1211,10 @@ input[type="range"] {
       <div class="demo-grid-2">
         <section class="demo-surface-card">
           <div class="demo-surface-head">
-            <h2>Selected State Action Backups</h2>
+            <h2>Value of Each Move from the Selected Square</h2>
             <p class="demo-surface-copy">
-              These bars are the action-values obtained from one Bellman backup using the
-              current sweep's values.
+              Each bar is how good one move looks using this round's numbers. The tallest bar is the
+              move the arrow picks.
             </p>
           </div>
           <div class="vi-plot-body"><div id="actionPlot" class="demo-plot-frame"></div></div>
@@ -547,10 +1222,10 @@ input[type="range"] {
 
         <section class="demo-surface-card">
           <div class="demo-surface-head">
-            <h2>Convergence History</h2>
+            <h2>Have the Values Stopped Changing?</h2>
             <p class="demo-surface-copy">
-              The blue line tracks the selected state's value. The gray bars show the max sweep change,
-              a quick indicator of convergence.
+              The blue line is the selected square's value over the rounds. The gray bars show the
+              biggest change each round &mdash; when they shrink to nothing, planning has settled.
             </p>
           </div>
           <div class="vi-plot-body"><div id="historyPlot" class="demo-plot-frame"></div></div>
@@ -559,38 +1234,34 @@ input[type="range"] {
     </div>
   </section>
   <aside class="demo-panel">
-    <h1>Bellman Backup Stepper</h1>
-    <div class="demo-howto">Move sweep by sweep through value iteration on the stochastic gridworld. The grid shows the current value table V_i(s), the action plot shows one-step Bellman backups for the selected state, and the history plot shows how that state and the global max change evolve.</div>
+    <h1>Planning: How Good Squares Spread from the Goal</h1>
+    <div class="demo-howto">Step through planning one round at a time. Each round, every square looks one move ahead and updates how good it is. Watch good values spread outward from the +1 goal until they stop changing.<div class="demo-callout">Moves sometimes slip sideways (a 1-in-10 chance), so a good plan has to play it a little safe near the &minus;1 square.</div></div>
     <div class="demo-controls" style="--demo-control-columns: 2;">
       <div class="demo-control demo-field">
-        <label class="demo-control-label demo-slider-label" for="iterationRange"><span>Displayed iteration</span><span id="iterationValue" class="demo-slider-value"></span></label>
+        <label class="demo-control-label demo-slider-label" for="iterationRange"><span>Planning round</span><span id="iterationValue" class="demo-slider-value"></span></label>
         <input id="iterationRange" type="range" value="0" min="0" max="24" step="1">
       </div>
       <div class="demo-control demo-field">
-        <label class="demo-control-label demo-slider-label" for="livingRewardRange"><span>Living reward</span><span id="livingRewardValue" class="demo-slider-value"></span></label>
+        <label class="demo-control-label demo-slider-label" for="livingRewardRange"><span>Cost of each step</span><span id="livingRewardValue" class="demo-slider-value"></span></label>
         <input id="livingRewardRange" type="range" value="-0.04" min="-0.2" max="0.05" step="0.01">
       </div>
       <div class="demo-control demo-field">
-        <label class="demo-control-label demo-slider-label" for="gammaRange"><span>Discount factor gamma</span><span id="gammaValue" class="demo-slider-value"></span></label>
+        <label class="demo-control-label demo-slider-label" for="gammaRange"><span>How much the future counts</span><span id="gammaValue" class="demo-slider-value"></span></label>
         <input id="gammaRange" type="range" value="0.92" min="0.5" max="0.99" step="0.01">
-      </div>
-      <div class="demo-control demo-field">
-        <label class="demo-control-label demo-slider-label" for="slipRange"><span>Orthogonal slip probability</span><span id="slipValue" class="demo-slider-value"></span></label>
-        <input id="slipRange" type="range" value="0.1" min="0.0" max="0.25" step="0.01">
       </div>
     </div>
     <div class="demo-button-row" style="--demo-button-columns: 4;">
-      <button id="prevBtn" type="button">Previous</button>
-      <button id="nextBtn" type="button">Next</button>
-      <button id="jumpBtn" type="button">Jump +5</button>
+      <button id="prevBtn" type="button">Back a round</button>
+      <button id="nextBtn" type="button">Next round</button>
+      <button id="jumpBtn" type="button">Skip 5</button>
       <button id="resetBtn" type="button">Reset</button>
     </div>
     <div class="demo-card">
-      <h3>Selected State Interpretation</h3>
+      <h3>What This Square Is Doing</h3>
       <div id="noteLines" class="demo-lines"></div>
     </div>
     <div class="demo-card">
-      <h3>Sweep Summary</h3>
+      <h3>Round Summary</h3>
       <div id="statLines" class="demo-lines"></div>
     </div>
   </aside>
@@ -599,11 +1270,11 @@ input[type="range"] {
   <div class="discussion-card">
     <h3>Discussion Questions</h3>
     <ul>
-      <li>Why do states near the terminal rewards change first during value iteration?</li>
-<li>What exactly does one Bellman backup add to the policy computation that the previous sweep did not know yet?</li>
-<li>Why can the selected state's best action change across iterations before converging?</li>
-<li>How does the max sweep change help us decide when to stop iterating?</li>
-<li>What is the conceptual difference between value iteration on a known MDP and Q-learning from sampled experience?</li>
+      <li>Why do the squares next to the +1 goal get good values first, before the far-away squares?</li>
+<li>Each round looks one move further ahead. What does a new round know that the last one didn't?</li>
+<li>Why can a square's best-move arrow flip from one round to the next before it settles?</li>
+<li>How can you tell from the chart that the values have stopped changing?</li>
+<li>Here the rules of the world are fully known. How is that different from learning by trial and error (the next demo)?</li>
     </ul>
   </div>
 </section>
@@ -613,6 +1284,10 @@ input[type="range"] {
     <script>
       (() => {
   const SVG_NS = "http://www.w3.org/2000/svg";
+  const PLOTLY_DEFAULT_CONFIG = { responsive: true, displayModeBar: false };
+  const PLOTLY_DEFAULT_LAYOUT = { paper_bgcolor: "#ffffff", plot_bgcolor: "#ffffff" };
+  const PLOTLY_BOTTOM_LEGEND = { orientation: "h", x: 0, y: -0.2, yanchor: "top" };
+  const PLOTLY_BOTTOM_LEGEND_MARGIN = 88;
 
   function resolve(target) {
     if (typeof target === "string") {
@@ -700,6 +1375,30 @@ input[type="range"] {
     return node ? [...node.querySelectorAll(selector)] : [];
   }
 
+  function isPlainObject(value) {
+    return value !== null && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function mergeObjects(...sources) {
+    const result = {};
+    sources.forEach((source) => {
+      if (!isPlainObject(source)) {
+        return;
+      }
+      Object.entries(source).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          result[key] = value.slice();
+        } else if (isPlainObject(value)) {
+          const currentValue = isPlainObject(result[key]) ? result[key] : {};
+          result[key] = mergeObjects(currentValue, value);
+        } else {
+          result[key] = value;
+        }
+      });
+    });
+    return result;
+  }
+
   function formatNumber(value, digits = 4) {
     return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
   }
@@ -720,6 +1419,38 @@ input[type="range"] {
 
   function clamp(value, minValue, maxValue) {
     return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function plotConfig(overrides = {}) {
+    return mergeObjects(PLOTLY_DEFAULT_CONFIG, overrides);
+  }
+
+  function plotLayout(options = {}) {
+    const { legendBottom = false, ...rest } = options;
+    const layout = mergeObjects(PLOTLY_DEFAULT_LAYOUT, rest);
+    if (!legendBottom) {
+      return layout;
+    }
+
+    const legendOptions = legendBottom === true ? {} : mergeObjects({}, legendBottom);
+    const minBottom = Number.isFinite(Number(legendOptions.minBottom))
+      ? Number(legendOptions.minBottom)
+      : PLOTLY_BOTTOM_LEGEND_MARGIN;
+    delete legendOptions.minBottom;
+
+    layout.legend = mergeObjects(PLOTLY_BOTTOM_LEGEND, layout.legend, legendOptions);
+    const margin = isPlainObject(layout.margin) ? { ...layout.margin } : {};
+    const currentBottom = Number.isFinite(Number(margin.b)) ? Number(margin.b) : 0;
+    margin.b = Math.max(currentBottom, minBottom);
+    layout.margin = margin;
+    return layout;
+  }
+
+  function renderPlot(target, traces, layout = {}, config = {}) {
+    if (typeof Plotly === "undefined" || typeof Plotly.react !== "function") {
+      throw new Error("Plotly is not available on this page.");
+    }
+    return Plotly.react(resolve(target), traces, plotLayout(layout), plotConfig(config));
   }
 
   function renderItems(target, items, options = {}) {
@@ -785,9 +1516,14 @@ input[type="range"] {
     createHtml,
     formatFixed,
     formatNumber,
+    isPlainObject,
+    mergeObjects,
+    plotConfig,
+    plotLayout,
     query,
     queryAll,
     readNumber,
+    renderPlot,
     renderItems,
     renderLines,
     renderList,
@@ -810,12 +1546,12 @@ const historyPlot = Demo.byId("historyPlot");
 const iterationRange = Demo.byId("iterationRange");
 const livingRewardRange = Demo.byId("livingRewardRange");
 const gammaRange = Demo.byId("gammaRange");
-const slipRange = Demo.byId("slipRange");
 const prevBtn = Demo.byId("prevBtn");
 const nextBtn = Demo.byId("nextBtn");
 const jumpBtn = Demo.byId("jumpBtn");
 const resetBtn = Demo.byId("resetBtn");
 
+const SLIP = 0.10; // moves slip sideways this often (fixed)
 const ROWS = 3;
 const COLS = 4;
 const START_KEY = "0,2";
@@ -1000,7 +1736,7 @@ function formatSigned(value) {
 function rebuildHistory() {
   const gamma = Number(gammaRange.value);
   const livingReward = Number(livingRewardRange.value);
-  const slip = Number(slipRange.value);
+  const slip = SLIP;
   uiState.history = computeHistory(gamma, livingReward, slip);
   iterationRange.max = String(uiState.history.length - 1);
   const current = Math.min(Number(iterationRange.value), uiState.history.length - 1);
@@ -1040,7 +1776,7 @@ function renderGrid(snapshot) {
           <div class="demo-badge-row">
             <div class="demo-badge">Terminal</div>
           </div>
-          <div class="demo-grid-meta">Reward on entry; no further backups after termination.</div>
+          <div class="demo-grid-meta">You get this reward on entry, then the run ends.</div>
         `;
         gridworld.appendChild(cell);
         continue;
@@ -1061,7 +1797,7 @@ function renderGrid(snapshot) {
         <div class="demo-badge-row">
           ${badges.map((badge) => `<div class="demo-badge">${badge}</div>`).join("")}
         </div>
-        <div class="demo-grid-meta">Greedy action under V_${snapshot.iteration}: ${ACTION_BY_KEY[actionKey].label}</div>
+        <div class="demo-grid-meta">Best move so far: ${ACTION_BY_KEY[actionKey].label}</div>
       `;
       cell.addEventListener("click", () => {
         uiState.selectedKey = key;
@@ -1075,7 +1811,7 @@ function renderGrid(snapshot) {
 function renderActionPlot(snapshot) {
   const qValues = snapshot.qByState[uiState.selectedKey];
   const bestAction = snapshot.policy[uiState.selectedKey];
-  Plotly.react(
+  Demo.renderPlot(
     actionPlot,
     [
       {
@@ -1090,10 +1826,8 @@ function renderActionPlot(snapshot) {
     ],
     {
       margin: { l: 52, r: 16, t: 22, b: 42 },
-      paper_bgcolor: "#ffffff",
-      plot_bgcolor: "#ffffff",
-      xaxis: { title: "candidate action" },
-      yaxis: { title: "one-step Bellman backup", zerolinecolor: "#c7d2e0" },
+      xaxis: { title: "move" },
+      yaxis: { title: "how good this move looks", zerolinecolor: "#c7d2e0" },
       shapes: [
         {
           type: "line",
@@ -1108,15 +1842,14 @@ function renderActionPlot(snapshot) {
         {
           x: 3.3,
           y: snapshot.nextValues[uiState.selectedKey],
-          text: `V_${snapshot.iteration + 1}(s)`,
+          text: "new value",
           showarrow: false,
           xanchor: "right",
           yanchor: "bottom",
           font: { size: 11, color: "#111827" },
         },
       ],
-    },
-    { responsive: true, displayModeBar: false }
+    }
   );
 }
 
@@ -1125,7 +1858,7 @@ function renderHistoryPlot() {
   const selectedValues = uiState.history.map((item) => item.values[uiState.selectedKey]);
   const deltas = uiState.history.map((item) => item.delta);
   const currentIteration = Number(iterationRange.value);
-  Plotly.react(
+  Demo.renderPlot(
     historyPlot,
     [
       {
@@ -1134,8 +1867,8 @@ function renderHistoryPlot() {
         y: deltas,
         marker: { color: "rgba(148, 163, 184, 0.5)" },
         yaxis: "y2",
-        name: "max sweep change",
-        hovertemplate: "i=%{x}<br>delta=%{y:.5f}<extra></extra>",
+        name: "biggest change this round",
+        hovertemplate: "round %{x}<br>change=%{y:.5f}<extra></extra>",
       },
       {
         type: "scatter",
@@ -1144,8 +1877,8 @@ function renderHistoryPlot() {
         y: selectedValues,
         line: { color: "#2563eb", width: 3 },
         marker: { size: 7, color: "#2563eb" },
-        name: "selected V_i(s)",
-        hovertemplate: "i=%{x}<br>V_i=%{y:.4f}<extra></extra>",
+        name: "this square's value",
+        hovertemplate: "round %{x}<br>value=%{y:.4f}<extra></extra>",
       },
       {
         type: "scatter",
@@ -1153,20 +1886,17 @@ function renderHistoryPlot() {
         x: [currentIteration],
         y: [selectedValues[currentIteration]],
         marker: { size: 11, color: "#ef4444", line: { color: "#7f1d1d", width: 1 } },
-        name: "current iteration",
-        hovertemplate: "current i=%{x}<br>V_i=%{y:.4f}<extra></extra>",
+        name: "current round",
+        hovertemplate: "current round %{x}<br>value=%{y:.4f}<extra></extra>",
       },
     ],
     {
-      margin: { l: 52, r: 52, t: 22, b: 42 },
-      paper_bgcolor: "#ffffff",
-      plot_bgcolor: "#ffffff",
-      xaxis: { title: "iteration i", dtick: 2 },
-      yaxis: { title: "selected state value" },
-      yaxis2: { title: "max sweep change", overlaying: "y", side: "right" },
-      legend: { orientation: "h", x: 0, y: 1.14 },
-    },
-    { responsive: true, displayModeBar: false }
+      margin: { l: 52, r: 52, t: 22, b: 88 },
+      xaxis: { title: "planning round", dtick: 2 },
+      yaxis: { title: "how good the square is" },
+      yaxis2: { title: "biggest change", overlaying: "y", side: "right" },
+      legendBottom: true,
+    }
   );
 }
 
@@ -1177,25 +1907,24 @@ function renderNotes(snapshot) {
   const sorted = Object.entries(qValues).sort((a, b) => b[1] - a[1]);
   const margin = sorted[0][1] - sorted[1][1];
   Demo.renderLines("noteLines", [
-    `Selected state x=${point.x}, y=${point.y} currently prefers ${ACTION_BY_KEY[bestAction].label}.`,
-    `The next Bellman sweep would set V_${snapshot.iteration + 1}(s) = ${formatSigned(snapshot.nextValues[uiState.selectedKey])}.`,
-    `The gap between the best and second-best action backups is ${margin.toFixed(4)}.`,
-    "Early iterations only know about rewards that are a few transitions away; later sweeps propagate those values farther across the grid.",
+    `This square (x=${point.x}, y=${point.y}) currently picks ${ACTION_BY_KEY[bestAction].label}.`,
+    `Next round, its value becomes ${formatSigned(snapshot.nextValues[uiState.selectedKey])}.`,
+    `The best move beats the runner-up by ${margin.toFixed(4)}.`,
+    "Early rounds only know about rewards a step or two away; later rounds carry those values farther across the grid.",
   ]);
 }
 
 function renderStats(snapshot) {
   const currentIteration = Number(iterationRange.value);
   const gamma = Number(gammaRange.value);
-  const slip = Number(slipRange.value);
   const livingReward = Number(livingRewardRange.value);
   Demo.renderLines("statLines", [
-    `Displayed table: V_${currentIteration}`,
-    `Current selected-state value: ${formatSigned(snapshot.values[uiState.selectedKey])}`,
-    `Next-sweep value for the selected state: ${formatSigned(snapshot.nextValues[uiState.selectedKey])}`,
-    `Max absolute change on the next sweep: ${snapshot.delta.toExponential(3)}`,
-    `Gamma = ${gamma.toFixed(2)}, living reward = ${formatSigned(livingReward)}, slip = ${slip.toFixed(2)}`,
-    `Convergence status: ${snapshot.delta < 1e-4 ? "nearly converged" : "still propagating value"}`,
+    `Planning round: ${currentIteration}`,
+    `This square's value now: ${formatSigned(snapshot.values[uiState.selectedKey])}`,
+    `Its value next round: ${formatSigned(snapshot.nextValues[uiState.selectedKey])}`,
+    `Biggest change coming next round: ${snapshot.delta.toFixed(4)}`,
+    `Future weight ${gamma.toFixed(2)}, step cost ${formatSigned(livingReward)}`,
+    `Status: ${snapshot.delta < 1e-4 ? "settled" : "still spreading"}`,
   ]);
 }
 
@@ -1215,7 +1944,6 @@ function init() {
     { range: "iterationRange", output: "iterationValue", formatter: (value) => value },
     { range: "livingRewardRange", output: "livingRewardValue", formatter: (value) => formatSigned(Number(value)) },
     { range: "gammaRange", output: "gammaValue", formatter: (value) => Number(value).toFixed(2) },
-    { range: "slipRange", output: "slipValue", formatter: (value) => Number(value).toFixed(2) },
   ]);
 
   iterationRange.addEventListener("input", render);
@@ -1224,10 +1952,6 @@ function init() {
     render();
   });
   gammaRange.addEventListener("input", () => {
-    rebuildHistory();
-    render();
-  });
-  slipRange.addEventListener("input", () => {
     rebuildHistory();
     render();
   });
@@ -1247,7 +1971,6 @@ function init() {
     iterationRange.value = "0";
     livingRewardRange.value = "-0.04";
     gammaRange.value = "0.92";
-    slipRange.value = "0.10";
     uiState.selectedKey = START_KEY;
     rebuildHistory();
     render();

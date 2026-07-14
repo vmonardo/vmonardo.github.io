@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Noise To Data Map</title>
+    <title>Noise to Data: The Learned Transformation</title>
     <style>
       :root {
   --bg: #f4f6f9;
@@ -271,6 +271,860 @@ input[type="range"] {
   min-height: var(--demo-plot-min-height, 280px);
 }
 
+.demo-inspector-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-inspector-main-plot {
+  min-height: var(--demo-inspector-main-height, 560px);
+}
+
+.demo-inspector-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-inspector-support-plot {
+  min-height: var(--demo-inspector-support-height, 280px);
+}
+
+.demo-text-inspector-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-document-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: #f8fafc;
+}
+
+.demo-document-source {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-document-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-document-meta {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-token-stream {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 6px;
+  line-height: 1.8;
+}
+
+.demo-token {
+  padding: 3px 6px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.demo-token:hover {
+  transform: translateY(-1px);
+  border-color: #cbd5e1;
+}
+
+.demo-token.selected {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
+}
+
+.demo-legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.demo-legend-chip {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: #334155;
+}
+
+.demo-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-metric-columns, 3), minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.demo-metric-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+}
+
+.demo-metric-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.demo-metric-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.demo-workspace-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-workspace-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.demo-workspace-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-workspace-column {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-image-frame {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.demo-image-frame canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-inline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demo-inline-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: #334155;
+}
+
+.demo-inline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.demo-summary-box {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+.demo-summary-box h3 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+}
+
+.demo-summary-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.demo-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-gallery-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-gallery-tile {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff;
+  display: grid;
+  gap: 8px;
+}
+
+.demo-gallery-thumb {
+  width: 100%;
+  border-radius: 10px;
+  background: #eef2f7;
+  border: 1px solid var(--border);
+}
+
+.demo-gallery-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-gallery-meta {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.demo-gallery-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.demo-prediction-list {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-prediction-row {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.demo-prediction-row:hover {
+  transform: translateY(-1px);
+}
+
+.demo-prediction-row.active {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.06);
+  background: #f8fafc;
+}
+
+.demo-prediction-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.demo-prediction-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-prediction-prob {
+  font-size: 13px;
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-prediction-track {
+  height: 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.demo-prediction-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.demo-prediction-note {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.demo-helper-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-helper-pill {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.demo-practice-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-prompt-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-section-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-section-copy {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.demo-answer-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-answer-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-answer-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-answer-field label {
+  font-size: 13px;
+}
+
+.demo-answer-field input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.demo-answer-field input.correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.demo-answer-field input.incorrect {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.demo-small-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-report-stage {
+  padding: 12px;
+}
+
+.demo-report-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-report-columns, 2), minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-report-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-report-card h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-report-card h3 {
+  margin: 12px 0 8px 0;
+  font-size: 16px;
+}
+
+.demo-report-textarea {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+.demo-report-input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-report-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.demo-report-row label {
+  font-size: 13px;
+}
+
+.demo-report-row .demo-report-input {
+  width: auto;
+}
+
+.demo-report-result {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.demo-report-meta {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.demo-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.demo-report-table th,
+.demo-report-table td {
+  text-align: left;
+  padding: 6px 4px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.demo-report-table th {
+  font-weight: 600;
+}
+
+.demo-report-image-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 12px;
+}
+
+.demo-report-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+}
+
+.demo-canvas-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-canvas-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-canvas-columns, 2), minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-canvas-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-canvas-card h2,
+.demo-canvas-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-canvas-note {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.demo-canvas-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-canvas {
+  width: 100%;
+  max-width: var(--demo-canvas-max-width, 260px);
+  aspect-ratio: 1 / 1;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  image-rendering: pixelated;
+}
+
+.demo-image-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-image-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.demo-image-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.demo-image-card {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-image-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.demo-image-stack {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.demo-image-stack img,
+.demo-image-stack canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-image-stack img {
+  object-fit: cover;
+}
+
+.demo-image-stack canvas {
+  pointer-events: none;
+}
+
+.demo-mini-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-mini-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #f8fafc;
+}
+
+.demo-mini-label {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.demo-mini-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.demo-mini-note {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.demo-stage-pad {
+  padding: 12px;
+}
+
+.demo-single-plot {
+  min-height: var(--demo-single-plot-height, 620px);
+}
+
+.demo-pre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #334155;
+}
+
+.demo-visual-stack {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-surface-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-surface-head {
+  padding: 12px 14px 0;
+}
+
+.demo-surface-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.demo-surface-copy {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-surface-body {
+  padding: 14px;
+}
+
+.demo-gridworld {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-grid-cell {
+  min-height: 120px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 6px;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.demo-grid-cell:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+}
+
+.demo-grid-cell.selected {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.demo-grid-cell.wall {
+  background: #1f2937;
+  color: #fff;
+  cursor: default;
+}
+
+.demo-grid-cell.terminal.good {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.demo-grid-cell.terminal.bad {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.demo-grid-coord {
+  font-size: 11px;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.demo-grid-cell.wall .demo-grid-coord {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.demo-grid-value {
+  font-size: 24px;
+  font-weight: 700;
+  align-self: center;
+}
+
+.demo-grid-policy {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.demo-grid-meta {
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.demo-grid-cell.wall .demo-grid-meta {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.demo-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.demo-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.84);
+  color: #1f2937;
+}
+
+.demo-route-chip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-legend-item {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid var(--border);
+}
+
+.demo-action-summary {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.demo-action-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 72px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.demo-action-label {
+  font-weight: 700;
+  color: #0f172a;
+  text-align: center;
+}
+
+.demo-bar-track {
+  height: 12px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.demo-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.demo-bar-value {
+  font-size: 12px;
+  color: #475569;
+  text-align: right;
+}
+
 @media (max-width: 640px) {
   .demo-button-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -280,8 +1134,49 @@ input[type="range"] {
     grid-template-columns: 1fr;
   }
 }
+
+@media (max-width: 920px) {
+  .demo-inspector-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .demo-metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-workspace-main-grid,
+  .demo-workspace-support-grid,
+  .demo-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-answer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-report-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-canvas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-image-compare-grid,
+  .demo-image-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .demo-gridworld {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
       .noise-stage {
-  --demo-plot-min-height: 520px;
+  --demo-plot-min-height: 460px;
 }
 
 .noise-plots {
@@ -307,44 +1202,44 @@ input[type="range"] {
     </div>
   </section>
   <aside class="demo-panel">
-    <h1>Noise To Data Map</h1>
-    <div class="demo-howto">A simple latent noise variable is sampled first, then a parametric map turns that simple noise into a structured data point.<div class="demo-callout"><strong>z ~ N(0, I)</strong>: sample a simple noise vector.<br><strong>x = g<sub>&theta;</sub>(z)</strong>: pass it through a learned map.<br>The parameters <strong>&theta;</strong> are fixed in this demo, but in a real generative model they would be learned from data.</div></div>
+    <h1>Noise to Data: The Learned Transformation</h1>
+    <div class="demo-howto">Start from simple random noise, then apply a transformation the model learns. Slide training up and watch the noise reshape into data.<div class="demo-callout"><strong>Left</strong>: simple random noise (the same every time).<br><strong>Right</strong>: the noise after the transformation.<br>The warped grid shows how the transformation bends space. In symbols: data <strong>x = g(z)</strong> from noise <strong>z</strong>.</div></div>
     <div class="demo-controls" style="--demo-control-columns: 2;">
       <div class="demo-control demo-field">
-        <label class="demo-control-label" for="mapSelect">Map g_theta</label>
+        <label class="demo-control-label" for="mapSelect">Data shape to learn</label>
         <select id="mapSelect">
-          <option value="affine" selected="selected">Affine map</option>
-          <option value="ring">Ring map</option>
-          <option value="split">Split-into-clusters map</option>
-          <option value="spiral">Spiral map</option>
+          <option value="ring" selected="selected">Ring</option>
+          <option value="split">Two clusters</option>
+          <option value="spiral">Spiral</option>
+          <option value="affine">Stretched blob</option>
         </select>
       </div>
       <div class="demo-control demo-field">
-        <label class="demo-control-label demo-slider-label" for="sampleCountRange"><span>Number of sampled z points</span><span id="sampleCountValue" class="demo-slider-value"></span></label>
-        <input id="sampleCountRange" type="range" value="260" min="80" max="700" step="20">
+        <label class="demo-control-label demo-slider-label" for="trainRange"><span>Training progress</span><span id="trainValue" class="demo-slider-value"></span></label>
+        <input id="trainRange" type="range" value="100" min="0" max="100" step="1">
       </div>
       <div class="demo-control demo-field">
-        <label class="demo-control-label demo-slider-label" for="highlightRange"><span>Highlighted sample index</span><span id="highlightValue" class="demo-slider-value"></span></label>
-        <input id="highlightRange" type="range" value="0" min="0" max="259" step="1">
+        <label class="demo-control-label demo-slider-label" for="sampleCountRange"><span>Number of noise points</span><span id="sampleCountValue" class="demo-slider-value"></span></label>
+        <input id="sampleCountRange" type="range" value="240" min="80" max="600" step="20">
       </div>
     </div>
     <div class="demo-button-row" style="--demo-button-columns: 2;">
-      <button id="resampleBtn" type="button">Resample z</button>
-      <button id="nextPointBtn" type="button">Next highlighted point</button>
+      <button id="learnBtn" type="button">▶ Watch it learn</button>
+      <button id="resampleBtn" type="button">New noise</button>
     </div>
     <div class="demo-card">
       <h3>What To Notice</h3>
       <div >
     <div id="explanationLines" class="demo-lines"></div>
     <div class="demo-pill-row">
-      <div class="demo-pill">Latent noise is simple</div>
-      <div class="demo-pill">Map is parametric</div>
-      <div class="demo-pill">Output can look structured</div>
+      <div class="demo-pill">Noise stays simple</div>
+      <div class="demo-pill">The transformation is learned</div>
+      <div class="demo-pill">Grid shows space bending</div>
     </div>
     </div>
     </div>
     <div class="demo-card">
-      <h3>Highlighted Sample</h3>
+      <h3>Right Now</h3>
       <div id="statLines" class="demo-lines"></div>
     </div>
   </aside>
@@ -353,11 +1248,11 @@ input[type="range"] {
   <div class="discussion-card">
     <h3>Discussion Questions</h3>
     <ul>
-      <li>What stays simple about the latent variable z even when the output distribution x becomes complicated?</li>
-<li>How does the mapping x = g_theta(z) change the geometry of the samples?</li>
-<li>What are the roles of z, x, and the parameters theta in this demo?</li>
-<li>Why is this a generative view of modeling rather than a classifier?</li>
-<li>Which maps seem able to create more structured outputs from the same simple latent noise?</li>
+      <li>At 0% training the output is just the raw noise. What is the transformation actually doing as you slide training up?</li>
+<li>Watch the grid: where does it stretch, and where does it fold or pinch? What does that tell you about the data shape?</li>
+<li>Follow one color from the noise plot to the data plot. Why do nearby noise points usually end up near each other?</li>
+<li>The noise on the left is always the same simple blob. So where does all the structure on the right come from?</li>
+<li>In a real model the transformation is learned from data. What is being adjusted while it 'learns'?</li>
     </ul>
   </div>
 </section>
@@ -367,6 +1262,10 @@ input[type="range"] {
     <script>
       (() => {
   const SVG_NS = "http://www.w3.org/2000/svg";
+  const PLOTLY_DEFAULT_CONFIG = { responsive: true, displayModeBar: false };
+  const PLOTLY_DEFAULT_LAYOUT = { paper_bgcolor: "#ffffff", plot_bgcolor: "#ffffff" };
+  const PLOTLY_BOTTOM_LEGEND = { orientation: "h", x: 0, y: -0.2, yanchor: "top" };
+  const PLOTLY_BOTTOM_LEGEND_MARGIN = 88;
 
   function resolve(target) {
     if (typeof target === "string") {
@@ -454,6 +1353,30 @@ input[type="range"] {
     return node ? [...node.querySelectorAll(selector)] : [];
   }
 
+  function isPlainObject(value) {
+    return value !== null && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function mergeObjects(...sources) {
+    const result = {};
+    sources.forEach((source) => {
+      if (!isPlainObject(source)) {
+        return;
+      }
+      Object.entries(source).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          result[key] = value.slice();
+        } else if (isPlainObject(value)) {
+          const currentValue = isPlainObject(result[key]) ? result[key] : {};
+          result[key] = mergeObjects(currentValue, value);
+        } else {
+          result[key] = value;
+        }
+      });
+    });
+    return result;
+  }
+
   function formatNumber(value, digits = 4) {
     return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
   }
@@ -474,6 +1397,38 @@ input[type="range"] {
 
   function clamp(value, minValue, maxValue) {
     return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function plotConfig(overrides = {}) {
+    return mergeObjects(PLOTLY_DEFAULT_CONFIG, overrides);
+  }
+
+  function plotLayout(options = {}) {
+    const { legendBottom = false, ...rest } = options;
+    const layout = mergeObjects(PLOTLY_DEFAULT_LAYOUT, rest);
+    if (!legendBottom) {
+      return layout;
+    }
+
+    const legendOptions = legendBottom === true ? {} : mergeObjects({}, legendBottom);
+    const minBottom = Number.isFinite(Number(legendOptions.minBottom))
+      ? Number(legendOptions.minBottom)
+      : PLOTLY_BOTTOM_LEGEND_MARGIN;
+    delete legendOptions.minBottom;
+
+    layout.legend = mergeObjects(PLOTLY_BOTTOM_LEGEND, layout.legend, legendOptions);
+    const margin = isPlainObject(layout.margin) ? { ...layout.margin } : {};
+    const currentBottom = Number.isFinite(Number(margin.b)) ? Number(margin.b) : 0;
+    margin.b = Math.max(currentBottom, minBottom);
+    layout.margin = margin;
+    return layout;
+  }
+
+  function renderPlot(target, traces, layout = {}, config = {}) {
+    if (typeof Plotly === "undefined" || typeof Plotly.react !== "function") {
+      throw new Error("Plotly is not available on this page.");
+    }
+    return Plotly.react(resolve(target), traces, plotLayout(layout), plotConfig(config));
   }
 
   function renderItems(target, items, options = {}) {
@@ -539,9 +1494,14 @@ input[type="range"] {
     createHtml,
     formatFixed,
     formatNumber,
+    isPlainObject,
+    mergeObjects,
+    plotConfig,
+    plotLayout,
     query,
     queryAll,
     readNumber,
+    renderPlot,
     renderItems,
     renderLines,
     renderList,
@@ -557,191 +1517,240 @@ input[type="range"] {
 
     </script>
     <script>
-      const Demo = window.DemoRuntime;
+      
+const Demo = window.DemoRuntime;
 const latentPlot = Demo.byId("latentPlot");
 const outputPlot = Demo.byId("outputPlot");
 const mapSelect = Demo.byId("mapSelect");
+const trainRange = Demo.byId("trainRange");
 const sampleCountRange = Demo.byId("sampleCountRange");
-const highlightRange = Demo.byId("highlightRange");
+const learnBtn = Demo.byId("learnBtn");
 const resampleBtn = Demo.byId("resampleBtn");
-const nextPointBtn = Demo.byId("nextPointBtn");
 
-const state = {
-  mapKey: "affine",
-  zSamples: [],
+// cyclic colorscale so the point coloring wraps smoothly around the noise blob
+const CYCLIC = [
+  [0.0, "#e6194B"], [0.17, "#f58231"], [0.33, "#ffe119"], [0.5, "#3cb44b"],
+  [0.67, "#42d4f4"], [0.83, "#4363d8"], [1.0, "#e6194B"],
+];
+
+const RANGE = 5;
+
+const maps = {
+  ring: {
+    name: "Ring",
+    story: "The transformation curls the noise blob into a ring of data.",
+    g: ([z1, z2]) => {
+      const angle = 1.35 * z1;
+      const radius = 2.6 + 0.32 * z2;
+      return [radius * Math.cos(angle), radius * Math.sin(angle)];
+    },
+  },
+  split: {
+    name: "Two clusters",
+    story: "Half of the noise is pushed to one cluster, half to another.",
+    g: ([z1, z2]) => (z1 >= 0
+      ? [2.0 + 0.5 * z1, z2 + 0.2 * z1 * z1]
+      : [-2.0 + 0.5 * z1, z2 - 0.2 * z1 * z1]),
+  },
+  spiral: {
+    name: "Spiral",
+    story: "A twisting transformation winds the noise into a spiral arm.",
+    g: ([z1, z2]) => {
+      const angle = 1.6 * z1 + 0.25 * z2;
+      const radius = 0.8 + 0.42 * (z1 + 2.5) + 0.15 * z2;
+      return [radius * Math.cos(angle), radius * Math.sin(angle)];
+    },
+  },
+  affine: {
+    name: "Stretched blob",
+    story: "A linear transformation only stretches, rotates, and shifts the blob.",
+    g: ([z1, z2]) => [1.5 * z1 + 0.5 * z2, -0.3 * z1 + 1.1 * z2],
+  },
 };
 
-function randn() {
-  let u = 0;
-  let v = 0;
+const state = {
+  mapKey: "ring",
+  z: [],
+  colors: [],
+  timer: null,
+};
+
+function randn(rng) {
+  let u = 0, v = 0;
   while (u === 0) u = Math.random();
   while (v === 0) v = Math.random();
   return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
 }
 
-const maps = {
-  affine: {
-    name: "Affine map",
-    story: "A linear map mainly stretches, rotates, and shifts the simple Gaussian cloud.",
-    transform: ([z1, z2]) => [1.6 * z1 + 0.6 * z2, -0.4 * z1 + 1.2 * z2 + 0.5],
-  },
-  ring: {
-    name: "Ring map",
-    story: "The same simple Gaussian latent noise is turned into a ring-shaped output distribution.",
-    transform: ([z1, z2]) => {
-      const angle = 1.35 * z1;
-      const radius = 2.3 + 0.35 * z2;
-      return [radius * Math.cos(angle), radius * Math.sin(angle)];
-    },
-  },
-  split: {
-    name: "Split-into-clusters map",
-    story: "One half of latent space is sent to one cluster, and the other half is sent to another.",
-    transform: ([z1, z2]) => {
-      if (z1 >= 0) return [1.8 + 0.55 * z1, z2 + 0.25 * z1 * z1];
-      return [-1.8 + 0.55 * z1, z2 - 0.25 * z1 * z1];
-    },
-  },
-  spiral: {
-    name: "Spiral map",
-    story: "A nonlinear map can bend latent noise into a more structured spiral-like manifold.",
-    transform: ([z1, z2]) => {
-      const angle = 1.7 * z1 + 0.25 * z2;
-      const radius = 0.9 + 0.45 * (z1 + 2.5) + 0.15 * z2;
-      return [radius * Math.cos(angle), radius * Math.sin(angle)];
-    },
-  },
-};
-
 function sampleLatent(n) {
-  state.zSamples = Array.from({ length: n }, () => [randn(), randn()]);
+  state.z = Array.from({ length: n }, () => [randn(), randn()]);
+  // color each point by its angle around the origin (0..1), wraps cyclically
+  state.colors = state.z.map((p) => (Math.atan2(p[1], p[0]) + Math.PI) / (2 * Math.PI));
 }
 
-function renderExplanation() {
-  const cfg = maps[state.mapKey];
-  Demo.renderLines("explanationLines", [
-    "Latent distribution: every z point is sampled from the same simple standard normal distribution.",
-    `Map: ${cfg.name}. ${cfg.story}`,
-    "Generative view: sample z first, then compute x = g_theta(z).",
-    "Parametric view: theta refers to the fixed parameters inside the chosen map.",
-  ]);
+function alpha() {
+  return Number(trainRange.value) / 100;
+}
+
+// interpolate identity -> learned map by training progress
+function transform(p) {
+  const a = alpha();
+  const g = maps[state.mapKey].g(p);
+  return [(1 - a) * p[0] + a * g[0], (1 - a) * p[1] + a * g[1]];
+}
+
+// --- reference grid ---------------------------------------------------------
+function gridLines() {
+  const lo = -3, hi = 3, steps = 24, lines = [];
+  for (let c = lo; c <= hi; c++) {
+    const vert = [], horiz = [];
+    for (let k = 0; k <= steps; k++) {
+      const t = lo + (hi - lo) * (k / steps);
+      vert.push([c, t]);
+      horiz.push([t, c]);
+    }
+    lines.push(vert);
+    lines.push(horiz);
+  }
+  return lines;
+}
+const GRID = gridLines();
+
+function gridXY(mapFn) {
+  const x = [], y = [];
+  for (const line of GRID) {
+    for (const p of line) {
+      const q = mapFn ? mapFn(p) : p;
+      x.push(q[0]); y.push(q[1]);
+    }
+    x.push(null); y.push(null);
+  }
+  return { x, y };
+}
+
+function axisLayout(title) {
+  return {
+    margin: { l: 34, r: 16, t: 46, b: 30 },
+    title: { text: title, font: { size: 13 }, x: 0.5, xanchor: "center" },
+    xaxis: { range: [-RANGE, RANGE], zeroline: false, showticklabels: false, showgrid: false },
+    yaxis: { range: [-RANGE, RANGE], zeroline: false, showticklabels: false, showgrid: false,
+             scaleanchor: "x", scaleratio: 1 },
+    showlegend: false,
+  };
 }
 
 function renderPlots() {
-  const cfg = maps[state.mapKey];
-  const xsLatent = state.zSamples.map((point) => point[0]);
-  const ysLatent = state.zSamples.map((point) => point[1]);
-  const outputs = state.zSamples.map((point) => cfg.transform(point));
-  const xsOutput = outputs.map((point) => point[0]);
-  const ysOutput = outputs.map((point) => point[1]);
-  const idx = Math.min(Number(highlightRange.value), state.zSamples.length - 1);
-  const z = state.zSamples[idx];
-  const x = outputs[idx];
-
-  Plotly.react(
+  // latent: straight grid + colored noise
+  const lgrid = gridXY(null);
+  Demo.renderPlot(
     latentPlot,
     [
-      {
-        type: "scatter",
-        mode: "markers",
-        x: xsLatent,
-        y: ysLatent,
-        marker: { size: 7, color: "rgba(37,99,235,0.55)" },
-        name: "Latent z samples",
-      },
-      {
-        type: "scatter",
-        mode: "markers",
-        x: [z[0]],
-        y: [z[1]],
-        marker: { size: 14, color: "#f59e0b", line: { width: 2, color: "#92400e" } },
-        name: "Highlighted z",
-      },
+      { type: "scatter", mode: "lines", x: lgrid.x, y: lgrid.y,
+        line: { color: "rgba(120,120,120,0.28)", width: 1 }, hoverinfo: "skip" },
+      { type: "scatter", mode: "markers", x: state.z.map((p) => p[0]), y: state.z.map((p) => p[1]),
+        marker: { size: 7, color: state.colors, colorscale: CYCLIC, cmin: 0, cmax: 1 },
+        hoverinfo: "skip" },
     ],
-    {
-      title: "Simple latent noise z ~ N(0, I)",
-      margin: { l: 55, r: 20, t: 48, b: 48 },
-      paper_bgcolor: "#ffffff",
-      plot_bgcolor: "#ffffff",
-      xaxis: { title: "z1", range: [-4.2, 4.2] },
-      yaxis: { title: "z2", range: [-4.2, 4.2], scaleanchor: "x" },
-      legend: { orientation: "h", x: 0, y: 1.12 },
-    },
-    { responsive: true, displayModeBar: false }
+    axisLayout("Simple random noise (z)")
   );
 
-  Plotly.react(
+  // output: faint target (fully trained) + warped grid + colored transformed points
+  const target = state.z.map((p) => maps[state.mapKey].g(p));
+  const wgrid = gridXY(transform);
+  const out = state.z.map(transform);
+  Demo.renderPlot(
     outputPlot,
     [
-      {
-        type: "scatter",
-        mode: "markers",
-        x: xsOutput,
-        y: ysOutput,
-        marker: { size: 7, color: "rgba(16,185,129,0.6)" },
-        name: "Output x samples",
-      },
-      {
-        type: "scatter",
-        mode: "markers",
-        x: [x[0]],
-        y: [x[1]],
-        marker: { size: 14, color: "#ef4444", line: { width: 2, color: "#7f1d1d" } },
-        name: "Highlighted x",
-      },
+      { type: "scatter", mode: "markers", x: target.map((p) => p[0]), y: target.map((p) => p[1]),
+        marker: { size: 5, color: "rgba(148,163,184,0.30)" }, hoverinfo: "skip" },
+      { type: "scatter", mode: "lines", x: wgrid.x, y: wgrid.y,
+        line: { color: "rgba(29,63,114,0.35)", width: 1 }, hoverinfo: "skip" },
+      { type: "scatter", mode: "markers", x: out.map((p) => p[0]), y: out.map((p) => p[1]),
+        marker: { size: 7, color: state.colors, colorscale: CYCLIC, cmin: 0, cmax: 1 },
+        hoverinfo: "skip" },
     ],
-    {
-      title: `Structured outputs after x = g_theta(z): ${cfg.name}`,
-      margin: { l: 55, r: 20, t: 48, b: 48 },
-      paper_bgcolor: "#ffffff",
-      plot_bgcolor: "#ffffff",
-      xaxis: { title: "x1", range: [-4.8, 4.8] },
-      yaxis: { title: "x2", range: [-4.8, 4.8], scaleanchor: "x" },
-      legend: { orientation: "h", x: 0, y: 1.12 },
-    },
-    { responsive: true, displayModeBar: false }
+    axisLayout("After the learned transformation")
   );
+}
 
+function renderExplanation() {
+  const a = Number(trainRange.value);
+  let line;
+  if (a <= 2) line = "0% trained: the transformation does nothing yet, so the output is just the raw noise.";
+  else if (a < 55) line = "Partly trained: the transformation is starting to bend the noise toward the data shape.";
+  else if (a < 98) line = "Almost trained: the grid is folding into place and the data shape is emerging.";
+  else line = "Trained: the noise has been reshaped into the data distribution.";
+  Demo.renderLines("explanationLines", [
+    line,
+    maps[state.mapKey].story,
+    "The warped grid is the transformation itself; colors let you follow where each patch of noise goes.",
+  ]);
+}
+
+function renderStats() {
   Demo.renderLines("statLines", [
-    `Highlighted index: ${idx}`,
-    `Latent point z = (${z[0].toFixed(3)}, ${z[1].toFixed(3)})`,
-    `Output point x = (${x[0].toFixed(3)}, ${x[1].toFixed(3)})`,
-    "The same highlighted sample is shown in gold on the left and red on the right.",
+    "Data shape: " + maps[state.mapKey].name,
+    "Training progress: " + trainRange.value + "%",
+    "Noise points: " + state.z.length,
+    "The left plot never changes — only the transformation does.",
   ]);
 }
 
 function render() {
+  Demo.setText("trainValue", trainRange.value + "%");
   Demo.setText("sampleCountValue", sampleCountRange.value);
-  highlightRange.max = String(Math.max(0, state.zSamples.length - 1));
-  if (Number(highlightRange.value) > state.zSamples.length - 1) {
-    highlightRange.value = String(state.zSamples.length - 1);
-  }
-  Demo.setText("highlightValue", highlightRange.value);
   renderExplanation();
   renderPlots();
+  renderStats();
+}
+
+function stopLearn() {
+  if (state.timer) { clearInterval(state.timer); state.timer = null; }
+  learnBtn.textContent = "▶ Watch it learn";
+}
+
+function watchLearn() {
+  if (state.timer) { stopLearn(); return; }
+  trainRange.value = "0";
+  render();
+  learnBtn.textContent = "⏸ Pause";
+  state.timer = setInterval(() => {
+    const next = Number(trainRange.value) + 2;
+    if (next >= 100) { trainRange.value = "100"; render(); stopLearn(); }
+    else { trainRange.value = String(next); render(); }
+  }, 55);
 }
 
 function resample() {
+  stopLearn();
   sampleLatent(Number(sampleCountRange.value));
-  highlightRange.value = "0";
   render();
 }
 
 function init() {
-  mapSelect.addEventListener("change", () => {
-    state.mapKey = mapSelect.value;
-    render();
-  });
+  mapSelect.addEventListener("change", () => { state.mapKey = mapSelect.value; stopLearn(); render(); });
+  trainRange.addEventListener("input", () => { stopLearn(); render(); });
   sampleCountRange.addEventListener("input", resample);
-  highlightRange.addEventListener("input", render);
+  learnBtn.addEventListener("click", watchLearn);
   resampleBtn.addEventListener("click", resample);
-  nextPointBtn.addEventListener("click", () => {
-    const next = (Number(highlightRange.value) + 1) % state.zSamples.length;
-    highlightRange.value = String(next);
-    render();
-  });
-  resample();
+  sampleLatent(Number(sampleCountRange.value));
+  render();
+  nudgeResize();
 }
+
+// Re-fit plots to their containers once the layout settles.
+function nudgeResize() {
+  if (!(window.Plotly && Plotly.relayout)) return;
+  document.querySelectorAll(".demo-plot-frame").forEach((el) => {
+    if (el && el._fullLayout) { try { Plotly.relayout(el, { autosize: true }); } catch (e) {} }
+  });
+}
+if (typeof ResizeObserver !== "undefined") {
+  const ro = new ResizeObserver(() => nudgeResize());
+  document.querySelectorAll(".demo-plot-frame").forEach((el) => ro.observe(el));
+}
+window.addEventListener("load", nudgeResize);
+[0, 150, 400].forEach((t) => setTimeout(nudgeResize, t));
 
 init();
 

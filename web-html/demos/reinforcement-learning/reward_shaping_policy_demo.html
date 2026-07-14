@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Reward Shaping Gridworld</title>
+    <title>How Rewards Shape Behavior</title>
     <style>
       :root {
   --bg: #f4f6f9;
@@ -271,6 +271,646 @@ input[type="range"] {
   min-height: var(--demo-plot-min-height, 280px);
 }
 
+.demo-inspector-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-inspector-main-plot {
+  min-height: var(--demo-inspector-main-height, 560px);
+}
+
+.demo-inspector-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-inspector-support-plot {
+  min-height: var(--demo-inspector-support-height, 280px);
+}
+
+.demo-text-inspector-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-document-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: #f8fafc;
+}
+
+.demo-document-source {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-document-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-document-meta {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-token-stream {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 6px;
+  line-height: 1.8;
+}
+
+.demo-token {
+  padding: 3px 6px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.demo-token:hover {
+  transform: translateY(-1px);
+  border-color: #cbd5e1;
+}
+
+.demo-token.selected {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
+}
+
+.demo-legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.demo-legend-chip {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: #334155;
+}
+
+.demo-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-metric-columns, 3), minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.demo-metric-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+}
+
+.demo-metric-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.demo-metric-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.demo-workspace-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-workspace-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.demo-workspace-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-workspace-column {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-image-frame {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.demo-image-frame canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-inline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demo-inline-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: #334155;
+}
+
+.demo-inline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.demo-summary-box {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+.demo-summary-box h3 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+}
+
+.demo-summary-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.demo-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-gallery-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-gallery-tile {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff;
+  display: grid;
+  gap: 8px;
+}
+
+.demo-gallery-thumb {
+  width: 100%;
+  border-radius: 10px;
+  background: #eef2f7;
+  border: 1px solid var(--border);
+}
+
+.demo-gallery-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-gallery-meta {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.demo-gallery-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.demo-prediction-list {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-prediction-row {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.demo-prediction-row:hover {
+  transform: translateY(-1px);
+}
+
+.demo-prediction-row.active {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.06);
+  background: #f8fafc;
+}
+
+.demo-prediction-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.demo-prediction-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-prediction-prob {
+  font-size: 13px;
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-prediction-track {
+  height: 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.demo-prediction-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.demo-prediction-note {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.demo-helper-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-helper-pill {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.demo-practice-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-prompt-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-section-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-section-copy {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.demo-answer-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-answer-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-answer-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-answer-field label {
+  font-size: 13px;
+}
+
+.demo-answer-field input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.demo-answer-field input.correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.demo-answer-field input.incorrect {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.demo-small-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-report-stage {
+  padding: 12px;
+}
+
+.demo-report-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-report-columns, 2), minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-report-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-report-card h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-report-card h3 {
+  margin: 12px 0 8px 0;
+  font-size: 16px;
+}
+
+.demo-report-textarea {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+.demo-report-input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-report-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.demo-report-row label {
+  font-size: 13px;
+}
+
+.demo-report-row .demo-report-input {
+  width: auto;
+}
+
+.demo-report-result {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.demo-report-meta {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.demo-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.demo-report-table th,
+.demo-report-table td {
+  text-align: left;
+  padding: 6px 4px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.demo-report-table th {
+  font-weight: 600;
+}
+
+.demo-report-image-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 12px;
+}
+
+.demo-report-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+}
+
+.demo-canvas-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-canvas-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-canvas-columns, 2), minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-canvas-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-canvas-card h2,
+.demo-canvas-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-canvas-note {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.demo-canvas-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-canvas {
+  width: 100%;
+  max-width: var(--demo-canvas-max-width, 260px);
+  aspect-ratio: 1 / 1;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  image-rendering: pixelated;
+}
+
+.demo-image-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-image-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.demo-image-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.demo-image-card {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-image-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.demo-image-stack {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.demo-image-stack img,
+.demo-image-stack canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-image-stack img {
+  object-fit: cover;
+}
+
+.demo-image-stack canvas {
+  pointer-events: none;
+}
+
+.demo-mini-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-mini-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #f8fafc;
+}
+
+.demo-mini-label {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.demo-mini-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.demo-mini-note {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+}
+
 .demo-stage-pad {
   padding: 12px;
 }
@@ -495,6 +1135,41 @@ input[type="range"] {
   }
 }
 
+@media (max-width: 920px) {
+  .demo-inspector-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .demo-metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-workspace-main-grid,
+  .demo-workspace-support-grid,
+  .demo-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-answer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-report-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-canvas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-image-compare-grid,
+  .demo-image-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 700px) {
   .demo-gridworld {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -514,29 +1189,29 @@ input[type="range"] {
     <div class="demo-visual-stack reward-gridworld-visuals">
       <section class="demo-surface-card">
         <div class="demo-surface-head">
-          <h2>Optimal Policy In The Stochastic Gridworld</h2>
+          <h2>The Best Plan Right Now</h2>
           <p class="demo-surface-copy">
-            Click any non-terminal state to inspect its action-values. The numbers are
-            converged state-values from value iteration; the arrows show the greedy policy.
+            Click any square to see how good each move is. The number is how good the square is, and
+            the arrow is the best move from it.
           </p>
         </div>
         <div class="demo-surface-body">
           <div id="gridworld" class="demo-gridworld"></div>
           <div class="demo-legend">
-            <div class="demo-legend-item">Green terminal: +1 reward</div>
-            <div class="demo-legend-item">Red terminal: -1 reward</div>
-            <div class="demo-legend-item">Black badge: deterministic greedy route from start</div>
-            <div class="demo-legend-item">Background tint: higher value means better long-run utility</div>
+            <div class="demo-legend-item">Green square: the +1 (good) end</div>
+            <div class="demo-legend-item">Red square: the -1 (bad) end</div>
+            <div class="demo-legend-item">Numbered chips: the plan's route from the start</div>
+            <div class="demo-legend-item">Greener background: a better square to be in</div>
           </div>
         </div>
       </section>
 
       <section class="demo-surface-card">
         <div class="demo-surface-head">
-          <h2>Selected State Action-Values</h2>
+          <h2>How Good Each Move Is (Selected Square)</h2>
           <p class="demo-surface-copy">
-            These are the expected returns of taking one action now and behaving
-            optimally afterward. The highest bar determines the policy arrow.
+            How good each move is from this square, assuming you play well afterward. The longest bar is
+            the move the arrow picks.
           </p>
         </div>
         <div class="demo-surface-body">
@@ -549,33 +1224,29 @@ input[type="range"] {
     </div>
   </section>
   <aside class="demo-panel">
-    <h1>Reward Shaping Gridworld</h1>
-    <div class="demo-howto">This demo mirrors the chapter's stochastic navigation example. The transition model is fixed except for slip probability; what changes most dramatically is the reward shaping. A harsher living penalty pushes the policy to end the episode quickly, even if that means accepting more risk near the negative terminal.</div>
+    <h1>How Rewards Shape Behavior</h1>
+    <div class="demo-howto">Same grid, same +1 and -1 ends. The one thing you change is the reward. A bigger cost per step pushes the plan to finish fast, even if that means passing closer to the -1 square.<div class="demo-callout">Moves slip sideways about 1 time in 10, so a good plan has to leave a little room for error.</div></div>
     <div class="demo-controls" style="--demo-control-columns: 2;">
       <div class="demo-control demo-field">
-        <label class="demo-control-label demo-slider-label" for="livingRewardRange"><span>Living reward</span><span id="livingRewardValue" class="demo-slider-value"></span></label>
+        <label class="demo-control-label demo-slider-label" for="livingRewardRange"><span>Cost of each step</span><span id="livingRewardValue" class="demo-slider-value"></span></label>
         <input id="livingRewardRange" type="range" value="-0.04" min="-0.4" max="0.05" step="0.01">
       </div>
       <div class="demo-control demo-field">
-        <label class="demo-control-label demo-slider-label" for="gammaRange"><span>Discount factor gamma</span><span id="gammaValue" class="demo-slider-value"></span></label>
+        <label class="demo-control-label demo-slider-label" for="gammaRange"><span>How much the future counts</span><span id="gammaValue" class="demo-slider-value"></span></label>
         <input id="gammaRange" type="range" value="0.92" min="0.5" max="0.99" step="0.01">
-      </div>
-      <div class="demo-control demo-field">
-        <label class="demo-control-label demo-slider-label" for="slipRange"><span>Orthogonal slip probability</span><span id="slipValue" class="demo-slider-value"></span></label>
-        <input id="slipRange" type="range" value="0.1" min="0.0" max="0.25" step="0.01">
       </div>
     </div>
     <div class="demo-button-row" style="--demo-button-columns: 3;">
-      <button id="smallPenaltyBtn" type="button">Small penalty</button>
-      <button id="largePenaltyBtn" type="button">Large penalty</button>
-      <button id="resetBtn" type="button">Chapter reset</button>
+      <button id="smallPenaltyBtn" type="button">Small step cost</button>
+      <button id="largePenaltyBtn" type="button">Big step cost</button>
+      <button id="resetBtn" type="button">Reset</button>
     </div>
     <div class="demo-card">
-      <h3>Policy Story</h3>
+      <h3>What the Plan Does</h3>
       <div id="noteLines" class="demo-lines"></div>
     </div>
     <div class="demo-card">
-      <h3>Current Solve Summary</h3>
+      <h3>The Numbers Right Now</h3>
       <div id="statLines" class="demo-lines"></div>
     </div>
   </aside>
@@ -584,11 +1255,11 @@ input[type="range"] {
   <div class="discussion-card">
     <h3>Discussion Questions</h3>
     <ul>
-      <li>Why can changing only the living reward produce a different optimal policy even though the terminal rewards stay fixed?</li>
-<li>How does stochasticity make the shortest geometric path different from the highest-value policy?</li>
-<li>Which states become more valuable when gamma increases, and why?</li>
-<li>Why is a route that passes near the -1 terminal sometimes still optimal?</li>
-<li>If you were designing a real robot reward function, what unintended behavior would you worry about here?</li>
+      <li>Changing only the step cost (not the +1 or -1 ends) can flip the best route. Why?</li>
+<li>Because moves sometimes slip, the shortest path isn't always the best one. Why?</li>
+<li>When you make the future count more, which squares become more valuable, and why?</li>
+<li>Why is a route that passes close to the -1 square sometimes still the best choice?</li>
+<li>If you set the rewards for a real robot, what accidental behavior would you watch out for here?</li>
     </ul>
   </div>
 </section>
@@ -598,6 +1269,10 @@ input[type="range"] {
     <script>
       (() => {
   const SVG_NS = "http://www.w3.org/2000/svg";
+  const PLOTLY_DEFAULT_CONFIG = { responsive: true, displayModeBar: false };
+  const PLOTLY_DEFAULT_LAYOUT = { paper_bgcolor: "#ffffff", plot_bgcolor: "#ffffff" };
+  const PLOTLY_BOTTOM_LEGEND = { orientation: "h", x: 0, y: -0.2, yanchor: "top" };
+  const PLOTLY_BOTTOM_LEGEND_MARGIN = 88;
 
   function resolve(target) {
     if (typeof target === "string") {
@@ -685,6 +1360,30 @@ input[type="range"] {
     return node ? [...node.querySelectorAll(selector)] : [];
   }
 
+  function isPlainObject(value) {
+    return value !== null && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function mergeObjects(...sources) {
+    const result = {};
+    sources.forEach((source) => {
+      if (!isPlainObject(source)) {
+        return;
+      }
+      Object.entries(source).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          result[key] = value.slice();
+        } else if (isPlainObject(value)) {
+          const currentValue = isPlainObject(result[key]) ? result[key] : {};
+          result[key] = mergeObjects(currentValue, value);
+        } else {
+          result[key] = value;
+        }
+      });
+    });
+    return result;
+  }
+
   function formatNumber(value, digits = 4) {
     return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
   }
@@ -705,6 +1404,38 @@ input[type="range"] {
 
   function clamp(value, minValue, maxValue) {
     return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function plotConfig(overrides = {}) {
+    return mergeObjects(PLOTLY_DEFAULT_CONFIG, overrides);
+  }
+
+  function plotLayout(options = {}) {
+    const { legendBottom = false, ...rest } = options;
+    const layout = mergeObjects(PLOTLY_DEFAULT_LAYOUT, rest);
+    if (!legendBottom) {
+      return layout;
+    }
+
+    const legendOptions = legendBottom === true ? {} : mergeObjects({}, legendBottom);
+    const minBottom = Number.isFinite(Number(legendOptions.minBottom))
+      ? Number(legendOptions.minBottom)
+      : PLOTLY_BOTTOM_LEGEND_MARGIN;
+    delete legendOptions.minBottom;
+
+    layout.legend = mergeObjects(PLOTLY_BOTTOM_LEGEND, layout.legend, legendOptions);
+    const margin = isPlainObject(layout.margin) ? { ...layout.margin } : {};
+    const currentBottom = Number.isFinite(Number(margin.b)) ? Number(margin.b) : 0;
+    margin.b = Math.max(currentBottom, minBottom);
+    layout.margin = margin;
+    return layout;
+  }
+
+  function renderPlot(target, traces, layout = {}, config = {}) {
+    if (typeof Plotly === "undefined" || typeof Plotly.react !== "function") {
+      throw new Error("Plotly is not available on this page.");
+    }
+    return Plotly.react(resolve(target), traces, plotLayout(layout), plotConfig(config));
   }
 
   function renderItems(target, items, options = {}) {
@@ -770,9 +1501,14 @@ input[type="range"] {
     createHtml,
     formatFixed,
     formatNumber,
+    isPlainObject,
+    mergeObjects,
+    plotConfig,
+    plotLayout,
     query,
     queryAll,
     readNumber,
+    renderPlot,
     renderItems,
     renderLines,
     renderList,
@@ -794,11 +1530,11 @@ const actionSummary = Demo.byId("actionSummary");
 const actionBars = Demo.byId("actionBars");
 const livingRewardRange = Demo.byId("livingRewardRange");
 const gammaRange = Demo.byId("gammaRange");
-const slipRange = Demo.byId("slipRange");
 const smallPenaltyBtn = Demo.byId("smallPenaltyBtn");
 const largePenaltyBtn = Demo.byId("largePenaltyBtn");
 const resetBtn = Demo.byId("resetBtn");
 
+const SLIP = 0.10; // moves slip sideways this often (fixed)
 const ROWS = 3;
 const COLS = 4;
 const START_KEY = "0,2";
@@ -1001,7 +1737,7 @@ function routeNarrative(route) {
     const point = pointFrom(key);
     return Math.abs(point.x - badPoint.x) + Math.abs(point.y - badPoint.y) === 1;
   });
-  return nearPenalty ? "risky shortcut near the -1 terminal" : "safer detour that stays away from the -1 terminal";
+  return nearPenalty ? "risky shortcut that passes close to the -1 square" : "safer detour that stays away from the -1 square";
 }
 
 function renderGrid(solution, livingReward) {
@@ -1039,7 +1775,7 @@ function renderGrid(solution, livingReward) {
           <div class="demo-badge-row">
             <div class="demo-badge">Terminal</div>
           </div>
-          <div class="demo-grid-meta">Reward is collected on entry, then the episode ends.</div>
+          <div class="demo-grid-meta">You get this reward on entry, then the run ends.</div>
         `;
         gridworld.appendChild(cell);
         continue;
@@ -1067,7 +1803,7 @@ function renderGrid(solution, livingReward) {
         <div class="demo-badge-row">
           ${badges.map((badge) => `<div class="demo-badge">${badge}</div>`).join("")}
         </div>
-        <div class="demo-grid-meta">Best action: ${ACTION_BY_KEY[actionKey].label}. Living reward ${formatSigned(livingReward)}.</div>
+        <div class="demo-grid-meta">Best move: ${ACTION_BY_KEY[actionKey].label}. Step cost ${formatSigned(livingReward)}.</div>
       `;
 
       cell.addEventListener("click", () => {
@@ -1086,7 +1822,7 @@ function renderActionValues(solution) {
   const bestAction = solution.policy[key];
   Demo.setText(
     "actionSummary",
-    `Selected state x=${point.x}, y=${point.y}. Policy chooses ${ACTION_BY_KEY[bestAction].label} because it has the highest expected discounted return.`
+    `Selected square (x=${point.x}, y=${point.y}). The plan picks ${ACTION_BY_KEY[bestAction].label} because it has the best total value.`
   );
 
   const values = ACTIONS.map((action) => qValues[action.key]);
@@ -1112,35 +1848,33 @@ function renderActionValues(solution) {
 function renderNotes(solution, route) {
   const narrative = routeNarrative(route);
   const startAction = solution.policy[START_KEY];
-  const slip = Number(slipRange.value);
   const gamma = Number(gammaRange.value);
   Demo.renderLines("noteLines", [
-    `From the start state, the policy begins with ${ACTION_BY_KEY[startAction].label}.`,
-    `The greedy deterministic route looks like a ${narrative}.`,
-    `With orthogonal slip ${slip.toFixed(2)}, the policy must trade short paths against the risk of being pushed sideways.`,
-    `Higher gamma = ${gamma.toFixed(2)} makes distant rewards matter more strongly during planning.`,
+    `From the start, the plan's first move is ${ACTION_BY_KEY[startAction].label}.`,
+    `The route it takes is a ${narrative}.`,
+    "Since moves can slip sideways, the plan trades a shorter path against the risk of being pushed the wrong way.",
+    `The more the future counts (now ${gamma.toFixed(2)}), the more far-off rewards pull on the plan.`,
   ]);
 }
 
 function renderStats(solution, route) {
   const startAction = solution.policy[START_KEY];
-  const intendedProb = 1 - 2 * Number(slipRange.value);
+  const intendedProb = 1 - 2 * SLIP;
   const selectedAction = solution.policy[uiState.selectedKey];
   Demo.renderLines("statLines", [
-    `Converged start-state value: ${formatSigned(solution.values[START_KEY])}`,
-    `Greedy action at start: ${ACTION_BY_KEY[startAction].label}`,
-    `Selected state action: ${ACTION_BY_KEY[selectedAction].label}`,
-    `Route length under deterministic greedy rollout: ${Math.max(0, route.length - 1)} moves`,
-    `Intended move probability: ${intendedProb.toFixed(2)}`,
-    `Value iteration sweeps: ${solution.iterations}, final max change: ${solution.delta.toExponential(2)}`,
+    `How good the start square is: ${formatSigned(solution.values[START_KEY])}`,
+    `Best first move: ${ACTION_BY_KEY[startAction].label}`,
+    `Best move from the selected square: ${ACTION_BY_KEY[selectedAction].label}`,
+    `Route length from start to end: ${Math.max(0, route.length - 1)} moves`,
+    `Chance a move goes as planned: ${(100 * intendedProb).toFixed(0)}%`,
+    `Planning rounds to settle: ${solution.iterations}`,
   ]);
 }
 
 function render() {
   const livingReward = Number(livingRewardRange.value);
   const gamma = Number(gammaRange.value);
-  const slip = Number(slipRange.value);
-  const solution = solveGridworld(gamma, livingReward, slip);
+  const solution = solveGridworld(gamma, livingReward, SLIP);
   const route = greedyRoute(solution.policy);
   renderGrid(solution, livingReward);
   renderActionValues(solution);
@@ -1152,12 +1886,10 @@ function init() {
   Demo.bindRangeDisplays([
     { range: "livingRewardRange", output: "livingRewardValue", formatter: (value) => formatSigned(Number(value)) },
     { range: "gammaRange", output: "gammaValue", formatter: (value) => Number(value).toFixed(2) },
-    { range: "slipRange", output: "slipValue", formatter: (value) => Number(value).toFixed(2) },
   ]);
 
   livingRewardRange.addEventListener("input", render);
   gammaRange.addEventListener("input", render);
-  slipRange.addEventListener("input", render);
   smallPenaltyBtn.addEventListener("click", () => {
     livingRewardRange.value = "-0.01";
     render();
@@ -1169,7 +1901,6 @@ function init() {
   resetBtn.addEventListener("click", () => {
     livingRewardRange.value = "-0.04";
     gammaRange.value = "0.92";
-    slipRange.value = "0.10";
     uiState.selectedKey = START_KEY;
     render();
   });
