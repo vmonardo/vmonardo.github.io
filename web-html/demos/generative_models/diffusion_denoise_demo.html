@@ -1,0 +1,1725 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Diffusion: Add Noise, Then Clean It Up</title>
+    <style>
+      :root {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --border: #d7dee7;
+  --text: #1f2937;
+  --muted: #5b6776;
+  --accent: #2563eb;
+  --accent-2: #f97316;
+  --accent-3: #10b981;
+  --accent-4: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+}
+
+button {
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #f1f5f9;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+.panel {
+  background: var(--panel);
+  border-color: var(--border);
+}
+
+.discussion-section {
+  padding: 16px;
+}
+
+.discussion-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.discussion-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+}
+
+.discussion-card ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+    </style>
+    <style>
+      .demo-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 14px;
+  min-height: 100vh;
+  padding: 14px;
+}
+
+.demo-stage,
+.demo-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.demo-stage {
+  overflow: hidden;
+}
+
+.demo-panel {
+  padding: 14px;
+}
+
+.demo-panel h1 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+}
+
+.demo-howto {
+  margin-bottom: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.demo-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1020px) {
+  .demo-shell {
+    grid-template-columns: 1fr;
+  }
+}
+      .demo-controls {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-control-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.demo-control,
+.demo-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-control-label,
+.demo-field label {
+  display: block;
+  font-size: 13px;
+}
+
+.demo-slider-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.demo-slider-value {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.demo-control input,
+.demo-control select,
+.demo-control textarea,
+.demo-field input,
+.demo-field select,
+.demo-field textarea {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-button-row {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-button-columns, 4), minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.demo-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-card {
+  margin-top: 12px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-callout {
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.demo-card h3 {
+  margin: 0 0 6px 0;
+  font-size: 14px;
+}
+
+.demo-card-body {
+  font-size: 13px;
+  line-height: 1.45;
+  color: #334155;
+}
+
+.demo-lines,
+.demo-list {
+  display: grid;
+  gap: 6px;
+}
+
+.demo-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+.demo-list-item {
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 13px;
+}
+
+.demo-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-pill {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
+.demo-plot-grid {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-plot-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-plot-frame {
+  width: 100%;
+  height: 100%;
+  min-height: var(--demo-plot-min-height, 280px);
+}
+
+.demo-inspector-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-inspector-main-plot {
+  min-height: var(--demo-inspector-main-height, 560px);
+}
+
+.demo-inspector-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-inspector-support-plot {
+  min-height: var(--demo-inspector-support-height, 280px);
+}
+
+.demo-text-inspector-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-document-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  background: #f8fafc;
+}
+
+.demo-document-source {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.demo-document-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-document-meta {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-token-stream {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px 6px;
+  line-height: 1.8;
+}
+
+.demo-token {
+  padding: 3px 6px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+}
+
+.demo-token:hover {
+  transform: translateY(-1px);
+  border-color: #cbd5e1;
+}
+
+.demo-token.selected {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.08);
+}
+
+.demo-legend-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.demo-legend-chip {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: #334155;
+}
+
+.demo-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-metric-columns, 3), minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.demo-metric-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #fff;
+}
+
+.demo-metric-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.demo-metric-value {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.demo-workspace-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-workspace-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.demo-workspace-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-workspace-column {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-image-frame {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.demo-image-frame canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-inline-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.demo-inline-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  font-size: 12px;
+  color: #334155;
+}
+
+.demo-inline-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.demo-summary-box {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+.demo-summary-box h3 {
+  margin: 0 0 8px 0;
+  font-size: 15px;
+}
+
+.demo-summary-line {
+  font-size: 13px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.demo-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-gallery-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-gallery-tile {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  background: #fff;
+  display: grid;
+  gap: 8px;
+}
+
+.demo-gallery-thumb {
+  width: 100%;
+  border-radius: 10px;
+  background: #eef2f7;
+  border: 1px solid var(--border);
+}
+
+.demo-gallery-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 12px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-gallery-meta {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.demo-gallery-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.demo-prediction-list {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-prediction-row {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+  display: grid;
+  gap: 8px;
+  cursor: pointer;
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.demo-prediction-row:hover {
+  transform: translateY(-1px);
+}
+
+.demo-prediction-row.active {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.06);
+  background: #f8fafc;
+}
+
+.demo-prediction-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.demo-prediction-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.demo-prediction-prob {
+  font-size: 13px;
+  color: #334155;
+  font-variant-numeric: tabular-nums;
+}
+
+.demo-prediction-track {
+  height: 8px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.demo-prediction-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #60a5fa, #2563eb);
+}
+
+.demo-prediction-note {
+  font-size: 12px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.demo-helper-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-helper-pill {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.demo-practice-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-prompt-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-section-title {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-section-copy {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.demo-answer-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-answer-columns, 2), minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-answer-field {
+  display: grid;
+  gap: 4px;
+}
+
+.demo-answer-field label {
+  font-size: 13px;
+}
+
+.demo-answer-field input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.demo-answer-field input.correct {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.demo-answer-field input.incorrect {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+.demo-small-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-report-stage {
+  padding: 12px;
+}
+
+.demo-report-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-report-columns, 2), minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-report-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-report-card h2 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-report-card h3 {
+  margin: 12px 0 8px 0;
+  font-size: 16px;
+}
+
+.demo-report-textarea {
+  width: 100%;
+  min-height: 220px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  font-family: inherit;
+}
+
+.demo-report-input {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  font-size: 13px;
+}
+
+.demo-report-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.demo-report-row label {
+  font-size: 13px;
+}
+
+.demo-report-row .demo-report-input {
+  width: auto;
+}
+
+.demo-report-result {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.demo-report-meta {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.demo-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.demo-report-table th,
+.demo-report-table td {
+  text-align: left;
+  padding: 6px 4px;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.demo-report-table th {
+  font-weight: 600;
+}
+
+.demo-report-image-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  padding: 12px;
+}
+
+.demo-report-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+}
+
+.demo-canvas-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-canvas-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--demo-canvas-columns, 2), minmax(0, 1fr));
+  gap: 12px;
+}
+
+.demo-canvas-card {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.demo-canvas-card h2,
+.demo-canvas-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.demo-canvas-note {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.demo-canvas-stack {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-canvas {
+  width: 100%;
+  max-width: var(--demo-canvas-max-width, 260px);
+  aspect-ratio: 1 / 1;
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  image-rendering: pixelated;
+}
+
+.demo-image-stage {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-image-compare-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.demo-image-support-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.demo-image-card {
+  display: grid;
+  gap: 8px;
+}
+
+.demo-image-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #334155;
+}
+
+.demo-image-stack {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e2e8f0;
+}
+
+.demo-image-stack img,
+.demo-image-stack canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.demo-image-stack img {
+  object-fit: cover;
+}
+
+.demo-image-stack canvas {
+  pointer-events: none;
+}
+
+.demo-mini-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.demo-mini-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  background: #f8fafc;
+}
+
+.demo-mini-label {
+  font-size: 11px;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+}
+
+.demo-mini-value {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.demo-mini-note {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.demo-stage-pad {
+  padding: 12px;
+}
+
+.demo-single-plot {
+  min-height: var(--demo-single-plot-height, 620px);
+}
+
+.demo-pre {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: #334155;
+}
+
+.demo-visual-stack {
+  display: grid;
+  gap: 12px;
+  padding: 12px;
+}
+
+.demo-surface-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.demo-surface-head {
+  padding: 12px 14px 0;
+}
+
+.demo-surface-head h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.demo-surface-copy {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.demo-surface-body {
+  padding: 14px;
+}
+
+.demo-gridworld {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.demo-grid-cell {
+  min-height: 120px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  position: relative;
+  cursor: pointer;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  gap: 6px;
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+
+.demo-grid-cell:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+}
+
+.demo-grid-cell.selected {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+
+.demo-grid-cell.wall {
+  background: #1f2937;
+  color: #fff;
+  cursor: default;
+}
+
+.demo-grid-cell.terminal.good {
+  background: #dcfce7;
+  border-color: #86efac;
+}
+
+.demo-grid-cell.terminal.bad {
+  background: #fee2e2;
+  border-color: #fca5a5;
+}
+
+.demo-grid-coord {
+  font-size: 11px;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.demo-grid-cell.wall .demo-grid-coord {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.demo-grid-value {
+  font-size: 24px;
+  font-weight: 700;
+  align-self: center;
+}
+
+.demo-grid-policy {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.demo-grid-meta {
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.demo-grid-cell.wall .demo-grid-meta {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.demo-badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.demo-badge {
+  display: inline-flex;
+  width: fit-content;
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.84);
+  color: #1f2937;
+}
+
+.demo-route-chip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.demo-legend-item {
+  font-size: 12px;
+  border-radius: 999px;
+  padding: 4px 8px;
+  background: #f8fafc;
+  color: #334155;
+  border: 1px solid var(--border);
+}
+
+.demo-action-summary {
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.demo-action-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) 72px;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.demo-action-label {
+  font-weight: 700;
+  color: #0f172a;
+  text-align: center;
+}
+
+.demo-bar-track {
+  height: 12px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.demo-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.demo-bar-value {
+  font-size: 12px;
+  color: #475569;
+  text-align: right;
+}
+
+@media (max-width: 640px) {
+  .demo-button-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .demo-grid-2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 920px) {
+  .demo-inspector-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .demo-metric-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-workspace-main-grid,
+  .demo-workspace-support-grid,
+  .demo-gallery-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-answer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-report-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-canvas-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-image-compare-grid,
+  .demo-image-support-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .demo-gridworld {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+      .diffusion-stage {
+  --demo-plot-min-height: 500px;
+}
+
+.diffusion-plots {
+  grid-template-columns: 1fr;
+}
+
+    </style>
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  </head>
+  <body>
+    <div class="demo-shell">
+  <section class="demo-stage diffusion-stage">
+
+    <div class="demo-plot-grid diffusion-plots">
+      <div class="demo-plot-card"><div id="diffusionPlot" class="demo-plot-frame"></div></div>
+    </div>
+  </section>
+  <aside class="demo-panel">
+    <h1>Diffusion: Add Noise, Then Clean It Up</h1>
+    <div class="demo-howto">Slide the noise up to watch a shape dissolve into static, then clean it up one small step at a time and watch it come back.<div class="demo-callout"><strong>Add noise</strong> is the easy, fixed direction.<br><strong>Clean up</strong> is the hard direction a model has to learn.<br>Colors mark where each point started, so you can see it scatter and return.</div></div>
+    <div class="demo-controls" style="--demo-control-columns: 2;">
+      <div class="demo-control demo-field">
+        <label class="demo-control-label" for="shapeSelect">Shape in the data</label>
+        <select id="shapeSelect">
+          <option value="ring" selected="selected">Ring</option>
+          <option value="moons">Two moons</option>
+          <option value="spiral">Spiral</option>
+          <option value="smile">Smiley face</option>
+        </select>
+      </div>
+      <div class="demo-control demo-field">
+        <label class="demo-control-label demo-slider-label" for="noiseRange"><span>Noise level</span><span id="noiseValue" class="demo-slider-value"></span></label>
+        <input id="noiseRange" type="range" value="0" min="0" max="100" step="2">
+      </div>
+    </div>
+    <div class="demo-button-row" style="--demo-button-columns: 4;">
+      <button id="addBtn" type="button">Add noise</button>
+      <button id="cleanBtn" type="button">Clean up</button>
+      <button id="autoBtn" type="button">Auto clean-up</button>
+      <button id="newBtn" type="button">New sample</button>
+    </div>
+    <div class="demo-card">
+      <h3>What To Notice</h3>
+      <div >
+    <div id="explanationLines" class="demo-lines"></div>
+    <div class="demo-pill-row">
+      <div class="demo-pill">Adding noise is easy</div>
+      <div class="demo-pill">Cleaning up is learned</div>
+      <div class="demo-pill">Many small steps</div>
+    </div>
+    </div>
+    </div>
+    <div class="demo-card">
+      <h3>Right Now</h3>
+      <div id="statLines" class="demo-lines"></div>
+    </div>
+  </aside>
+</div>
+    <section class="discussion-section">
+  <div class="discussion-card">
+    <h3>Discussion Questions</h3>
+    <ul>
+      <li>Adding noise is the easy direction. Why is cleaning noise back up the hard direction a model has to learn?</li>
+<li>Why is it easier to take many small clean-up steps than to jump from full noise to a finished picture in one move?</li>
+<li>At full noise, the starting points look the same for every shape. So where does the final shape actually come from?</li>
+<li>In a real image generator, different starting noise gives different pictures. What plays the role of 'the shape' there?</li>
+<li>If a shape was never in the training data, could the clean-up steps ever rebuild it? Why or why not?</li>
+    </ul>
+  </div>
+</section>
+    <script>
+      window.DEMO_PAYLOAD = {};
+    </script>
+    <script>
+      (() => {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+  const PLOTLY_DEFAULT_CONFIG = { responsive: true, displayModeBar: false };
+  const PLOTLY_DEFAULT_LAYOUT = { paper_bgcolor: "#ffffff", plot_bgcolor: "#ffffff" };
+  const PLOTLY_BOTTOM_LEGEND = { orientation: "h", x: 0, y: -0.2, yanchor: "top" };
+  const PLOTLY_BOTTOM_LEGEND_MARGIN = 88;
+
+  function resolve(target) {
+    if (typeof target === "string") {
+      return document.getElementById(target);
+    }
+    return target;
+  }
+
+  function setAttrs(node, attrs = {}) {
+    Object.entries(attrs).forEach(([key, value]) => {
+      if (value === null || value === undefined) {
+        node.removeAttribute(key);
+        return;
+      }
+      node.setAttribute(key, String(value));
+    });
+    return node;
+  }
+
+  function setText(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.textContent = value;
+    }
+    return node;
+  }
+
+  function setHTML(target, value) {
+    const node = resolve(target);
+    if (node) {
+      node.innerHTML = value;
+    }
+    return node;
+  }
+
+  function create(tagName, attrs = {}, textContent = null) {
+    const node = document.createElementNS(SVG_NS, tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function append(parent, tagName, attrs = {}, textContent = null) {
+    const node = create(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function createHtml(tagName, attrs = {}, textContent = null) {
+    const node = document.createElement(tagName);
+    setAttrs(node, attrs);
+    if (textContent !== null) {
+      node.textContent = textContent;
+    }
+    return node;
+  }
+
+  function appendHtml(parent, tagName, attrs = {}, textContent = null) {
+    const node = createHtml(tagName, attrs, textContent);
+    parent.appendChild(node);
+    return node;
+  }
+
+  function clear(target) {
+    const node = resolve(target);
+    while (node && node.firstChild) {
+      node.removeChild(node.firstChild);
+    }
+    return node;
+  }
+
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function query(selector, root = document) {
+    const node = resolve(root);
+    return node ? node.querySelector(selector) : null;
+  }
+
+  function queryAll(selector, root = document) {
+    const node = resolve(root);
+    return node ? [...node.querySelectorAll(selector)] : [];
+  }
+
+  function isPlainObject(value) {
+    return value !== null && typeof value === "object" && !Array.isArray(value);
+  }
+
+  function mergeObjects(...sources) {
+    const result = {};
+    sources.forEach((source) => {
+      if (!isPlainObject(source)) {
+        return;
+      }
+      Object.entries(source).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          result[key] = value.slice();
+        } else if (isPlainObject(value)) {
+          const currentValue = isPlainObject(result[key]) ? result[key] : {};
+          result[key] = mergeObjects(currentValue, value);
+        } else {
+          result[key] = value;
+        }
+      });
+    });
+    return result;
+  }
+
+  function formatNumber(value, digits = 4) {
+    return Number.isFinite(value) ? Number(value).toFixed(digits) : "?";
+  }
+
+  function formatFixed(value, digits = 2) {
+    const number = Number(value);
+    return Number.isFinite(number) ? number.toFixed(digits) : "?";
+  }
+
+  function readNumber(input, fallback = 0) {
+    const node = resolve(input);
+    if (!node) {
+      return fallback;
+    }
+    const value = Number(node.value);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  function clamp(value, minValue, maxValue) {
+    return Math.max(minValue, Math.min(maxValue, value));
+  }
+
+  function plotConfig(overrides = {}) {
+    return mergeObjects(PLOTLY_DEFAULT_CONFIG, overrides);
+  }
+
+  function plotLayout(options = {}) {
+    const { legendBottom = false, ...rest } = options;
+    const layout = mergeObjects(PLOTLY_DEFAULT_LAYOUT, rest);
+    if (!legendBottom) {
+      return layout;
+    }
+
+    const legendOptions = legendBottom === true ? {} : mergeObjects({}, legendBottom);
+    const minBottom = Number.isFinite(Number(legendOptions.minBottom))
+      ? Number(legendOptions.minBottom)
+      : PLOTLY_BOTTOM_LEGEND_MARGIN;
+    delete legendOptions.minBottom;
+
+    layout.legend = mergeObjects(PLOTLY_BOTTOM_LEGEND, layout.legend, legendOptions);
+    const margin = isPlainObject(layout.margin) ? { ...layout.margin } : {};
+    const currentBottom = Number.isFinite(Number(margin.b)) ? Number(margin.b) : 0;
+    margin.b = Math.max(currentBottom, minBottom);
+    layout.margin = margin;
+    return layout;
+  }
+
+  function renderPlot(target, traces, layout = {}, config = {}) {
+    if (typeof Plotly === "undefined" || typeof Plotly.react !== "function") {
+      throw new Error("Plotly is not available on this page.");
+    }
+    return Plotly.react(resolve(target), traces, plotLayout(layout), plotConfig(config));
+  }
+
+  function renderItems(target, items, options = {}) {
+    const {
+      className = "demo-line",
+      tagName = "div",
+      html = false,
+    } = options;
+    const node = clear(target);
+    if (!node) {
+      return null;
+    }
+    items.forEach((item) => {
+      const row = createHtml(tagName, className ? { class: className } : {});
+      if (html) {
+        row.innerHTML = item;
+      } else {
+        row.textContent = item;
+      }
+      node.appendChild(row);
+    });
+    return node;
+  }
+
+  function renderLines(target, lines, className = "demo-line", html = false) {
+    return renderItems(target, lines, { className, html });
+  }
+
+  function renderList(target, items, className = "demo-list-item", html = false) {
+    return renderItems(target, items, { className, html });
+  }
+
+  function bindRangeDisplay(rangeInput, valueNode, formatter = (value) => value) {
+    const input = resolve(rangeInput);
+    const output = resolve(valueNode);
+    if (!input || !output) {
+      return () => {};
+    }
+    const update = () => {
+      output.textContent = formatter(input.value, input);
+    };
+    input.addEventListener("input", update);
+    update();
+    return update;
+  }
+
+  function bindRangeDisplays(bindings) {
+    return bindings.map((binding) =>
+      bindRangeDisplay(binding.range, binding.output, binding.formatter)
+    );
+  }
+
+  const runtime = {
+    SVG_NS,
+    append,
+    appendHtml,
+    byId,
+    bindRangeDisplay,
+    bindRangeDisplays,
+    clamp,
+    clear,
+    create,
+    createHtml,
+    formatFixed,
+    formatNumber,
+    isPlainObject,
+    mergeObjects,
+    plotConfig,
+    plotLayout,
+    query,
+    queryAll,
+    readNumber,
+    renderPlot,
+    renderItems,
+    renderLines,
+    renderList,
+    resolve,
+    setAttrs,
+    setHTML,
+    setText,
+  };
+
+  window.SvgDemoRuntime = runtime;
+  window.DemoRuntime = runtime;
+})();
+
+    </script>
+    <script>
+      
+const Demo = window.DemoRuntime;
+const diffusionPlot = Demo.byId("diffusionPlot");
+const shapeSelect = Demo.byId("shapeSelect");
+const noiseRange = Demo.byId("noiseRange");
+const addBtn = Demo.byId("addBtn");
+const cleanBtn = Demo.byId("cleanBtn");
+const autoBtn = Demo.byId("autoBtn");
+const newBtn = Demo.byId("newBtn");
+
+const N = 260;
+const STEP = 8; // percent per clean-up / add-noise step
+
+const state = {
+  shape: "ring",
+  clean: [],   // [x, y] original clean points
+  eps: [],     // [x, y] fixed noise directions for each point
+  color: [],   // 0..1 identity color per point
+  timer: null,
+};
+
+function makeRng(seed) {
+  let s = seed >>> 0;
+  return function () { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+}
+function randn(rng) {
+  let u = 0, v = 0;
+  while (u === 0) u = rng();
+  while (v === 0) v = rng();
+  return Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+}
+
+function buildShape(key, rng) {
+  const clean = [], color = [];
+  const jitter = () => randn(rng) * 0.05;
+  if (key === "ring") {
+    for (let i = 0; i < N; i++) {
+      const t = 2 * Math.PI * (i / N);
+      clean.push([2.0 * Math.cos(t) + jitter(), 2.0 * Math.sin(t) + jitter()]);
+      color.push(i / N);
+    }
+  } else if (key === "moons") {
+    for (let i = 0; i < N; i++) {
+      const half = i < N / 2;
+      const t = Math.PI * ((i % (N / 2)) / (N / 2));
+      if (half) clean.push([2.0 * Math.cos(t) - 0.9 + jitter(), 2.0 * Math.sin(t) - 0.7 + jitter()]);
+      else clean.push([2.0 * Math.cos(t) + 0.9 + jitter(), -2.0 * Math.sin(t) + 0.7 + jitter()]);
+      color.push(i / N);
+    }
+  } else if (key === "spiral") {
+    for (let i = 0; i < N; i++) {
+      const t = 3.0 * Math.PI * (i / N);
+      const r = 0.25 + 2.4 * (i / N);
+      clean.push([r * Math.cos(t) + jitter(), r * Math.sin(t) + jitter()]);
+      color.push(i / N);
+    }
+  } else if (key === "smile") {
+    for (let i = 0; i < N; i++) {
+      const u = i / N;
+      if (u < 0.55) {
+        const t = 2 * Math.PI * (u / 0.55);
+        clean.push([2.4 * Math.cos(t) + jitter(), 2.4 * Math.sin(t) + jitter()]);
+      } else if (u < 0.68) {
+        clean.push([-0.95 + jitter() * 2, 0.85 + jitter() * 2]);
+      } else if (u < 0.81) {
+        clean.push([0.95 + jitter() * 2, 0.85 + jitter() * 2]);
+      } else {
+        const t = Math.PI * ((u - 0.81) / 0.19);
+        clean.push([1.25 * Math.cos(Math.PI + t) + jitter(), -0.4 + 0.9 * Math.sin(Math.PI + t) + jitter()]);
+      }
+      color.push(u);
+    }
+  }
+  return { clean, color };
+}
+
+function newSample() {
+  stopAuto();
+  state.seedCounter = ((state.seedCounter || 1) * 1103515245 + 12345) >>> 0;
+  const rng = makeRng(state.seedCounter || 7);
+  const built = buildShape(state.shape, rng);
+  state.clean = built.clean;
+  state.color = built.color;
+  state.eps = state.clean.map(() => [randn(rng), randn(rng)]);
+  render();
+}
+
+function noiseFrac() {
+  return Number(noiseRange.value) / 100;
+}
+
+// Variance-preserving forward step: x_t = sqrt(1-b) * clean + sqrt(b) * noise
+function noisyPoints() {
+  const b = noiseFrac();
+  const a = Math.sqrt(1 - b);
+  const c = Math.sqrt(b);
+  return state.clean.map((p, i) => [a * p[0] + c * state.eps[i][0] * 2.2,
+                                    a * p[1] + c * state.eps[i][1] * 2.2]);
+}
+
+function renderExplanation() {
+  const pct = Number(noiseRange.value);
+  let line;
+  if (pct <= 2) line = "This is clean data — the shape the model is trying to learn to make.";
+  else if (pct < 45) line = "A little noise. The shape is fuzzy but still clearly there.";
+  else if (pct < 85) line = "Lots of noise. The shape is getting buried in static.";
+  else line = "Almost pure static. At full noise every shape starts here — the shape is gone.";
+  Demo.renderLines("explanationLines", [
+    line,
+    "Forward (add noise): a fixed, easy recipe. Reverse (clean up): the hard part a model learns from data.",
+    "Press “Clean up” a few times: each step is a small, easy repair, and together they rebuild the shape.",
+  ]);
+}
+
+function renderPlot() {
+  const pts = noisyPoints();
+  const xs = pts.map((p) => p[0]);
+  const ys = pts.map((p) => p[1]);
+  const cleanXs = state.clean.map((p) => p[0]);
+  const cleanYs = state.clean.map((p) => p[1]);
+
+  Demo.renderPlot(
+    diffusionPlot,
+    [
+      {
+        type: "scatter", mode: "markers", x: cleanXs, y: cleanYs,
+        marker: { size: 5, color: "rgba(148,163,184,0.35)" },
+        name: "where the shape lives", hoverinfo: "skip",
+      },
+      {
+        type: "scatter", mode: "markers", x: xs, y: ys,
+        marker: {
+          size: 8, color: state.color, colorscale: "Viridis",
+          line: { width: 0.5, color: "rgba(255,255,255,0.6)" },
+        },
+        name: "current points", hoverinfo: "skip",
+      },
+    ],
+    {
+      margin: { l: 40, r: 20, t: 20, b: 60 },
+      xaxis: { range: [-4, 4], zeroline: false, showticklabels: false, automargin: true },
+      yaxis: { range: [-3, 3], zeroline: false, showticklabels: false,
+               scaleanchor: "x", scaleratio: 1, automargin: true },
+      legendBottom: true,
+    }
+  );
+}
+
+function renderStats() {
+  const pct = Number(noiseRange.value);
+  Demo.renderLines("statLines", [
+    "Shape: " + shapeSelect.options[shapeSelect.selectedIndex].text,
+    "Noise level: " + pct + "%",
+    pct === 0 ? "State: clean sample" : pct >= 98 ? "State: (almost) pure noise" : "State: partly noised",
+    "Points: " + state.clean.length,
+  ]);
+}
+
+function render() {
+  Demo.setText("noiseValue", noiseRange.value + "%");
+  renderExplanation();
+  renderPlot();
+  renderStats();
+}
+
+function setNoise(pct) {
+  noiseRange.value = String(Math.max(0, Math.min(100, pct)));
+  render();
+}
+
+function stopAuto() {
+  if (state.timer) { clearInterval(state.timer); state.timer = null; autoBtn.textContent = "Auto clean-up"; }
+}
+
+function autoCleanup() {
+  if (state.timer) { stopAuto(); return; }
+  if (Number(noiseRange.value) === 0) setNoise(100);
+  autoBtn.textContent = "Stop";
+  state.timer = setInterval(() => {
+    const next = Number(noiseRange.value) - STEP;
+    if (next <= 0) { setNoise(0); stopAuto(); }
+    else setNoise(next);
+  }, 180);
+}
+
+function init() {
+  shapeSelect.addEventListener("change", () => { state.shape = shapeSelect.value; newSample(); });
+  noiseRange.addEventListener("input", () => { stopAuto(); render(); });
+  addBtn.addEventListener("click", () => { stopAuto(); setNoise(Number(noiseRange.value) + STEP); });
+  cleanBtn.addEventListener("click", () => { stopAuto(); setNoise(Number(noiseRange.value) - STEP); });
+  autoBtn.addEventListener("click", autoCleanup);
+  newBtn.addEventListener("click", () => newSample());
+  newSample();
+  nudgeResize();
+}
+
+// Re-fit the plot to its container once the layout settles (see clustering demo).
+function nudgeResize() {
+  if (!(window.Plotly && Plotly.relayout)) return;
+  document.querySelectorAll(".demo-plot-frame").forEach((el) => {
+    if (el && el._fullLayout) { try { Plotly.relayout(el, { autosize: true }); } catch (e) {} }
+  });
+}
+if (typeof ResizeObserver !== "undefined") {
+  const ro = new ResizeObserver(() => nudgeResize());
+  document.querySelectorAll(".demo-plot-frame").forEach((el) => ro.observe(el));
+}
+window.addEventListener("load", nudgeResize);
+[0, 150, 400].forEach((t) => setTimeout(nudgeResize, t));
+
+init();
+
+    </script>
+  </body>
+</html>
