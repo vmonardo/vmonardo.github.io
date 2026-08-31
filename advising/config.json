@@ -1,0 +1,111 @@
+{
+  "_comment": "Edit this file to change when you are bookable. Keys under 'hours' are ISO weekdays: 1=Monday ... 7=Sunday. Times are local to 'timezone', 24-hour. Set end_date for a window that stays put; clear it (null) to fall back to a rolling horizon_days window. start_date is optional and never shows past days.",
+  "timezone": "America/New_York",
+  "meeting_minutes": 30,
+  "slot_step_minutes": 30,
+  "horizon_days": 11,
+  "start_date": null,
+  "end_date": "2026-09-11",
+  "min_notice_hours": 0,
+  "buffer_minutes": 10,
+  "all_day_blocks": false,
+  "hours": {
+    "1": [
+      [
+        "10:00",
+        "12:00"
+      ],
+      [
+        "13:00",
+        "16:00"
+      ]
+    ],
+    "2": [
+      [
+        "10:00",
+        "12:00"
+      ],
+      [
+        "13:00",
+        "16:00"
+      ]
+    ],
+    "3": [
+      [
+        "10:00",
+        "12:00"
+      ],
+      [
+        "13:00",
+        "16:00"
+      ]
+    ],
+    "4": [
+      [
+        "10:00",
+        "12:00"
+      ],
+      [
+        "13:00",
+        "16:00"
+      ]
+    ],
+    "5": [
+      [
+        "10:00",
+        "12:00"
+      ]
+    ]
+  },
+  "blackout_dates": [
+    "2026-09-07"
+  ],
+  "blackout_ranges": [
+    [
+      "2026-08-31",
+      "13:00",
+      "14:00"
+    ],
+    [
+      "2026-09-01",
+      "15:00",
+      "16:30"
+    ],
+    [
+      "2026-09-03",
+      "10:00",
+      "12:00"
+    ],
+    [
+      "2026-09-03",
+      "14:00",
+      "15:00"
+    ],
+    [
+      "2026-09-08",
+      "14:00",
+      "16:00"
+    ],
+    [
+      "2026-09-09",
+      "15:00",
+      "16:00"
+    ],
+    [
+      "2026-09-10",
+      "14:00",
+      "16:00"
+    ],
+    [
+      "2026-09-11",
+      "10:00",
+      "17:00"
+    ]
+  ],
+  "meeting_title": "Advising: {student} + Vince Monardo",
+  "meeting_location": "24-316",
+  "organizer_name": "Vince Monardo",
+  "organizer_email": "monardo@mit.edu",
+  "allowed_email_domain": "mit.edu",
+  "booking_endpoint": ""
+}

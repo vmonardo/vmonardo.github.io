@@ -1,0 +1,23 @@
+name = "advising-booking"
+main = "src/index.js"
+compatibility_date = "2026-08-01"
+
+[vars]
+SITE_ORIGIN = "https://vmonardo.github.io"
+ORGANIZER_NAME = "Vince Monardo"
+ORGANIZER_EMAIL = "monardo@mit.edu"
+# Must be an address on a domain verified with your mail provider. It cannot be
+# your mit.edu address unless MIT lets you add DNS records for it (it will not).
+SENDER_EMAIL = "advising@example.com"
+MEETING_TITLE = "Advising: {student} + {organizer}"
+MEETING_LOCATION = "24-316"
+MEETING_MINUTES = "30"
+DISPLAY_TIMEZONE = "America/New_York"
+ALLOWED_EMAIL_DOMAIN = "mit.edu"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "advising"
+database_id = "PUT-YOUR-D1-DATABASE-ID-HERE"
+
+# Secret, set with:  npx wrangler secret put RESEND_API_KEY

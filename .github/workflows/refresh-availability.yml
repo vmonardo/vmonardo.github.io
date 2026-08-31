@@ -1,0 +1,46 @@
+name: Refresh advising availability
+
+on:
+  schedule:
+    # Every 30 minutes. GitHub may delay scheduled runs under load, and it
+    # disables schedules in repos with no activity for 60 days — the manual
+    # trigger below is the escape hatch.
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-availability
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install --quiet icalendar recurring_ical_events
+
+      - name: Regenerate availability
+        env:
+          ICS_URL: ${{ secrets.OUTLOOK_ICS_URL }}
+        run: python3 scripts/refresh_availability.py
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- advising/availability.json; then
+            echo "No change in availability."
+            exit 0
+          fi
+          git config user.name "availability-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add advising/availability.json
+          git commit -m "Refresh advising availability"
+          git push

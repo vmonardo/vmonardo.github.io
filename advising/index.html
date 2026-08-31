@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+<link rel="shortcut icon" href="../favicon.ico">
+<title>Book advising time — Vince Monardo</title>
+<style>
+  :root {
+    --bg: #FFE5B4;
+    --ink: #36454F;
+    --line: #d9bd8d;
+    --card: #fff6e6;
+  }
+  body {
+    margin: 0; padding: 0 1.5rem 4rem;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg); color: var(--ink);
+  }
+  .wrap { max-width: 760px; margin: 0 auto; padding-top: 8vh; }
+  h1 { color: #000; font-size: 2rem; margin: 0 0 .25rem; }
+  h2 { color: #000; font-size: 1.3rem; margin: 2rem 0 .5rem; }
+  a { color: #000; }
+  p { font-size: 1.1rem; line-height: 1.5; }
+  .lede { margin-top: 0; }
+  .muted { font-size: .95rem; opacity: .75; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; margin: 1.5rem 0; }
+  label { display: block; font-size: .95rem; margin-bottom: .25rem; }
+  select, input, textarea {
+    font-family: inherit; font-size: 1rem; color: var(--ink);
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 6px; padding: .5rem;
+  }
+  input, textarea { width: 100%; box-sizing: border-box; }
+  textarea { min-height: 4.5rem; resize: vertical; }
+
+  .day { margin-bottom: 1.25rem; }
+  .day h3 { font-size: 1.05rem; margin: 0 0 .5rem; color: #000; }
+  .slots { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .slot {
+    font-family: inherit; font-size: 1rem; color: var(--ink);
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 6px; padding: .55rem .9rem; cursor: pointer;
+    transition: .15s;
+  }
+  .slot:hover:not(:disabled) { background: #fff; }
+  .slot[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .slot:disabled { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
+  .slot:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+
+  form { margin-top: 1rem; display: none; }
+  form.active { display: block; }
+  .field { margin-bottom: .9rem; }
+  button.submit {
+    font-family: inherit; font-size: 1.05rem;
+    background: var(--ink); color: var(--bg);
+    border: none; border-radius: 6px; padding: .7rem 1.4rem; cursor: pointer;
+  }
+  button.submit:disabled { opacity: .5; cursor: not-allowed; }
+
+  .notice {
+    background: var(--card); border: 1px solid var(--line);
+    border-left: 4px solid var(--ink);
+    border-radius: 6px; padding: .75rem 1rem; margin: 1rem 0; font-size: 1rem;
+  }
+  .notice.warn { border-left-color: #b3541e; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Book advising time</h1>
+  <p class="lede">Pick any open slot below and I will send you a calendar invite.
+     If nothing here works, email me and we will find another time.</p>
+
+  <div id="staleWarning" class="notice warn hidden"></div>
+
+  <div class="controls">
+    <div>
+      <label for="tz">Times shown in</label>
+      <select id="tz"></select>
+    </div>
+    <p class="muted" id="freshness" style="margin:0"></p>
+  </div>
+
+  <div id="slotArea" aria-live="polite">
+    <p class="muted">Loading open times…</p>
+  </div>
+
+  <form id="bookingForm" autocomplete="on">
+    <h2>Confirm <span id="chosenLabel"></span></h2>
+    <div class="field">
+      <label for="name">Your name</label>
+      <input id="name" name="name" required maxlength="120">
+    </div>
+    <div class="field">
+      <label for="email">Your MIT email</label>
+      <input id="email" name="email" type="email" required maxlength="160">
+    </div>
+    <div class="field">
+      <label for="topic">Anything you want to cover? (optional)</label>
+      <textarea id="topic" name="topic" maxlength="1000"></textarea>
+    </div>
+    <button class="submit" type="submit">Request this time</button>
+    <p class="muted" id="formStatus" aria-live="polite"></p>
+  </form>
+
+  <div id="done" class="notice hidden"></div>
+
+  <h2>Questions</h2>
+  <p class="muted">
+    This page shows only whether I am free — never what is on my calendar, and never
+    who else has booked. <a href="../">Back to my homepage</a>.
+  </p>
+</div>
+
+<script>
+(async function () {
+  const el = (id) => document.getElementById(id);
+  let cfg = {}, data = {}, chosen = null, taken = new Set();
+
+  const fail = (msg) => {
+    el("slotArea").innerHTML = '<div class="notice warn">' + msg + "</div>";
+  };
+
+  try {
+    [cfg, data] = await Promise.all([
+      fetch("config.json", { cache: "no-store" }).then((r) => r.json()),
+      fetch("availability.json", { cache: "no-store" }).then((r) => r.json()),
+    ]);
+  } catch (e) {
+    fail("Could not load the schedule. Please email me instead.");
+    return;
+  }
+
+  // --- timezone picker -----------------------------------------------------
+  const localTz = Intl.DateTimeFormat().resolvedOptions().timeZone || data.timezone;
+  const zones = [...new Set([localTz, data.timezone, "America/New_York", "UTC"])];
+  el("tz").innerHTML = zones
+    .map((z) => `<option value="${z}">${z.replace(/_/g, " ")}</option>`)
+    .join("");
+  el("tz").value = localTz;
+  el("tz").addEventListener("change", render);
+
+  // Freshness + a guard against publishing times that ignored the calendar.
+  const gen = new Date(data.generated_at);
+  const ageMin = Math.round((Date.now() - gen.getTime()) / 60000);
+  el("freshness").textContent =
+    "Checked against my calendar " +
+    (ageMin < 90 ? `${ageMin} min ago` : `${Math.round(ageMin / 60)} h ago`) + ".";
+  if (data.busy_source === "none" || ageMin > 720) {
+    const w = el("staleWarning");
+    w.classList.remove("hidden");
+    w.textContent =
+      "These times may be out of date, so I might have to move things around. " +
+      "Book anyway and I will confirm by email.";
+  }
+
+  // --- already-booked slots (only if a backend is configured) --------------
+  if (cfg.booking_endpoint) {
+    try {
+      const sep = cfg.booking_endpoint.includes("?") ? "&" : "?";
+      const r = await fetch(cfg.booking_endpoint + sep + "action=taken",
+                            { cache: "no-store" });
+      if (r.ok) taken = new Set((await r.json()).taken || []);
+    } catch (e) { /* backend down: fall through, we still validate on submit */ }
+  }
+
+  // --- rendering -----------------------------------------------------------
+  function render() {
+    const tz = el("tz").value;
+    const dayFmt = new Intl.DateTimeFormat("en-US", {
+      timeZone: tz, weekday: "long", month: "long", day: "numeric",
+    });
+    const timeFmt = new Intl.DateTimeFormat("en-US", {
+      timeZone: tz, hour: "numeric", minute: "2-digit",
+    });
+
+    const upcoming = data.slots.filter((s) => new Date(s) > new Date());
+    if (!upcoming.length) {
+      fail("No open times in the next few weeks — please email me and we will sort something out.");
+      return;
+    }
+
+    const byDay = new Map();
+    for (const iso of upcoming) {
+      const key = dayFmt.format(new Date(iso));
+      if (!byDay.has(key)) byDay.set(key, []);
+      byDay.get(key).push(iso);
+    }
+
+    const area = el("slotArea");
+    area.innerHTML = "";
+    for (const [day, isos] of byDay) {
+      const wrap = document.createElement("div");
+      wrap.className = "day";
+      const h = document.createElement("h3");
+      h.textContent = day;
+      wrap.appendChild(h);
+      const row = document.createElement("div");
+      row.className = "slots";
+      for (const iso of isos) {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "slot";
+        b.textContent = timeFmt.format(new Date(iso));
+        b.setAttribute("aria-pressed", String(chosen === iso));
+        if (taken.has(iso)) {
+          b.disabled = true;
+          b.title = "Already booked";
+        } else {
+          b.addEventListener("click", () => choose(iso));
+        }
+        row.appendChild(b);
+      }
+      wrap.appendChild(row);
+      area.appendChild(wrap);
+    }
+
+    // Keep the confirmation heading in the timezone the student is reading.
+    if (chosen) el("chosenLabel").textContent = labelFor(chosen, tz);
+  }
+
+  function labelFor(iso, tz) {
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone: tz, weekday: "long", month: "long", day: "numeric",
+      hour: "numeric", minute: "2-digit", timeZoneName: "short",
+    }).format(new Date(iso));
+  }
+
+  function choose(iso) {
+    chosen = iso;
+    el("bookingForm").classList.add("active");
+    render();
+    el("bookingForm").scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  // --- submission ----------------------------------------------------------
+  el("bookingForm").addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    if (!chosen) return;
+    const btn = ev.target.querySelector("button.submit");
+    const payload = {
+      slot: chosen,
+      name: el("name").value.trim(),
+      email: el("email").value.trim(),
+      topic: el("topic").value.trim(),
+    };
+
+    // No backend yet: hand off to the student's mail client with everything
+    // already filled in. Still a one-click booking from their side.
+    if (!cfg.booking_endpoint) {
+      const when = el("chosenLabel").textContent;
+      const subject = encodeURIComponent(`Advising meeting — ${when}`);
+      const body = encodeURIComponent(
+        `Hi Vince,\n\nI would like to take the ${when} advising slot.\n\n` +
+        (payload.topic ? `What I would like to cover:\n${payload.topic}\n\n` : "") +
+        `Thanks,\n${payload.name}\n`
+      );
+      window.location.href =
+        `mailto:${cfg.organizer_email}?subject=${subject}&body=${body}`;
+      finish("Your email app should have opened with the request ready to send. " +
+             "I will confirm and send a calendar invite.");
+      return;
+    }
+
+    btn.disabled = true;
+    el("formStatus").textContent = "Booking…";
+    try {
+      // Deliberately no custom headers and a plain-text body: that keeps this a
+      // CORS "simple request". An Apps Script web app cannot answer a preflight
+      // OPTIONS, so setting Content-Type: application/json would break it.
+      const r = await fetch(cfg.booking_endpoint, {
+        method: "POST",
+        body: JSON.stringify({ action: "book", ...payload }),
+      });
+      const out = await r.json().catch(() => ({ error: "Unreadable response." }));
+      if (out.conflict) {
+        el("formStatus").textContent =
+          "Someone just took that slot. Please pick another.";
+        taken.add(chosen);
+        chosen = null;
+        btn.disabled = false;
+        el("bookingForm").classList.remove("active");
+        render();
+        return;
+      }
+      if (!out.ok) throw new Error(out.error || "booking failed");
+      finish("Booked. A calendar invite is on its way to " + payload.email + ".");
+    } catch (e) {
+      btn.disabled = false;
+      el("formStatus").textContent =
+        "That did not go through. Please email me at " + cfg.organizer_email + ".";
+    }
+  });
+
+  function finish(msg) {
+    el("bookingForm").classList.remove("active");
+    el("slotArea").classList.add("hidden");
+    document.querySelector(".controls").classList.add("hidden");
+    const d = el("done");
+    d.classList.remove("hidden");
+    d.textContent = msg;
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
